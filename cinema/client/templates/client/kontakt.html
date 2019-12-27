@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="pl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Kontakt</title>
+    <link rel="stylesheet" href="{% static 'client/style.css' %}">
+</head>
+
+<body>
+    <h1>KONTAKT</h1>
+    <h2 class="formularz">
+        <span style='background-color:grey'>
+            Adres: <br>
+            Wyższa Szkoła Bankowa <br>
+            Fabryczna 29/31, 53-609 Wrocław <br> <br>
+            Telefon: <br>
+            123456789 <br> <br>
+            E-mail: <br>
+            kino@gmail.com <br> <br>
+            Strona WWW: <br>
+            www.link.pl
+        </span>
+    </h2>
+    <h2 class="glowna">
+        <a href="{% url 'index-client' %}">&#60 &#60 Strona główna</a>
+</h2>
+</body>
+<style>
+    body{
+        width: 100%;
+        min-height: 100%;
+    }
+    h2.formularz {
+        color: #fff;
+        font-size: x-large;
+        text-align: center;
+        margin-top: 6%;
+        letter-spacing: 10px;
+
+    }
+    h2.glowna
+                {
+                    margin-top: 10%;
+
+                }
+                a
+                {
+                    text-decoration: none;
+                    color:grey;
+                }
+                a:hover
+                {
+                    color: #fff;
+                }
+    h1 {
+        text-align: center;
+        color: white;
+        letter-spacing: 5px;
+    }
+</style>
+
+</html>

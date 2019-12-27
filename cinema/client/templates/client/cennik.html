@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="pl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Cennik</title>
+    <link rel="stylesheet" href="{% static 'client/style.css' %}">
+
+</head>
+
+<body>
+    <h1>CENNIK BILETÓW</h1>
+    <table class="table">
+
+        <tbody>
+
+            <tr>
+
+                <td><strong>Bilety</strong></td>
+
+                <td><strong>Normalny*</strong></td>
+
+                <td><strong>Ulgowy**</strong></td>
+
+            </tr>
+
+            <tr>
+
+                <td>Pn, Śr, Czw</td>
+
+                <td>21 zł</td>
+
+                <td>17 zł</td>
+
+            </tr>
+
+            <tr>
+                <td>Tanie wtorki!</td>
+
+                <td>15 zł</td>
+
+                <td>15 zł</td>
+
+            </tr>
+
+            <tr>
+
+                <td>Pt-Nd, Święta</td>
+
+                <td>24 zł</td>
+
+                <td>19 zł</td>
+
+            </tr>
+
+
+
+
+
+            <style>
+
+                .table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    border-spacing: 0;
+                    margin-bottom: 1%;
+                }
+
+                .table td,
+                th {
+                    font-size: 25px;
+                    border-top: 1px solid #ddd;
+                    padding: 5px 12px;
+                    text-align: left;
+                    vertical-align: top;
+
+                }
+
+                .table tbody tr:nth-child(even) td
+                {
+                    background-color: #f3f3f3;
+                }
+
+
+
+                .table tbody tr:nth-child(odd) td
+                 {
+                      background-color:grey;
+                 }
+
+                h1 {
+                    text-align: center;
+                    margin-bottom: 75px;
+                    color: grey;
+                }
+                h3 {
+                    margin-top: 200px;
+                    color:rgb(182, 179, 12);
+                }
+                h2
+                {
+                    margin-top: 5%;
+
+                }
+                a
+                {
+                    text-decoration: none;
+                    color:grey;
+                }
+                a:hover
+                {
+                    color: #fff;
+                }
+
+            </style>
+
+        </tbody>
+
+
+    </table>
+    <h3>
+        Normalny* - sprzedawany bez dodatkowych dokumentów kwalifikujących do ceny ulgowej <br>
+        Ulgowy** - sprzedawany wyłącznie za ukazaniem ważnej legitymacji uczniowskiej/studenckiej
+    </h3>
+    <h2>
+            <a href="{% url 'index-client' %}">&#60 &#60 Strona główna</a>
+    </h2>
+
+</body>
+
+</html>
