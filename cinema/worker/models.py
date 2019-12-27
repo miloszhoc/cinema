@@ -58,12 +58,19 @@ class TicketTypes(models.Model):
         return self.type
 
 
+class Ticket(models.Model):
+    ticket_id = models.AutoField(primary_key=True, null=False)
+    client_id = models.ForeignKey(Clients, on_delete=models.PROTECT)
+    tickettype_id = models.ForeignKey(TicketTypes, on_delete=models.PROTECT)
+    seat_id = models.ForeignKey(Seats, on_delete=models.PROTECT)
+
+
 class Reservations(models.Model):
     reservation_id = models.AutoField(primary_key=True, null=False)
-    client_id = models.ForeignKey(Clients, on_delete=models.PROTECT)  # do not delete client data
-    ticket_id = models.ForeignKey(TicketTypes, on_delete=models.PROTECT)  # do not delete ticket type
+    # client_id = models.ForeignKey(Clients, on_delete=models.ValueRange)  # do not delete client data
+    ticket_id = models.ForeignKey(Ticket, on_delete=models.PROTECT)  # do not delete ticket type
     showtime_id = models.ForeignKey(Showtime, on_delete=models.PROTECT)  # do not delete showtime
-    seat_id = models.ForeignKey(Seats, on_delete=models.PROTECT)  # do not delete seat
+    # seat_id = models.ForeignKey(Seats, on_delete=models.PROTECT)  # do not delete seat
 
     def __str__(self):
         return str(self.reservation_id)
