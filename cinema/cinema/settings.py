@@ -78,7 +78,8 @@ DATABASES = {
         'NAME': 'cinema_db',
         'USER': 'postgres',
         'PASSWORD': 'licencjat123!',
-        'HOST': '',
+        # 'HOST': '',
+        'HOST': '80.211.204.44',
         'PORT': '5432',
     },
 }
