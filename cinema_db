@@ -1,0 +1,1684 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 12.1 (Debian 12.1-1.pgdg100+1)
+-- Dumped by pg_dump version 12.1
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- Name: auth_group; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.auth_group (
+    id integer NOT NULL,
+    name character varying(150) NOT NULL
+);
+
+
+ALTER TABLE public.auth_group OWNER TO postgres;
+
+--
+-- Name: auth_group_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.auth_group_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.auth_group_id_seq OWNER TO postgres;
+
+--
+-- Name: auth_group_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.auth_group_id_seq OWNED BY public.auth_group.id;
+
+
+--
+-- Name: auth_group_permissions; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.auth_group_permissions (
+    id integer NOT NULL,
+    group_id integer NOT NULL,
+    permission_id integer NOT NULL
+);
+
+
+ALTER TABLE public.auth_group_permissions OWNER TO postgres;
+
+--
+-- Name: auth_group_permissions_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.auth_group_permissions_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.auth_group_permissions_id_seq OWNER TO postgres;
+
+--
+-- Name: auth_group_permissions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.auth_group_permissions_id_seq OWNED BY public.auth_group_permissions.id;
+
+
+--
+-- Name: auth_permission; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.auth_permission (
+    id integer NOT NULL,
+    name character varying(255) NOT NULL,
+    content_type_id integer NOT NULL,
+    codename character varying(100) NOT NULL
+);
+
+
+ALTER TABLE public.auth_permission OWNER TO postgres;
+
+--
+-- Name: auth_permission_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.auth_permission_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.auth_permission_id_seq OWNER TO postgres;
+
+--
+-- Name: auth_permission_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.auth_permission_id_seq OWNED BY public.auth_permission.id;
+
+
+--
+-- Name: auth_user; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.auth_user (
+    id integer NOT NULL,
+    password character varying(128) NOT NULL,
+    last_login timestamp with time zone,
+    is_superuser boolean NOT NULL,
+    username character varying(150) NOT NULL,
+    first_name character varying(30) NOT NULL,
+    last_name character varying(150) NOT NULL,
+    email character varying(254) NOT NULL,
+    is_staff boolean NOT NULL,
+    is_active boolean NOT NULL,
+    date_joined timestamp with time zone NOT NULL
+);
+
+
+ALTER TABLE public.auth_user OWNER TO postgres;
+
+--
+-- Name: auth_user_groups; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.auth_user_groups (
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    group_id integer NOT NULL
+);
+
+
+ALTER TABLE public.auth_user_groups OWNER TO postgres;
+
+--
+-- Name: auth_user_groups_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.auth_user_groups_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.auth_user_groups_id_seq OWNER TO postgres;
+
+--
+-- Name: auth_user_groups_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.auth_user_groups_id_seq OWNED BY public.auth_user_groups.id;
+
+
+--
+-- Name: auth_user_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.auth_user_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.auth_user_id_seq OWNER TO postgres;
+
+--
+-- Name: auth_user_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.auth_user_id_seq OWNED BY public.auth_user.id;
+
+
+--
+-- Name: auth_user_user_permissions; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.auth_user_user_permissions (
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    permission_id integer NOT NULL
+);
+
+
+ALTER TABLE public.auth_user_user_permissions OWNER TO postgres;
+
+--
+-- Name: auth_user_user_permissions_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.auth_user_user_permissions_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.auth_user_user_permissions_id_seq OWNER TO postgres;
+
+--
+-- Name: auth_user_user_permissions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.auth_user_user_permissions_id_seq OWNED BY public.auth_user_user_permissions.id;
+
+
+--
+-- Name: django_admin_log; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.django_admin_log (
+    id integer NOT NULL,
+    action_time timestamp with time zone NOT NULL,
+    object_id text,
+    object_repr character varying(200) NOT NULL,
+    action_flag smallint NOT NULL,
+    change_message text NOT NULL,
+    content_type_id integer,
+    user_id integer NOT NULL,
+    CONSTRAINT django_admin_log_action_flag_check CHECK ((action_flag >= 0))
+);
+
+
+ALTER TABLE public.django_admin_log OWNER TO postgres;
+
+--
+-- Name: django_admin_log_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.django_admin_log_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.django_admin_log_id_seq OWNER TO postgres;
+
+--
+-- Name: django_admin_log_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.django_admin_log_id_seq OWNED BY public.django_admin_log.id;
+
+
+--
+-- Name: django_content_type; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.django_content_type (
+    id integer NOT NULL,
+    app_label character varying(100) NOT NULL,
+    model character varying(100) NOT NULL
+);
+
+
+ALTER TABLE public.django_content_type OWNER TO postgres;
+
+--
+-- Name: django_content_type_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.django_content_type_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.django_content_type_id_seq OWNER TO postgres;
+
+--
+-- Name: django_content_type_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.django_content_type_id_seq OWNED BY public.django_content_type.id;
+
+
+--
+-- Name: django_migrations; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.django_migrations (
+    id integer NOT NULL,
+    app character varying(255) NOT NULL,
+    name character varying(255) NOT NULL,
+    applied timestamp with time zone NOT NULL
+);
+
+
+ALTER TABLE public.django_migrations OWNER TO postgres;
+
+--
+-- Name: django_migrations_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.django_migrations_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.django_migrations_id_seq OWNER TO postgres;
+
+--
+-- Name: django_migrations_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.django_migrations_id_seq OWNED BY public.django_migrations.id;
+
+
+--
+-- Name: django_session; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.django_session (
+    session_key character varying(40) NOT NULL,
+    session_data text NOT NULL,
+    expire_date timestamp with time zone NOT NULL
+);
+
+
+ALTER TABLE public.django_session OWNER TO postgres;
+
+--
+-- Name: worker_client; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.worker_client (
+    client_id integer NOT NULL,
+    first_name character varying(55) NOT NULL,
+    last_name character varying(55) NOT NULL,
+    email character varying(255) NOT NULL
+);
+
+
+ALTER TABLE public.worker_client OWNER TO postgres;
+
+--
+-- Name: worker_clients_client_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.worker_clients_client_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.worker_clients_client_id_seq OWNER TO postgres;
+
+--
+-- Name: worker_clients_client_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.worker_clients_client_id_seq OWNED BY public.worker_client.client_id;
+
+
+--
+-- Name: worker_movie; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.worker_movie (
+    movie_id integer NOT NULL,
+    title character varying(255) NOT NULL,
+    director character varying(255) NOT NULL,
+    release_date integer NOT NULL,
+    duration interval NOT NULL,
+    description text,
+    link character varying(255),
+    thumbnail character varying(255),
+    trailer_youtube_id character varying(255)
+);
+
+
+ALTER TABLE public.worker_movie OWNER TO postgres;
+
+--
+-- Name: worker_movie_movie_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.worker_movie_movie_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.worker_movie_movie_id_seq OWNER TO postgres;
+
+--
+-- Name: worker_movie_movie_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.worker_movie_movie_id_seq OWNED BY public.worker_movie.movie_id;
+
+
+--
+-- Name: worker_reservation; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.worker_reservation (
+    reservation_id integer NOT NULL,
+    showtime_id_id integer NOT NULL,
+    ticket_id_id integer NOT NULL
+);
+
+
+ALTER TABLE public.worker_reservation OWNER TO postgres;
+
+--
+-- Name: worker_reservation_reservation_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.worker_reservation_reservation_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.worker_reservation_reservation_id_seq OWNER TO postgres;
+
+--
+-- Name: worker_reservation_reservation_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.worker_reservation_reservation_id_seq OWNED BY public.worker_reservation.reservation_id;
+
+
+--
+-- Name: worker_seat; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.worker_seat (
+    seat_id integer NOT NULL,
+    seat_number integer
+);
+
+
+ALTER TABLE public.worker_seat OWNER TO postgres;
+
+--
+-- Name: worker_seats_seat_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.worker_seats_seat_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.worker_seats_seat_id_seq OWNER TO postgres;
+
+--
+-- Name: worker_seats_seat_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.worker_seats_seat_id_seq OWNED BY public.worker_seat.seat_id;
+
+
+--
+-- Name: worker_showtime; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.worker_showtime (
+    showtime_id integer NOT NULL,
+    start_time time without time zone,
+    show_break interval NOT NULL,
+    end_time timestamp with time zone,
+    movie_id_id integer NOT NULL,
+    start_date date
+);
+
+
+ALTER TABLE public.worker_showtime OWNER TO postgres;
+
+--
+-- Name: worker_showtime_showtime_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.worker_showtime_showtime_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.worker_showtime_showtime_id_seq OWNER TO postgres;
+
+--
+-- Name: worker_showtime_showtime_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.worker_showtime_showtime_id_seq OWNED BY public.worker_showtime.showtime_id;
+
+
+--
+-- Name: worker_ticket; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.worker_ticket (
+    ticket_id integer NOT NULL,
+    client_id_id integer NOT NULL,
+    seat_id_id integer NOT NULL,
+    tickettype_id_id integer NOT NULL
+);
+
+
+ALTER TABLE public.worker_ticket OWNER TO postgres;
+
+--
+-- Name: worker_ticket_ticket_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.worker_ticket_ticket_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.worker_ticket_ticket_id_seq OWNER TO postgres;
+
+--
+-- Name: worker_ticket_ticket_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.worker_ticket_ticket_id_seq OWNED BY public.worker_ticket.ticket_id;
+
+
+--
+-- Name: worker_tickettype; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.worker_tickettype (
+    ticket_id integer NOT NULL,
+    type character varying(40) NOT NULL,
+    price integer NOT NULL
+);
+
+
+ALTER TABLE public.worker_tickettype OWNER TO postgres;
+
+--
+-- Name: worker_tickettypes_ticket_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.worker_tickettypes_ticket_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.worker_tickettypes_ticket_id_seq OWNER TO postgres;
+
+--
+-- Name: worker_tickettypes_ticket_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.worker_tickettypes_ticket_id_seq OWNED BY public.worker_tickettype.ticket_id;
+
+
+--
+-- Name: auth_group id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.auth_group ALTER COLUMN id SET DEFAULT nextval('public.auth_group_id_seq'::regclass);
+
+
+--
+-- Name: auth_group_permissions id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.auth_group_permissions ALTER COLUMN id SET DEFAULT nextval('public.auth_group_permissions_id_seq'::regclass);
+
+
+--
+-- Name: auth_permission id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.auth_permission ALTER COLUMN id SET DEFAULT nextval('public.auth_permission_id_seq'::regclass);
+
+
+--
+-- Name: auth_user id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.auth_user ALTER COLUMN id SET DEFAULT nextval('public.auth_user_id_seq'::regclass);
+
+
+--
+-- Name: auth_user_groups id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.auth_user_groups ALTER COLUMN id SET DEFAULT nextval('public.auth_user_groups_id_seq'::regclass);
+
+
+--
+-- Name: auth_user_user_permissions id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.auth_user_user_permissions ALTER COLUMN id SET DEFAULT nextval('public.auth_user_user_permissions_id_seq'::regclass);
+
+
+--
+-- Name: django_admin_log id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.django_admin_log ALTER COLUMN id SET DEFAULT nextval('public.django_admin_log_id_seq'::regclass);
+
+
+--
+-- Name: django_content_type id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.django_content_type ALTER COLUMN id SET DEFAULT nextval('public.django_content_type_id_seq'::regclass);
+
+
+--
+-- Name: django_migrations id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.django_migrations ALTER COLUMN id SET DEFAULT nextval('public.django_migrations_id_seq'::regclass);
+
+
+--
+-- Name: worker_client client_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.worker_client ALTER COLUMN client_id SET DEFAULT nextval('public.worker_clients_client_id_seq'::regclass);
+
+
+--
+-- Name: worker_movie movie_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.worker_movie ALTER COLUMN movie_id SET DEFAULT nextval('public.worker_movie_movie_id_seq'::regclass);
+
+
+--
+-- Name: worker_reservation reservation_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.worker_reservation ALTER COLUMN reservation_id SET DEFAULT nextval('public.worker_reservation_reservation_id_seq'::regclass);
+
+
+--
+-- Name: worker_seat seat_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.worker_seat ALTER COLUMN seat_id SET DEFAULT nextval('public.worker_seats_seat_id_seq'::regclass);
+
+
+--
+-- Name: worker_showtime showtime_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.worker_showtime ALTER COLUMN showtime_id SET DEFAULT nextval('public.worker_showtime_showtime_id_seq'::regclass);
+
+
+--
+-- Name: worker_ticket ticket_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.worker_ticket ALTER COLUMN ticket_id SET DEFAULT nextval('public.worker_ticket_ticket_id_seq'::regclass);
+
+
+--
+-- Name: worker_tickettype ticket_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.worker_tickettype ALTER COLUMN ticket_id SET DEFAULT nextval('public.worker_tickettypes_ticket_id_seq'::regclass);
+
+
+--
+-- Data for Name: auth_group; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.auth_group (id, name) FROM stdin;
+\.
+
+
+--
+-- Data for Name: auth_group_permissions; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.auth_group_permissions (id, group_id, permission_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: auth_permission; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.auth_permission (id, name, content_type_id, codename) FROM stdin;
+1	Can add log entry	1	add_logentry
+2	Can change log entry	1	change_logentry
+3	Can delete log entry	1	delete_logentry
+4	Can view log entry	1	view_logentry
+5	Can add permission	2	add_permission
+6	Can change permission	2	change_permission
+7	Can delete permission	2	delete_permission
+8	Can view permission	2	view_permission
+9	Can add group	3	add_group
+10	Can change group	3	change_group
+11	Can delete group	3	delete_group
+12	Can view group	3	view_group
+13	Can add user	4	add_user
+14	Can change user	4	change_user
+15	Can delete user	4	delete_user
+16	Can view user	4	view_user
+17	Can add content type	5	add_contenttype
+18	Can change content type	5	change_contenttype
+19	Can delete content type	5	delete_contenttype
+20	Can view content type	5	view_contenttype
+21	Can add session	6	add_session
+22	Can change session	6	change_session
+23	Can delete session	6	delete_session
+24	Can view session	6	view_session
+25	Can add clients	7	add_clients
+26	Can change clients	7	change_clients
+27	Can delete clients	7	delete_clients
+28	Can view clients	7	view_clients
+29	Can add seats	8	add_seats
+30	Can change seats	8	change_seats
+31	Can delete seats	8	delete_seats
+32	Can view seats	8	view_seats
+33	Can add reservations	9	add_reservations
+34	Can change reservations	9	change_reservations
+35	Can delete reservations	9	delete_reservations
+36	Can view reservations	9	view_reservations
+37	Can add ticket types	10	add_tickettypes
+38	Can change ticket types	10	change_tickettypes
+39	Can delete ticket types	10	delete_tickettypes
+40	Can view ticket types	10	view_tickettypes
+41	Can add movies	11	add_movies
+42	Can change movies	11	change_movies
+43	Can delete movies	11	delete_movies
+44	Can view movies	11	view_movies
+45	Can add showtime	12	add_showtime
+46	Can change showtime	12	change_showtime
+47	Can delete showtime	12	delete_showtime
+48	Can view showtime	12	view_showtime
+49	Can add ticket	13	add_ticket
+50	Can change ticket	13	change_ticket
+51	Can delete ticket	13	delete_ticket
+52	Can view ticket	13	view_ticket
+53	Can add movie	14	add_movie
+54	Can change movie	14	change_movie
+55	Can delete movie	14	delete_movie
+56	Can view movie	14	view_movie
+57	Can add reservation	15	add_reservation
+58	Can change reservation	15	change_reservation
+59	Can delete reservation	15	delete_reservation
+60	Can view reservation	15	view_reservation
+61	Can add client	7	add_client
+62	Can change client	7	change_client
+63	Can delete client	7	delete_client
+64	Can view client	7	view_client
+65	Can add seat	8	add_seat
+66	Can change seat	8	change_seat
+67	Can delete seat	8	delete_seat
+68	Can view seat	8	view_seat
+69	Can add ticket type	10	add_tickettype
+70	Can change ticket type	10	change_tickettype
+71	Can delete ticket type	10	delete_tickettype
+72	Can view ticket type	10	view_tickettype
+\.
+
+
+--
+-- Data for Name: auth_user; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.auth_user (id, password, last_login, is_superuser, username, first_name, last_name, email, is_staff, is_active, date_joined) FROM stdin;
+1	pbkdf2_sha256$180000$g0qeCLFB30m3$6WGWF298wmEGYFtC2ttCkkTIeppJQAgOX1L+p1zXJm0=	2019-12-27 18:28:58.775063+00	t	admin			admin@ad.min	t	t	2019-12-23 19:44:03.457483+00
+\.
+
+
+--
+-- Data for Name: auth_user_groups; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.auth_user_groups (id, user_id, group_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: auth_user_user_permissions; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.auth_user_user_permissions (id, user_id, permission_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: django_admin_log; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.django_admin_log (id, action_time, object_id, object_repr, action_flag, change_message, content_type_id, user_id) FROM stdin;
+1	2019-12-23 19:59:23.167755+00	1	Andrzej Kowałski	1	[{"added": {}}]	7	1
+2	2019-12-23 19:59:40.212635+00	2	Wiktoria Nowak	1	[{"added": {}}]	7	1
+3	2019-12-23 19:59:54.861078+00	3	Daria Klawiatura	1	[{"added": {}}]	7	1
+4	2019-12-23 20:00:06.243641+00	4	Jan Kozłowski	1	[{"added": {}}]	7	1
+5	2019-12-23 20:00:28.788269+00	5	Adam Teleskopowy	1	[{"added": {}}]	7	1
+6	2019-12-23 20:00:55.924007+00	6	Dominika Drzwiowa	1	[{"added": {}}]	7	1
+7	2019-12-23 20:01:43.702882+00	1	Zielona mila	1	[{"added": {}}]	11	1
+8	2019-12-23 20:02:09.923901+00	2	Skazani na Shawshank	1	[{"added": {}}]	11	1
+9	2019-12-23 20:02:37.822968+00	3	Forrest Gump	1	[{"added": {}}]	11	1
+10	2019-12-23 20:03:09.419331+00	4	Requiem dla snu	1	[{"added": {}}]	11	1
+11	2019-12-23 20:04:07.095389+00	1	1	1	[{"added": {}}]	8	1
+12	2019-12-23 20:04:08.785033+00	2	2	1	[{"added": {}}]	8	1
+13	2019-12-23 20:04:10.702148+00	3	3	1	[{"added": {}}]	8	1
+14	2019-12-23 20:04:12.004448+00	4	4	1	[{"added": {}}]	8	1
+15	2019-12-23 20:04:12.829757+00	5	5	1	[{"added": {}}]	8	1
+16	2019-12-23 20:04:13.712163+00	6	6	1	[{"added": {}}]	8	1
+17	2019-12-23 20:04:14.465703+00	7	7	1	[{"added": {}}]	8	1
+18	2019-12-23 20:04:15.26403+00	8	8	1	[{"added": {}}]	8	1
+19	2019-12-23 20:04:16.212347+00	9	9	1	[{"added": {}}]	8	1
+20	2019-12-23 20:04:17.565082+00	10	1	1	[{"added": {}}]	8	1
+21	2019-12-23 20:04:25.016843+00	10	10	2	[{"changed": {"fields": ["Seat number"]}}]	8	1
+22	2019-12-23 20:04:26.377129+00	11	11	1	[{"added": {}}]	8	1
+23	2019-12-23 20:04:27.684023+00	12	12	1	[{"added": {}}]	8	1
+24	2019-12-23 20:04:28.55048+00	13	13	1	[{"added": {}}]	8	1
+25	2019-12-23 20:04:29.568224+00	14	14	1	[{"added": {}}]	8	1
+26	2019-12-23 20:04:30.926187+00	15	15	1	[{"added": {}}]	8	1
+27	2019-12-23 20:04:32.391119+00	16	16	1	[{"added": {}}]	8	1
+28	2019-12-23 20:04:33.495305+00	17	17	1	[{"added": {}}]	8	1
+29	2019-12-23 20:04:34.942355+00	18	18	1	[{"added": {}}]	8	1
+30	2019-12-23 20:04:36.008789+00	19	19	1	[{"added": {}}]	8	1
+31	2019-12-23 20:04:36.997302+00	20	20	1	[{"added": {}}]	8	1
+32	2019-12-23 20:04:38.190794+00	21	21	1	[{"added": {}}]	8	1
+33	2019-12-23 20:04:39.132944+00	22	22	1	[{"added": {}}]	8	1
+34	2019-12-23 20:04:39.877806+00	23	3	1	[{"added": {}}]	8	1
+35	2019-12-23 20:04:44.395263+00	23	23	2	[{"changed": {"fields": ["Seat number"]}}]	8	1
+36	2019-12-23 20:04:46.079755+00	24	24	1	[{"added": {}}]	8	1
+37	2019-12-23 20:04:47.405336+00	25	25	1	[{"added": {}}]	8	1
+38	2019-12-23 20:04:48.894362+00	26	26	1	[{"added": {}}]	8	1
+39	2019-12-23 20:04:49.910652+00	27	27	1	[{"added": {}}]	8	1
+40	2019-12-23 20:04:50.957858+00	28	28	1	[{"added": {}}]	8	1
+41	2019-12-23 20:04:51.912387+00	29	29	1	[{"added": {}}]	8	1
+42	2019-12-23 20:04:54.014775+00	30	30	1	[{"added": {}}]	8	1
+43	2019-12-23 20:04:55.165631+00	31	31	1	[{"added": {}}]	8	1
+44	2019-12-23 20:04:56.192891+00	32	32	1	[{"added": {}}]	8	1
+45	2019-12-23 20:04:57.099563+00	33	33	1	[{"added": {}}]	8	1
+46	2019-12-23 20:04:58.118938+00	34	34	1	[{"added": {}}]	8	1
+47	2019-12-23 20:04:59.287318+00	35	35	1	[{"added": {}}]	8	1
+48	2019-12-23 20:05:00.296619+00	36	36	1	[{"added": {}}]	8	1
+49	2019-12-23 20:05:01.285392+00	37	37	1	[{"added": {}}]	8	1
+50	2019-12-23 20:05:02.272766+00	38	38	1	[{"added": {}}]	8	1
+51	2019-12-23 20:05:05.687645+00	39	39	1	[{"added": {}}]	8	1
+52	2019-12-23 20:05:07.474118+00	40	40	1	[{"added": {}}]	8	1
+53	2019-12-23 20:05:10.126303+00	41	41	1	[{"added": {}}]	8	1
+54	2019-12-23 20:05:11.344446+00	42	42	1	[{"added": {}}]	8	1
+55	2019-12-23 20:05:12.344286+00	43	43	1	[{"added": {}}]	8	1
+56	2019-12-23 20:05:13.221682+00	44	44	1	[{"added": {}}]	8	1
+57	2019-12-23 20:05:14.309424+00	45	45	1	[{"added": {}}]	8	1
+58	2019-12-23 20:05:15.499781+00	46	46	1	[{"added": {}}]	8	1
+59	2019-12-23 20:05:16.6273+00	47	47	1	[{"added": {}}]	8	1
+60	2019-12-23 20:05:17.590471+00	48	48	1	[{"added": {}}]	8	1
+61	2019-12-23 20:05:18.855947+00	49	49	1	[{"added": {}}]	8	1
+62	2019-12-23 20:05:21.287142+00	50	50	1	[{"added": {}}]	8	1
+63	2019-12-23 23:08:15.981445+00	1	Normalny	1	[{"added": {}}]	10	1
+64	2019-12-23 23:08:32.902505+00	2	Ulgowy	1	[{"added": {}}]	10	1
+65	2019-12-23 23:08:37.931968+00	1	Normalny	2	[{"changed": {"fields": ["Price"]}}]	10	1
+66	2019-12-23 23:09:13.147609+00	1	Ticket object (1)	1	[{"added": {}}]	13	1
+67	2019-12-23 23:09:30.497258+00	2	Ticket object (2)	1	[{"added": {}}]	13	1
+68	2019-12-27 20:42:05.328245+00	1	Zielona mila	1	[{"added": {}}]	14	1
+69	2019-12-27 21:17:12.550119+00	2	Skazani na Shawshank	1	[{"added": {}}]	14	1
+70	2019-12-27 21:18:21.879381+00	3	Forrest Gump	1	[{"added": {}}]	14	1
+71	2019-12-27 21:19:29.33089+00	4	Matrix	1	[{"added": {}}]	14	1
+72	2019-12-27 22:00:31.149482+00	1	1	1	[{"added": {}}]	12	1
+73	2019-12-27 22:01:01.19044+00	2	2	1	[{"added": {}}]	12	1
+74	2019-12-27 22:03:33.604497+00	3	Forrest Gump - 2019-12-30 06:00:00	1	[{"added": {}}]	12	1
+75	2019-12-27 22:04:04.162066+00	4	Matrix - 2020-01-01 04:00:00	1	[{"added": {}}]	12	1
+\.
+
+
+--
+-- Data for Name: django_content_type; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.django_content_type (id, app_label, model) FROM stdin;
+1	admin	logentry
+2	auth	permission
+3	auth	group
+4	auth	user
+5	contenttypes	contenttype
+6	sessions	session
+9	worker	reservations
+11	worker	movies
+12	worker	showtime
+13	worker	ticket
+7	worker	client
+8	worker	seat
+10	worker	tickettype
+14	worker	movie
+15	worker	reservation
+\.
+
+
+--
+-- Data for Name: django_migrations; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.django_migrations (id, app, name, applied) FROM stdin;
+1	contenttypes	0001_initial	2019-12-23 19:42:27.418519+00
+2	auth	0001_initial	2019-12-23 19:42:27.716768+00
+3	admin	0001_initial	2019-12-23 19:42:28.208179+00
+4	admin	0002_logentry_remove_auto_add	2019-12-23 19:42:28.275593+00
+5	admin	0003_logentry_add_action_flag_choices	2019-12-23 19:42:28.293834+00
+6	contenttypes	0002_remove_content_type_name	2019-12-23 19:42:28.315748+00
+7	auth	0002_alter_permission_name_max_length	2019-12-23 19:42:28.323727+00
+8	auth	0003_alter_user_email_max_length	2019-12-23 19:42:28.336702+00
+9	auth	0004_alter_user_username_opts	2019-12-23 19:42:28.359648+00
+10	auth	0005_alter_user_last_login_null	2019-12-23 19:42:28.371599+00
+11	auth	0006_require_contenttypes_0002	2019-12-23 19:42:28.374591+00
+12	auth	0007_alter_validators_add_error_messages	2019-12-23 19:42:28.383566+00
+13	auth	0008_alter_user_username_max_length	2019-12-23 19:42:28.42609+00
+14	auth	0009_alter_user_last_name_max_length	2019-12-23 19:42:28.436064+00
+15	auth	0010_alter_group_name_max_length	2019-12-23 19:42:28.450027+00
+16	auth	0011_update_proxy_permissions	2019-12-23 19:42:28.461026+00
+17	sessions	0001_initial	2019-12-23 19:42:28.51949+00
+18	worker	0001_initial	2019-12-23 19:52:52.58123+00
+19	worker	0002_auto_20191224_0007	2019-12-23 23:07:22.352253+00
+20	worker	0003_auto_20191227_2134	2019-12-27 20:34:28.457164+00
+21	worker	0004_auto_20191227_2137	2019-12-27 20:37:25.191867+00
+22	worker	0005_auto_20191227_2137	2019-12-27 20:37:50.575833+00
+\.
+
+
+--
+-- Data for Name: django_session; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.django_session (session_key, session_data, expire_date) FROM stdin;
+y1brlvb9l5a5ijt1s6v9py8fjg13kz4a	ODg2OTUzZThlZDg4ZGVhMGM4OTg1Mjc2OWQzZDIyZTM0ZWExNDc0YTp7Il9hdXRoX3VzZXJfaWQiOiIxIiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiI3NjUxYWRlMWZiZWFkNDVkMjZlZTBkMThiN2ZiYzg4ZjZkMTFlZDNlIn0=	2020-01-06 19:57:05.597986+00
+aafeoza5s0yvfuww29lker2jgdk895ej	ODg2OTUzZThlZDg4ZGVhMGM4OTg1Mjc2OWQzZDIyZTM0ZWExNDc0YTp7Il9hdXRoX3VzZXJfaWQiOiIxIiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiI3NjUxYWRlMWZiZWFkNDVkMjZlZTBkMThiN2ZiYzg4ZjZkMTFlZDNlIn0=	2020-01-10 18:28:58.828918+00
+\.
+
+
+--
+-- Data for Name: worker_client; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.worker_client (client_id, first_name, last_name, email) FROM stdin;
+1	Andrzej	Kowałski	ak@wp.pl
+2	Wiktoria	Nowak	wn@gmail.com
+3	Daria	Klawiatura	dk@wp.pl
+4	Jan	Kozłowski	jk@wp.pl
+5	Adam	Teleskopowy	at@o2.pl
+6	Dominika	Drzwiowa	dw@o2.pl
+\.
+
+
+--
+-- Data for Name: worker_movie; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.worker_movie (movie_id, title, director, release_date, duration, description, link, thumbnail, trailer_youtube_id) FROM stdin;
+1	Zielona mila	Frank Darabont	1999	03:08:00	Emerytowany strażnik więzienny opowiada przyjaciółce o niezwykłym mężczyźnie, którego skazano na śmierć za zabójstwo dwóch 9-letnich dziewczynek.	https://www.filmweb.pl/Zielona.Mila	https://ssl-gfx.filmweb.pl/po/08/62/862/7517878.6.jpg	Ki4haFrqSrw
+2	Skazani na Shawshank	Frank Darabont	1994	02:22:00	Adaptacja opowiadania Stephena Kinga. Niesłusznie skazany na dożywocie bankier, stara się przetrwać w brutalnym, więziennym świecie.	https://www.filmweb.pl/Skazani.Na.Shawshank	https://ssl-gfx.filmweb.pl/po/10/48/1048/6925401.6.jpg	6hB3S9bIaco
+3	Forrest Gump	Robert Zemeckis	1994	02:22:00	Historia życia Forresta, chłopca o niskim ilorazie inteligencji z niedowładem kończyn, który staje się miliarderem i bohaterem wojny w Wietnamie.	https://www.filmweb.pl/Forrest.Gump	https://ssl-gfx.filmweb.pl/po/09/98/998/7314731.6.jpg	bLvqoHBptjg
+4	Matrix	Lilly Wachowski, Lana Wachowski	1999	02:16:00	Haker komputerowy Neo dowiaduje się od tajemniczych rebeliantów, że świat, w którym żyje, jest tylko obrazem przesyłanym do jego mózgu przez roboty.	https://www.filmweb.pl/film/Matrix-1999-628	https://ssl-gfx.filmweb.pl/po/06/28/628/7685907.6.jpg	FF8MsqU
+\.
+
+
+--
+-- Data for Name: worker_reservation; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.worker_reservation (reservation_id, showtime_id_id, ticket_id_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: worker_seat; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.worker_seat (seat_id, seat_number) FROM stdin;
+1	1
+2	2
+3	3
+4	4
+5	5
+6	6
+7	7
+8	8
+9	9
+10	10
+11	11
+12	12
+13	13
+14	14
+15	15
+16	16
+17	17
+18	18
+19	19
+20	20
+21	21
+22	22
+23	23
+24	24
+25	25
+26	26
+27	27
+28	28
+29	29
+30	30
+31	31
+32	32
+33	33
+34	34
+35	35
+36	36
+37	37
+38	38
+39	39
+40	40
+41	41
+42	42
+43	43
+44	44
+45	45
+46	46
+47	47
+48	48
+49	49
+50	50
+\.
+
+
+--
+-- Data for Name: worker_showtime; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.worker_showtime (showtime_id, start_time, show_break, end_time, movie_id_id, start_date) FROM stdin;
+1	18:00:00	00:10:00	2019-12-28 20:18:00+00	1	2019-12-28
+2	20:00:37	00:00:15	2019-12-27 22:00:44+00	1	2019-12-27
+3	06:00:00	00:00:10	2019-12-30 08:30:00+00	3	2019-12-30
+4	04:00:00	00:00:10	2020-01-01 05:15:00+00	4	2020-01-01
+\.
+
+
+--
+-- Data for Name: worker_ticket; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.worker_ticket (ticket_id, client_id_id, seat_id_id, tickettype_id_id) FROM stdin;
+1	2	7	2
+2	1	41	1
+\.
+
+
+--
+-- Data for Name: worker_tickettype; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.worker_tickettype (ticket_id, type, price) FROM stdin;
+2	Ulgowy	18
+1	Normalny	25
+\.
+
+
+--
+-- Name: auth_group_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.auth_group_id_seq', 1, false);
+
+
+--
+-- Name: auth_group_permissions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.auth_group_permissions_id_seq', 1, false);
+
+
+--
+-- Name: auth_permission_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.auth_permission_id_seq', 72, true);
+
+
+--
+-- Name: auth_user_groups_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.auth_user_groups_id_seq', 1, false);
+
+
+--
+-- Name: auth_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.auth_user_id_seq', 1, true);
+
+
+--
+-- Name: auth_user_user_permissions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.auth_user_user_permissions_id_seq', 1, false);
+
+
+--
+-- Name: django_admin_log_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.django_admin_log_id_seq', 75, true);
+
+
+--
+-- Name: django_content_type_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.django_content_type_id_seq', 15, true);
+
+
+--
+-- Name: django_migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.django_migrations_id_seq', 22, true);
+
+
+--
+-- Name: worker_clients_client_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.worker_clients_client_id_seq', 6, true);
+
+
+--
+-- Name: worker_movie_movie_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.worker_movie_movie_id_seq', 4, true);
+
+
+--
+-- Name: worker_reservation_reservation_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.worker_reservation_reservation_id_seq', 1, false);
+
+
+--
+-- Name: worker_seats_seat_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.worker_seats_seat_id_seq', 50, true);
+
+
+--
+-- Name: worker_showtime_showtime_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.worker_showtime_showtime_id_seq', 4, true);
+
+
+--
+-- Name: worker_ticket_ticket_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.worker_ticket_ticket_id_seq', 2, true);
+
+
+--
+-- Name: worker_tickettypes_ticket_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.worker_tickettypes_ticket_id_seq', 2, true);
+
+
+--
+-- Name: auth_group auth_group_name_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.auth_group
+    ADD CONSTRAINT auth_group_name_key UNIQUE (name);
+
+
+--
+-- Name: auth_group_permissions auth_group_permissions_group_id_permission_id_0cd325b0_uniq; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.auth_group_permissions
+    ADD CONSTRAINT auth_group_permissions_group_id_permission_id_0cd325b0_uniq UNIQUE (group_id, permission_id);
+
+
+--
+-- Name: auth_group_permissions auth_group_permissions_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.auth_group_permissions
+    ADD CONSTRAINT auth_group_permissions_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_group auth_group_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.auth_group
+    ADD CONSTRAINT auth_group_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_permission auth_permission_content_type_id_codename_01ab375a_uniq; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.auth_permission
+    ADD CONSTRAINT auth_permission_content_type_id_codename_01ab375a_uniq UNIQUE (content_type_id, codename);
+
+
+--
+-- Name: auth_permission auth_permission_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.auth_permission
+    ADD CONSTRAINT auth_permission_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_user_groups auth_user_groups_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.auth_user_groups
+    ADD CONSTRAINT auth_user_groups_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_user_groups auth_user_groups_user_id_group_id_94350c0c_uniq; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.auth_user_groups
+    ADD CONSTRAINT auth_user_groups_user_id_group_id_94350c0c_uniq UNIQUE (user_id, group_id);
+
+
+--
+-- Name: auth_user auth_user_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.auth_user
+    ADD CONSTRAINT auth_user_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_user_user_permissions auth_user_user_permissions_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.auth_user_user_permissions
+    ADD CONSTRAINT auth_user_user_permissions_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_user_user_permissions auth_user_user_permissions_user_id_permission_id_14a6b632_uniq; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.auth_user_user_permissions
+    ADD CONSTRAINT auth_user_user_permissions_user_id_permission_id_14a6b632_uniq UNIQUE (user_id, permission_id);
+
+
+--
+-- Name: auth_user auth_user_username_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.auth_user
+    ADD CONSTRAINT auth_user_username_key UNIQUE (username);
+
+
+--
+-- Name: django_admin_log django_admin_log_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.django_admin_log
+    ADD CONSTRAINT django_admin_log_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: django_content_type django_content_type_app_label_model_76bd3d3b_uniq; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.django_content_type
+    ADD CONSTRAINT django_content_type_app_label_model_76bd3d3b_uniq UNIQUE (app_label, model);
+
+
+--
+-- Name: django_content_type django_content_type_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.django_content_type
+    ADD CONSTRAINT django_content_type_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: django_migrations django_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.django_migrations
+    ADD CONSTRAINT django_migrations_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: django_session django_session_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.django_session
+    ADD CONSTRAINT django_session_pkey PRIMARY KEY (session_key);
+
+
+--
+-- Name: worker_client worker_clients_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.worker_client
+    ADD CONSTRAINT worker_clients_pkey PRIMARY KEY (client_id);
+
+
+--
+-- Name: worker_movie worker_movie_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.worker_movie
+    ADD CONSTRAINT worker_movie_pkey PRIMARY KEY (movie_id);
+
+
+--
+-- Name: worker_reservation worker_reservation_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.worker_reservation
+    ADD CONSTRAINT worker_reservation_pkey PRIMARY KEY (reservation_id);
+
+
+--
+-- Name: worker_seat worker_seats_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.worker_seat
+    ADD CONSTRAINT worker_seats_pkey PRIMARY KEY (seat_id);
+
+
+--
+-- Name: worker_showtime worker_showtime_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.worker_showtime
+    ADD CONSTRAINT worker_showtime_pkey PRIMARY KEY (showtime_id);
+
+
+--
+-- Name: worker_ticket worker_ticket_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.worker_ticket
+    ADD CONSTRAINT worker_ticket_pkey PRIMARY KEY (ticket_id);
+
+
+--
+-- Name: worker_tickettype worker_tickettypes_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.worker_tickettype
+    ADD CONSTRAINT worker_tickettypes_pkey PRIMARY KEY (ticket_id);
+
+
+--
+-- Name: auth_group_name_a6ea08ec_like; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX auth_group_name_a6ea08ec_like ON public.auth_group USING btree (name varchar_pattern_ops);
+
+
+--
+-- Name: auth_group_permissions_group_id_b120cbf9; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX auth_group_permissions_group_id_b120cbf9 ON public.auth_group_permissions USING btree (group_id);
+
+
+--
+-- Name: auth_group_permissions_permission_id_84c5c92e; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX auth_group_permissions_permission_id_84c5c92e ON public.auth_group_permissions USING btree (permission_id);
+
+
+--
+-- Name: auth_permission_content_type_id_2f476e4b; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX auth_permission_content_type_id_2f476e4b ON public.auth_permission USING btree (content_type_id);
+
+
+--
+-- Name: auth_user_groups_group_id_97559544; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX auth_user_groups_group_id_97559544 ON public.auth_user_groups USING btree (group_id);
+
+
+--
+-- Name: auth_user_groups_user_id_6a12ed8b; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX auth_user_groups_user_id_6a12ed8b ON public.auth_user_groups USING btree (user_id);
+
+
+--
+-- Name: auth_user_user_permissions_permission_id_1fbb5f2c; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX auth_user_user_permissions_permission_id_1fbb5f2c ON public.auth_user_user_permissions USING btree (permission_id);
+
+
+--
+-- Name: auth_user_user_permissions_user_id_a95ead1b; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX auth_user_user_permissions_user_id_a95ead1b ON public.auth_user_user_permissions USING btree (user_id);
+
+
+--
+-- Name: auth_user_username_6821ab7c_like; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX auth_user_username_6821ab7c_like ON public.auth_user USING btree (username varchar_pattern_ops);
+
+
+--
+-- Name: django_admin_log_content_type_id_c4bce8eb; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX django_admin_log_content_type_id_c4bce8eb ON public.django_admin_log USING btree (content_type_id);
+
+
+--
+-- Name: django_admin_log_user_id_c564eba6; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX django_admin_log_user_id_c564eba6 ON public.django_admin_log USING btree (user_id);
+
+
+--
+-- Name: django_session_expire_date_a5c62663; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX django_session_expire_date_a5c62663 ON public.django_session USING btree (expire_date);
+
+
+--
+-- Name: django_session_session_key_c0390e0f_like; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX django_session_session_key_c0390e0f_like ON public.django_session USING btree (session_key varchar_pattern_ops);
+
+
+--
+-- Name: worker_reservation_showtime_id_id_be30ac71; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX worker_reservation_showtime_id_id_be30ac71 ON public.worker_reservation USING btree (showtime_id_id);
+
+
+--
+-- Name: worker_reservation_ticket_id_id_4528fe19; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX worker_reservation_ticket_id_id_4528fe19 ON public.worker_reservation USING btree (ticket_id_id);
+
+
+--
+-- Name: worker_showtime_movie_id_id_8a75d3ee; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX worker_showtime_movie_id_id_8a75d3ee ON public.worker_showtime USING btree (movie_id_id);
+
+
+--
+-- Name: worker_ticket_client_id_id_a5c97cbe; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX worker_ticket_client_id_id_a5c97cbe ON public.worker_ticket USING btree (client_id_id);
+
+
+--
+-- Name: worker_ticket_seat_id_id_278d582e; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX worker_ticket_seat_id_id_278d582e ON public.worker_ticket USING btree (seat_id_id);
+
+
+--
+-- Name: worker_ticket_tickettype_id_id_12095a0f; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX worker_ticket_tickettype_id_id_12095a0f ON public.worker_ticket USING btree (tickettype_id_id);
+
+
+--
+-- Name: auth_group_permissions auth_group_permissio_permission_id_84c5c92e_fk_auth_perm; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.auth_group_permissions
+    ADD CONSTRAINT auth_group_permissio_permission_id_84c5c92e_fk_auth_perm FOREIGN KEY (permission_id) REFERENCES public.auth_permission(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_group_permissions auth_group_permissions_group_id_b120cbf9_fk_auth_group_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.auth_group_permissions
+    ADD CONSTRAINT auth_group_permissions_group_id_b120cbf9_fk_auth_group_id FOREIGN KEY (group_id) REFERENCES public.auth_group(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_permission auth_permission_content_type_id_2f476e4b_fk_django_co; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.auth_permission
+    ADD CONSTRAINT auth_permission_content_type_id_2f476e4b_fk_django_co FOREIGN KEY (content_type_id) REFERENCES public.django_content_type(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_user_groups auth_user_groups_group_id_97559544_fk_auth_group_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.auth_user_groups
+    ADD CONSTRAINT auth_user_groups_group_id_97559544_fk_auth_group_id FOREIGN KEY (group_id) REFERENCES public.auth_group(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_user_groups auth_user_groups_user_id_6a12ed8b_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.auth_user_groups
+    ADD CONSTRAINT auth_user_groups_user_id_6a12ed8b_fk_auth_user_id FOREIGN KEY (user_id) REFERENCES public.auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_user_user_permissions auth_user_user_permi_permission_id_1fbb5f2c_fk_auth_perm; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.auth_user_user_permissions
+    ADD CONSTRAINT auth_user_user_permi_permission_id_1fbb5f2c_fk_auth_perm FOREIGN KEY (permission_id) REFERENCES public.auth_permission(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_user_user_permissions auth_user_user_permissions_user_id_a95ead1b_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.auth_user_user_permissions
+    ADD CONSTRAINT auth_user_user_permissions_user_id_a95ead1b_fk_auth_user_id FOREIGN KEY (user_id) REFERENCES public.auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: django_admin_log django_admin_log_content_type_id_c4bce8eb_fk_django_co; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.django_admin_log
+    ADD CONSTRAINT django_admin_log_content_type_id_c4bce8eb_fk_django_co FOREIGN KEY (content_type_id) REFERENCES public.django_content_type(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: django_admin_log django_admin_log_user_id_c564eba6_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.django_admin_log
+    ADD CONSTRAINT django_admin_log_user_id_c564eba6_fk_auth_user_id FOREIGN KEY (user_id) REFERENCES public.auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: worker_reservation worker_reservation_showtime_id_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.worker_reservation
+    ADD CONSTRAINT worker_reservation_showtime_id_id_fkey FOREIGN KEY (showtime_id_id) REFERENCES public.worker_showtime(showtime_id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: worker_reservation worker_reservation_ticket_id_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.worker_reservation
+    ADD CONSTRAINT worker_reservation_ticket_id_id_fkey FOREIGN KEY (ticket_id_id) REFERENCES public.worker_ticket(ticket_id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: worker_showtime worker_showtime_movie_id_id_8a75d3ee_fk_worker_movie_movie_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.worker_showtime
+    ADD CONSTRAINT worker_showtime_movie_id_id_8a75d3ee_fk_worker_movie_movie_id FOREIGN KEY (movie_id_id) REFERENCES public.worker_movie(movie_id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: worker_ticket worker_ticket_client_id_id_a5c97cbe_fk_worker_client_client_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.worker_ticket
+    ADD CONSTRAINT worker_ticket_client_id_id_a5c97cbe_fk_worker_client_client_id FOREIGN KEY (client_id_id) REFERENCES public.worker_client(client_id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: worker_ticket worker_ticket_seat_id_id_278d582e_fk_worker_seat_seat_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.worker_ticket
+    ADD CONSTRAINT worker_ticket_seat_id_id_278d582e_fk_worker_seat_seat_id FOREIGN KEY (seat_id_id) REFERENCES public.worker_seat(seat_id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: worker_ticket worker_ticket_tickettype_id_id_12095a0f_fk_worker_ti; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.worker_ticket
+    ADD CONSTRAINT worker_ticket_tickettype_id_id_12095a0f_fk_worker_ti FOREIGN KEY (tickettype_id_id) REFERENCES public.worker_tickettype(ticket_id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- PostgreSQL database dump complete
+--
+
