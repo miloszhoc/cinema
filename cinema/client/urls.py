@@ -12,6 +12,6 @@ urlpatterns = [
     # detail views
     path('movie/<int:pk>', views.FilmMovieDetailView.as_view(), name='movie-details-client'),
     #     path('', views.MoviesListView.as_view(), name='movie-list'),
-    #     path('', views.ShowtimeListView.as_view(), name='client-showtime-list'),
-    #     path('showtime/<int:pk>', views.ShowtimeDetailView.as_view(), name='client-showtime-details'),
+    # path('', views.RepertuarListView.as_view(), name='client-showtime-list'),
+    path('showtime/<int:pk>', views.RezerwacjaNaSeansShowtimeDetailView.as_view(), name='showtime-details-client'),
 ]
