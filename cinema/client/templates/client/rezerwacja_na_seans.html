@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Rezerwacja-{{ object.movie_id.title }}</title>
+</head>
+
+<body>
+<img src="{{ object.movie_id.thumbnail }}" alt="{{ object.movie_id.title }}"/><br>
+{{ object.movie_id.title }}<br>
+<b>data seansu:</b> {{ object.start_date| date:"d.m.Y" }} r.
+{{ object.start_time| time:"H:i" }}<br>
+<b>czas trwania:</b> {{ object.movie_id.duration }}<br>
+</body>
+</html>
