@@ -19,8 +19,14 @@ class FilmMovieDetailView(DetailView):
         return context
 
 
-def index(request):
-    return render(request, 'client/index.html', context={})
+class RezerwacjaNaSeansShowtimeDetailView(DetailView):
+    template_name = 'client/rezerwacja_na_seans.html'
+    model = Showtime
+    queryset = Showtime.objects.all()
+
+
+# def index(request):
+#     return render(request, 'client/index.html', context={})
 
 
 def cennik(request):
