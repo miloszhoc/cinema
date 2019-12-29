@@ -69,6 +69,11 @@ class Ticket(models.Model):
     seat_id = models.ForeignKey(Seat, on_delete=models.PROTECT)
     showtime_id = models.ForeignKey(Showtime, on_delete=models.PROTECT)
 
+    def __str__(self):
+        return str(self.ticket_id) + '. ' + self.client_id.first_name + \
+               ' ' + self.client_id.last_name + ' - ' + self.showtime_id.movie_id.title + ' - ' \
+               + str(self.showtime_id.start_date) + ' ' + str(self.showtime_id.start_time)
+
 
 class Reservation(models.Model):
     reservation_id = models.AutoField(primary_key=True, null=False)
@@ -76,7 +81,9 @@ class Reservation(models.Model):
     showtime_id = models.ForeignKey(Showtime, on_delete=models.PROTECT)
     cost = models.DecimalField(max_digits=10, decimal_places=2, null=True)
     is_paid = models.BooleanField(default=False)
+    ticket_id = models.ManyToManyField(Ticket)
 
     def __str__(self):
-        return str(self.reservation_id) + ' - ' + str(self.client_id.first_name) + ' ' + str(
-            self.client_id.last_name) + ' - ' + str(self.showtime_id.movie_id.title)
+        return str(self.reservation_id) + '. ' + str(self.client_id.first_name) + ' ' + str(
+            self.client_id.last_name) + ' - ' + str(self.showtime_id.movie_id.title) + ' - ' \
+               + str(self.showtime_id.start_date) + ' ' + str(self.showtime_id.start_time)
