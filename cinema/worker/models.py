@@ -33,7 +33,7 @@ class Movie(models.Model):
 
 class Seat(models.Model):
     seat_id = models.AutoField(primary_key=True)
-    seat_number = models.IntegerField(null=True)
+    seat_number = models.CharField(null=True, max_length=2)
 
     def __str__(self):
         return str(self.seat_number)
@@ -55,7 +55,7 @@ class Showtime(models.Model):
 class TicketType(models.Model):
     ticket_id = models.AutoField(primary_key=True, null=False)
     type = models.CharField(max_length=40)
-    price = models.FloatField()
+    price = models.DecimalField(max_digits=10, decimal_places=2, null=True)
 
     def __str__(self):
         return self.type
@@ -73,7 +73,7 @@ class Reservation(models.Model):
     reservation_id = models.AutoField(primary_key=True, null=False)
     client_id = models.ForeignKey(Client, on_delete=models.PROTECT)
     showtime_id = models.ForeignKey(Showtime, on_delete=models.PROTECT)
-    cost = models.FloatField(null=True)
+    cost = models.DecimalField(max_digits=10, decimal_places=2, null=True)
     is_paid = models.BooleanField(default=False)
 
     def __str__(self):
