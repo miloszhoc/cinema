@@ -33,10 +33,11 @@ class Movie(models.Model):
 
 class Seat(models.Model):
     seat_id = models.AutoField(primary_key=True)
-    seat_number = models.CharField(null=True, max_length=2)
+    seat_number = models.IntegerField(null=True)
+    row_number = models.CharField(null=True, max_length=1)
 
     def __str__(self):
-        return str(self.seat_number)
+        return str(self.seat_number) + ' ' + str(self.row_number)
 
 
 class Showtime(models.Model):
