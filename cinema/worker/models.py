@@ -1,5 +1,6 @@
 from django.db import models
 from django.urls import reverse
+import datetime
 
 
 class Client(models.Model):
@@ -43,14 +44,20 @@ class Seat(models.Model):
 class Showtime(models.Model):
     showtime_id = models.AutoField(primary_key=True, null=False)
     movie_id = models.ForeignKey(Movie, on_delete=models.PROTECT)
-    start_date = models.DateField(null=True)
-    start_time = models.TimeField(null=True)
+    start_date = models.DateTimeField(null=True)
     show_break = models.DurationField(default=0)
-    end_date = models.DateField(null=True)
-    end_time = models.TimeField(null=True)
+    end_date = models.DateTimeField(null=True, editable=False)
+
+    # nadpisana metoda zapisu, ktora na podstawie trwania filmu okresla czas jego zakonczenia + przerwa po seansie
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        self.end_date = self.start_date + datetime.timedelta(
+            seconds=self.movie_id.duration.seconds) + datetime.timedelta(
+            seconds=self.show_break.seconds)
+        super(Showtime, self).save()
 
     def __str__(self):
-        return str(self.movie_id.title) + ' - ' + str(self.start_date) + ' ' + str(self.start_time)
+        return str(self.movie_id.title) + ' - ' + str(self.start_date)
 
 
 class TicketType(models.Model):
@@ -67,18 +74,18 @@ class Ticket(models.Model):
     client_id = models.ForeignKey(Client, on_delete=models.PROTECT)
     tickettype_id = models.ForeignKey(TicketType, on_delete=models.PROTECT)
     seat_id = models.ForeignKey(Seat, on_delete=models.PROTECT)
-    showtime_id = models.ForeignKey(Showtime, on_delete=models.PROTECT)
+    showtime_id = models.ForeignKey(Showtime, on_delete=models.CASCADE)
 
     def __str__(self):
         return str(self.ticket_id) + '. ' + self.client_id.first_name + \
                ' ' + self.client_id.last_name + ' - ' + self.showtime_id.movie_id.title + ' - ' \
-               + str(self.showtime_id.start_date) + ' ' + str(self.showtime_id.start_time)
+               + str(self.showtime_id.start_date)
 
 
 class Reservation(models.Model):
     reservation_id = models.AutoField(primary_key=True, null=False)
     client_id = models.ForeignKey(Client, on_delete=models.PROTECT)
-    showtime_id = models.ForeignKey(Showtime, on_delete=models.PROTECT)
+    showtime_id = models.ForeignKey(Showtime, on_delete=models.CASCADE)
     cost = models.DecimalField(max_digits=10, decimal_places=2, null=True)
     is_paid = models.BooleanField(default=False)
     ticket_id = models.ManyToManyField(Ticket)
@@ -86,4 +93,4 @@ class Reservation(models.Model):
     def __str__(self):
         return str(self.reservation_id) + '. ' + str(self.client_id.first_name) + ' ' + str(
             self.client_id.last_name) + ' - ' + str(self.showtime_id.movie_id.title) + ' - ' \
-               + str(self.showtime_id.start_date) + ' ' + str(self.showtime_id.start_time)
+               + str(self.showtime_id.start_date)
