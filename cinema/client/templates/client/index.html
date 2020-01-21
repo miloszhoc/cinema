@@ -18,13 +18,13 @@
 </div>
 
 <header>
-    <h1 class="logo-text">KINO OBJAZDOWE</h1>
+    <h1 class="logo-text">MOVIE CITY</h1>
     <nav>
         <ul class="menu">
 
             <li><a href="{% url 'about-client' %}">O kinie</a></li>
             <li><a href="{% url 'price-list-client' %}">Cennik</a></li>
-            <li><a href="{% url 'repertoire-client' %}">Repertuar</a></li>
+            <li><a href="{% url 'repertoire-list-client' %}">Repertuar</a></li>
             <li><a href="{% url 'reservation-client' %}">Rezerwacja miejsc</a></li>
             <li><a href="{% url 'contact-client' %}">Kontakt</a></li>
 
@@ -46,7 +46,6 @@
     <h2>Repertuar na najbliższe dni!</h2>
     <br>
     <div class="row">
-
         <div class="col-md-4">
             {% for i in object_list %}
                 <div class="row">

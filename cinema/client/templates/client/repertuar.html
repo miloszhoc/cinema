@@ -4,16 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
     <title>Repertuar</title>
 </head>
-<body>
-<!--    <h1>TU NA RAZIE JEST ŚCIERNISKO</h1>-->
-{#tytul: {{ object.movie_id.movie_title }} <br><br>#}
-{#rezyser: {{ object.movie_id.movie_director }} <br><br>#}
-{#data wydania: {{ object.movie_id.release_date }} <br><br>#}
-{#opis: {{ object.movie_id.description }} <br><br>#}
-{#rozpoczęcie seansu: {{ object.start_time }} <br><br>#}
-{#zakończenie seansu: {{ object.end_time }} <br><br>#}
-{#czas trwania: {{ object.duration }}<br><br>#}
+<br>
+{#{% for object in object_list %}#}
+{#    {{ object.movie_id.title }} -#}
+{#    <a href="{% url 'showtime-details-client' object.showtime_id %}">#}
+{#        {{ object.start_date| date:"d.m.Y H:i" }}#}
+{#        <br></a><br>#}
+    {#    {{ object.end_date| date:"d.m.Y"  }}#}
+    {#    {{ object.end_time| time:"H:i"  }}<br>#}
+{#{% endfor %}#}
+
+{#{% for m in movies_dates %}#}
+{#    {{ m }}#}
+{#{% endfor %}#}
+{#{{ movies_dates.4 }}#}
 </body>
 </html>

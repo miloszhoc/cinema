@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>{{ object.title }}</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
 </head>
 <body>
 <img src="{{ object.thumbnail }}" alt="{{ object.title }}"/><br>
@@ -20,8 +21,7 @@ Recenzje, oraz opinie o filmie znajdują się <a href="{{ object.link }}"><b>tut
 Najbliższe seanse:<br>
 {% if showtime %}
     {% for x in showtime %}
-        {{ x.start_date| date:"d.m.Y" }} r.
-        {{ x.start_time| time:"H:i" }}
+        {{ x.start_date| date:"d.m.Y H:i" }}
         <a href="{% url 'showtime-details-client' x.showtime_id %}">Zarezerwuj miejsce</a><br>
     {% endfor %}
 {% else %}

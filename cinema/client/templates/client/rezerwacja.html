@@ -1,12 +1,29 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="{% static 'client/style.css' %}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+
     <title>Rezerwacja</title>
+
 </head>
 <body>
 <h1>TU NA RAZIE JEST ŚCIERNISKO</h1>
+    <nav>
+        <ul class="menu">
+
+            <li><a href="{% url 'about-client' %}">O kinie</a></li>
+            <li><a href="{% url 'price-list-client' %}">Cennik</a></li>
+            <li><a href="{% url 'repertoire-list-client' %}">Repertuar</a></li>
+            <li><a href="{% url 'reservation-client' %}">Rezerwacja miejsc</a></li>
+            <li><a href="{% url 'contact-client' %}">Kontakt</a></li>
+
+        </ul>
+    </nav>
 </body>
+
 </html>

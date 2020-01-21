@@ -8,11 +8,27 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Cennik</title>
     <link rel="stylesheet" href="{% static 'client/style.css' %}">
-
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
 </head>
 
 <body>
+<div class="container">
+    <img src="../../static/client/images/logo.png" class="logo">
+</div>
 <h1>CENNIK BILETÓW</h1>
+<nav>
+        <ul class="menu">
+
+            <li><a href="{% url 'about-client' %}">O kinie</a></li>
+            <li><a href="{% url 'price-list-client' %}">Cennik</a></li>
+            <li><a href="{% url 'repertoire-list-client' %}">Repertuar</a></li>
+            <li><a href="{% url 'reservation-client' %}">Rezerwacja miejsc</a></li>
+            <li><a href="{% url 'contact-client' %}">Kontakt</a></li>
+
+        </ul>
+    </nav>
+<br>
+<br>
 <table class="table">
 
     <tbody>
@@ -87,7 +103,6 @@
 
         h1 {
             text-align: center;
-            margin-bottom: 75px;
             color: grey;
         }
 
