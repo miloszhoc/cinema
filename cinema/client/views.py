@@ -10,8 +10,17 @@ class IndexMovieListView(ListView):
 
     # wyswietla tylko filmy, ktorych seans zaczyna sie w przyszlosci
     # ukrywa filmy, ktore nie maja seansu, oraz te, ktorych czas rozpoczecia juz minal
+    # eliminuje duplikaty w przypadku dodania wiecej niz jednego filmu
     queryset = Movie.objects.filter(movie_id__in=Showtime.objects.all(),
-                                    showtime__start_date__gte=datetime.datetime.now())
+                                    showtime__start_date__gt=datetime.datetime.now()).distinct()
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(IndexMovieListView, self).get_context_data(**kwargs)
+        # wyswietla filmy ktore sa grane dzisiaj,
+        # oraz data rozpoczecia jest w przyszlosci - czyli od obecnej godziny do północy
+        context['today'] = Movie.objects.filter(showtime__start_date__day=datetime.date.today().day,
+                                                showtime__start_date__gte=datetime.datetime.now()).distinct()
+        return context
 
 
 class FilmMovieDetailView(DetailView):

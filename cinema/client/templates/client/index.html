@@ -43,6 +43,25 @@
 
 
 <div class="container series">
+
+    {% if today|length > 0 %}
+        <h2>Dzisiaj gramy:</h2>
+        <div class="row">
+        <div class="col-md-4">
+            <br>
+            {% for d in today %}
+                <div class="row">
+                    <div class="col-6"><a href="{% url 'movie-details-client' d.movie_id %}"
+                                          title="Zobacz szczególy filmu oraz zwiastun!"> <img src={{ d.thumbnail }}
+                                                                                                      width="120"
+                                                                                              height="120"></a>
+                    </div>
+                    <br>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
     <h2>Repertuar na najbliższe dni!</h2>
     <br>
     <div class="row">
@@ -60,7 +79,7 @@
         </div>
 
     </div>
-</div>
+    </div>
 
 
 </body>
