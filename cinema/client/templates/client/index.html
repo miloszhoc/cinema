@@ -9,8 +9,6 @@
     <link rel="stylesheet" href="{% static 'client/style.css' %}">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
 
-    <!-- MIŁOSZU, CZEGO TU SZUKASZ? BACKEND SAM SIĘ NIE ZROBI PRZECIEŻ -->
-
 </head>
 <body>
 <div class="container">
@@ -44,6 +42,17 @@
 
 <div class="container series">
 
+    <h2>Najbliższe wydarzenia:</h2><br>
+    {% if events %}
+        {% for event in events %}
+            {{ event }}<br>
+            {{ event.description }}
+            {{ event }}
+        {% endfor %}
+    {% else %}
+        <h3>Brak wydarzeń</h3>
+    {% endif %}
+
     {% if today|length > 0 %}
         <h2>Dzisiaj gramy:</h2>
         <div class="row">
@@ -62,11 +71,11 @@
         </div>
     {% endif %}
 
-    <h2>Repertuar na najbliższe dni!</h2>
+    <h2>W najbliższe dni gramy:</h2>
     <br>
     <div class="row">
         <div class="col-md-4">
-            {% for i in object_list %}
+            {% for i in future %}
                 <div class="row">
                     <div class="col-6"><a href="{% url 'movie-details-client' i.movie_id %}"
                                           title="Zobacz szczególy filmu oraz zwiastun!"> <img src={{ i.thumbnail }}

@@ -7,19 +7,17 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
     <title>Repertuar</title>
 </head>
-<br>
-{#{% for object in object_list %}#}
-{#    {{ object.movie_id.title }} -#}
-{#    <a href="{% url 'showtime-details-client' object.showtime_id %}">#}
-{#        {{ object.start_date| date:"d.m.Y H:i" }}#}
-{#        <br></a><br>#}
-    {#    {{ object.end_date| date:"d.m.Y"  }}#}
-    {#    {{ object.end_time| time:"H:i"  }}<br>#}
-{#{% endfor %}#}
 
-{#{% for m in movies_dates %}#}
-{#    {{ m }}#}
-{#{% endfor %}#}
-{#{{ movies_dates.4 }}#}
+<br><br>
+{% for date in dates %}
+    {% for s_date in showtime_dates %}
+        {% if date.day == s_date.start_date.day and date.month == s_date.start_date.month %}
+            {{ date| date:"d.m.Y" }}:
+            <a href="{% url 'showtime-details-client'  s_date.showtime_id %}">{{ s_date.movie_id.title }}</a> <br>
+        {% endif %}
+    {% endfor %}
+{% endfor %}
+
+
 </body>
 </html>

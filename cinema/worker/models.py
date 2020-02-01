@@ -94,3 +94,20 @@ class Reservation(models.Model):
         return str(self.reservation_id) + '. ' + str(self.client_id.first_name) + ' ' + str(
             self.client_id.last_name) + ' - ' + str(self.showtime_id.movie_id.title) + ' - ' \
                + str(self.showtime_id.start_date)
+
+
+class Event(models.Model):
+    # event_id = models.AutoField(primary_key=True, null=False)
+    showtime_id = models.ForeignKey(Showtime, on_delete=models.PROTECT, null=True, blank=True)
+    title = models.CharField(null=False, max_length=255)
+    description = models.TextField(null=True)
+    date = models.DateTimeField(null=True)  # todo data wydarzenia = dacie i godzinie startu filmu
+
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        if self.showtime_id:
+            self.date = self.showtime_id.start_date
+        super(Event, self).save()
+
+    def __str__(self):
+        return self.title
