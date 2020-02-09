@@ -22,7 +22,7 @@ class IndexMovieListView(ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(IndexMovieListView, self).get_context_data(**kwargs)
 
-        context['events'] = Event.objects.all()  # todo dodac sortowanie wg daty
+        # context['events'] = Event.objects.all()  # todo dodac sortowanie wg daty
         # wyswietla filmy ktore sa grane dzisiaj,
         # oraz data rozpoczecia jest w przyszlosci - czyli od obecnej godziny do północy
         context['today'] = Movie.objects.filter(showtime__start_date__day=timezone.now().day,
