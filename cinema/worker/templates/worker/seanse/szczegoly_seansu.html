@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Szczegóły seansu</title>
+</head>
+<body>
+<img src="{{ showtime.movie_id.thumbnail }}" alt="{{ showtime.movie_id.title }}"/><br>
+{{ showtime.movie_id.title }}<br>
+<b>data seansu:</b> {{ showtime.start_date| date:"d.m.Y" }} r.
+{{ showtime.start_time| time:"H:i" }}<br>
+<b>czas trwania:</b> {{ showtime.movie_id.duration }}<br>
+<hr>
+<h3>Rezerwacje na seans:</h3>
+<p>Imię | Nazwisko | cena | czy opłacono</p>
+{% for reservation in reservations %}
+    {{ forloop.counter }}. {{ reservation.client_id.first_name }} {{ reservation.client_id.last_name }},
+    {{ reservation.client_id.email }}, {{ reservation.cost }}, {{ reservation.is_paid }}<br>
+{% endfor %}
+</body>
+</html>

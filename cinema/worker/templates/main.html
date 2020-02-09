@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Witaj</title>
+</head>
+<body>
+{% if not user.is_authenticated %}
+    <a href="{% url 'login' %}">Zaloguj</a><br>
+{% endif %}
+</body>
+</html>

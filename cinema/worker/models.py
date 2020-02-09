@@ -24,9 +24,14 @@ class Movie(models.Model):
     release_date = models.IntegerField()
     duration = models.DurationField(null=False)
     description = models.TextField(null=True)
-    link = models.CharField(max_length=255, null=True)
+    link = models.URLField(max_length=255, null=True)
     thumbnail = models.CharField(max_length=255, null=True)
     trailer_youtube_id = models.CharField(max_length=255, null=True)
+
+    # adres pod który zostaniemy przekierowani po dodaniu filmu do bazy (klasa MovieDeleteView)
+    # w tym przypadku przenosi nas do szczegolow dodanego filmu
+    def get_absolute_url(self):
+        return reverse('movie-details-worker', kwargs={'pk': self.movie_id})
 
     def __str__(self):
         return str(self.movie_id) + '. ' + self.title
@@ -95,19 +100,19 @@ class Reservation(models.Model):
             self.client_id.last_name) + ' - ' + str(self.showtime_id.movie_id.title) + ' - ' \
                + str(self.showtime_id.start_date)
 
-
-class Event(models.Model):
-    # event_id = models.AutoField(primary_key=True, null=False)
-    showtime_id = models.ForeignKey(Showtime, on_delete=models.PROTECT, null=True, blank=True)
-    title = models.CharField(null=False, max_length=255)
-    description = models.TextField(null=True)
-    date = models.DateTimeField(null=True)  # todo data wydarzenia = dacie i godzinie startu filmu
-
-    def save(self, force_insert=False, force_update=False, using=None,
-             update_fields=None):
-        if self.showtime_id:
-            self.date = self.showtime_id.start_date
-        super(Event, self).save()
-
-    def __str__(self):
-        return self.title
+# class Event(models.Model):
+#     # event_id = models.AutoField(primary_key=True, null=False)
+#     showtime_id = models.ForeignKey(Showtime, on_delete=models.PROTECT, null=True, blank=True)
+#     title = models.CharField(null=False, max_length=255)
+#     description = models.TextField(null=True)
+#     date = models.DateTimeField(null=True)  # todo data wydarzenia = dacie i godzinie startu filmu
+#
+#     # jesli seans jest powiazany z wydarzeniem, to data rozpoczecia wydarzenia jest datą rozpoczecia seansu
+#     def save(self, force_insert=False, force_update=False, using=None,
+#              update_fields=None):
+#         if self.showtime_id:
+#             self.date = self.showtime_id.start_date
+#         super(Event, self).save()
+#
+#     def __str__(self):
+#         return self.title

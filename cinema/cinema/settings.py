@@ -119,3 +119,7 @@ USE_TZ = False
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+LOGIN_REDIRECT_URL = 'panel'  # przekieowanie po zalogowaniu
+LOGIN_URL = 'main'  # kiedy chemy sie dostac do sciezki niedostepnej bez logowania to przekierowuje na ten adres url
+LOGOUT_REDIRECT_URL = 'main'  # przekierowanie po wykogowaniu

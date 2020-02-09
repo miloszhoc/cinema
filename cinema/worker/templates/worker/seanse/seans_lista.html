@@ -1,0 +1,8 @@
+{% extends 'worker/base.html' %}
+{% block content %}
+    <a href="{% url 'showtime-create-worker' %}">Dodaj seans</a><br>
+    {% for showtime in showtime_list %}
+        <a href="{% url 'showtime-details-worker' showtime.showtime_id %}">{{ forloop.counter }}. {{ showtime.movie_id.title }},
+            {{ showtime.start_date| date:"d.m.Y H:i" }}, {{ showtime.end_date| date:"d.m.Y H:i" }}</a><br>
+    {% endfor %}
+{% endblock %}

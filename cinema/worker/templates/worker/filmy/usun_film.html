@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Usuwanie filmu</title>
+</head>
+<body>
+<form action="." method="post">{% csrf_token %}
+    <h1>Czy chcesz usunąć film {{ movie.title }}?</h1>
+    <p><input type="submit" value="Yes" /> <a href="{% url 'movie-details-worker' movie.movie_id %}">Nie</a></p>
+
+</form>
+</body>
+</html>
