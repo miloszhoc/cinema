@@ -50,6 +50,7 @@ class ShowtimeDetailView(LoginRequiredMixin, DetailView):
     model = models.Showtime
     template_name = 'worker/seanse/szczegoly_seansu.html'
 
+    # w templatce polazuje tylko rezerwacje na konkretny seans + bilety, ktore byly zakupione w ramach rezerwacji
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['reservations'] = models.Reservation.objects.filter(showtime_id=self.get_object())

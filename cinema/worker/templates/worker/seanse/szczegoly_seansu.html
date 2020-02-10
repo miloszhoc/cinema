@@ -1,7 +1,9 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="{% static 'worker/style.css' %}">
     <title>Szczegóły seansu</title>
 </head>
 <body>
@@ -12,10 +14,21 @@
 <b>czas trwania:</b> {{ showtime.movie_id.duration }}<br>
 <hr>
 <h3>Rezerwacje na seans:</h3>
-<p>Imię | Nazwisko | cena | czy opłacono</p>
+<p>Imię, Nazwisko | email | cena | czy opłacono</p>
 {% for reservation in reservations %}
     {{ forloop.counter }}. {{ reservation.client_id.first_name }} {{ reservation.client_id.last_name }},
-    {{ reservation.client_id.email }}, {{ reservation.cost }}, {{ reservation.is_paid }}<br>
+    {{ reservation.client_id.email }}, {{ reservation.cost }}, {{ reservation.is_paid }} <br>
+    <sup id="details{{ forloop.counter }}" onclick="show_hide({{ forloop.counter }})">Pokaż szczegóły</sup><br>
+    <div id="tickets{{ forloop.counter }}" style="display: none">
+        {% for ticket in tickets %}
+            {% if reservation.client_id == ticket.client_id %}
+                Miejsce: {{ ticket.seat_id.seat_number }}{{ ticket.seat_id.row_number }} -
+                {{ ticket.tickettype_id.type }} {{ ticket.tickettype_id.price }}<br>
+            {% endif %}
+        {% endfor %}
+    </div>
+    <br><br>
 {% endfor %}
+<script src="{% static 'worker/js/seanse/ukryj_pokaz_bilety.js' %}"></script>
 </body>
 </html>
