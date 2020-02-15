@@ -2,11 +2,12 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.shortcuts import redirect
 from . import models
-from .forms import MovieModelForm, ShowtimeModelForm
+from .forms import MovieModelForm, ShowtimeModelForm, ReservationModelForm
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.shortcuts import get_object_or_404
 from django.urls import reverse, reverse_lazy
+from django.forms.formsets import formset_factory
 
 # https://stackoverflow.com/questions/10275164/django-generic-views-using-decorator-login-required
 # Jeśli klasy listview, detailview itd rozszerzają tę klasę, to wejście pod adres jest niemożliwe bez logowania
@@ -17,7 +18,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 # to przekierowuje do templatki, która jest podana w settings.py jako LOGIN_URL
 @login_required()
 def panel(request):
-    return render(request, 'panel.html', context={})
+    return render(request, 'worker/panel.html', context={})
 
 
 # jesli zalogowany user wejdzie na strone logowania, to prekierowuje do panelu,
@@ -39,10 +40,20 @@ class ReservationListView(LoginRequiredMixin, ListView):
 #         context = super().get_context_data(object_list=object_list, **kwargs)
 #         return context
 
+class ReservationCreateView(LoginRequiredMixin, CreateView):
+    model = models.Reservation
+    template_name = 'worker/rezerwacje/dodaj_rezerwacje.html'
+    form_class = ReservationModelForm
+
+    def form_valid(self, form):
+        print(form.cleaned_data)
+        return super().form_valid(form)
+
+
 class ShowtimeListView(LoginRequiredMixin, ListView):
     model = models.Showtime
     paginate_by = 10
-    ordering = ['showtime_id']
+    ordering = ['-showtime_id']
     template_name = 'worker/seanse/seans_lista.html'
 
 
@@ -66,6 +77,27 @@ class ShowtimeCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         print(form.cleaned_data)
         return super().form_valid(form)
+
+
+class ShowtimeUpdateView(LoginRequiredMixin, UpdateView):
+    model = models.Showtime
+    template_name = 'worker/seanse/dodaj_seans.html'
+    form_class = ShowtimeModelForm
+
+    # dane obecnego obiektu przeniesione do formularza
+    def get_object(self, queryset=None):
+        id_ = self.kwargs.get('pk')
+        return get_object_or_404(models.Showtime, showtime_id=id_)
+
+    def form_valid(self, form):
+        print(form.cleaned_data)
+        return super().form_valid(form)
+
+
+class ShowtimeDeleteView(LoginRequiredMixin, DeleteView):
+    model = models.Showtime
+    template_name = 'worker/seanse/usun_seans.html'
+    success_url = reverse_lazy('showtime-list-worker')
 
 
 class MovieListView(LoginRequiredMixin, ListView):

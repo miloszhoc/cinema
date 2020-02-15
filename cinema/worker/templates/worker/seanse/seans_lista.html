@@ -1,5 +1,5 @@
-{% extends 'worker/base.html' %}
-{% block content %}
+{% extends 'worker/base_pagination.html' %}
+{% block content_pagination %}
     <a href="{% url 'showtime-create-worker' %}">Dodaj seans</a><br>
     {% for showtime in showtime_list %}
         <a href="{% url 'showtime-details-worker' showtime.showtime_id %}">{{ forloop.counter }}. {{ showtime.movie_id.title }},

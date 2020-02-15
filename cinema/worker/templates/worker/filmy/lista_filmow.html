@@ -1,5 +1,5 @@
-{% extends 'worker/base.html' %}
-{% block content %}
+{% extends 'worker/base_pagination.html' %}
+{% block content_pagination %}
     <a href="{% url 'movie-create-worker' %}">Dodaj film</a>
     <h3>Lista filmów:</h3>
     {% for movie in movie_list %}

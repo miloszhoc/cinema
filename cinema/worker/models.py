@@ -28,7 +28,7 @@ class Movie(models.Model):
     thumbnail = models.CharField(max_length=255, null=True)
     trailer_youtube_id = models.CharField(max_length=255, null=True)
 
-    # adres pod który zostaniemy przekierowani po dodaniu filmu do bazy (klasa MovieDeleteView)
+    # adres pod który zostaniemy przekierowani po dodaniu filmu do bazy (klasa MovieCreateView)
     # w tym przypadku przenosi nas do szczegolow dodanego filmu
     def get_absolute_url(self):
         return reverse('movie-details-worker', kwargs={'pk': self.movie_id})
@@ -48,7 +48,7 @@ class Seat(models.Model):
 
 class Showtime(models.Model):
     showtime_id = models.AutoField(primary_key=True, null=False)
-    movie_id = models.ForeignKey(Movie, on_delete=models.PROTECT)
+    movie_id = models.ForeignKey(Movie, on_delete=models.CASCADE)
     start_date = models.DateTimeField(null=True)
     show_break = models.DurationField(default=0)
     end_date = models.DateTimeField(null=True, editable=False)
@@ -60,6 +60,11 @@ class Showtime(models.Model):
             seconds=self.movie_id.duration.seconds) + datetime.timedelta(
             seconds=self.show_break.seconds)
         super(Showtime, self).save()
+
+    # adres pod który zostaniemy przekierowani po dodaniu seansu do bazy (klasa ShowtimeCreateView)
+    # w tym przypadku przenosi nas do szczegolow dodanego seansu
+    def get_absolute_url(self):
+        return reverse('showtime-details-worker', kwargs={'pk': self.showtime_id})
 
     def __str__(self):
         return str(self.movie_id.title) + ' - ' + str(self.start_date)

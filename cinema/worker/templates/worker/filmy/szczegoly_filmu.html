@@ -1,21 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>{{ movie.title }}</title>
-</head>
-<body>
-<a href="{% url 'movie-update-worker' movie.movie_id %}">Aktualizuj informacje o filmie</a>
-<a href="{% url 'movie-delete-worker' movie.movie_id %}">Usuń film</a>
-<br><br>
-<img src="{{ movie.thumbnail }}" alt="{{ object.title }}"/><br>
-<b>tytuł:</b> {{ object.title }}<br><br>
-<b>reżyser:</b> {{ object.director }}<br>
-<b>data premiery:</b> {{ object.release_date }}<br>
-<b>czas trwania:</b> {{ object.duration }}<br><br>
-{{ object.description }}<br><br>
-<iframe width="560" height="315" src="https://www.youtube.com/embed/{{ object.trailer_youtube_id }}" frameborder="0"
-        allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-
-</body>
-</html>
+{% extends 'worker/base.html' %}
+{% block content %}
+    <a href="{% url 'movie-update-worker' movie.movie_id %}">Aktualizuj informacje o filmie</a>
+    <a href="{% url 'movie-delete-worker' movie.movie_id %}">Usuń film</a>
+    <br><br>
+    <img src="{{ movie.thumbnail }}" alt="{{ object.title }}"/><br>
+    <b>tytuł:</b> {{ object.title }}<br><br>
+    <b>reżyser:</b> {{ object.director }}<br>
+    <b>data premiery:</b> {{ object.release_date }}<br>
+    <b>czas trwania:</b> {{ object.duration }}<br><br>
+    {{ object.description }}<br><br>
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/{{ object.trailer_youtube_id }}" frameborder="0"
+            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+{% endblock %}

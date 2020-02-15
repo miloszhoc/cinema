@@ -46,11 +46,11 @@ class FilmMovieDetailView(DetailView):
     template_name = 'client/film.html'
     model = Movie
 
-    # wyswietla tylko filmy, ktorych seans zaczyna sie w przyszlosci
+    # wyswietla tylko filmy, ktorych seans zaczyna sie w przyszlosci, sortuje po dacie rozpoczecia
     def get_context_data(self, **kwargs):
         context = super(FilmMovieDetailView, self).get_context_data(**kwargs)
         context['showtime'] = Showtime.objects.filter(movie_id=self.get_object(),
-                                                      start_date__gte=timezone.now())
+                                                      start_date__gte=timezone.now()).order_by('start_date')
         return context
 
 

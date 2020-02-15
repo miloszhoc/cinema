@@ -1,0 +1,8 @@
+{% extends 'worker/base.html' %}
+{% block content %}
+    <form action="." method="post">{% csrf_token %}
+        <h1>Czy chcesz usunąć seans {{ showtime.movie_id.title }} {{ showtime.start_date }}?</h1>
+        <p><input type="submit" value="Yes"/> <a href="{% url 'showtime-details-worker' showtime.showtime_id %}">Nie</a>
+        </p>
+    </form>
+{% endblock %}

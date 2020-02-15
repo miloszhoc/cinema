@@ -1,20 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Reservations</title>
-</head>
-<body>
-{% for reservation in object_list %}
-    reservation_id: {{ reservation.reservation_id }}<br>
-    client: {{ reservation.client_id.first_name }} {{ reservation.client_id.last_name }}<br>
-    showtime: {{ reservation.showtime_id.movie_id.title }} {{ reservation.showtime_id.start_date }}<br>
-    {% for ticket in reservation.ticket_id.all %}
-        ticket: {{ ticket.tickettype_id.type }} {{ ticket.tickettype_id.price }}<br>
-    {% endfor %}
+{% extends 'worker/base_pagination.html' %}
+{% block content %}
+    {% for reservation in object_list %}
+        reservation_id: {{ reservation.reservation_id }}<br>
+        client: {{ reservation.client_id.first_name }} {{ reservation.client_id.last_name }}<br>
+        showtime: {{ reservation.showtime_id.movie_id.title }} {{ reservation.showtime_id.start_date }}<br>
+        {% for ticket in reservation.ticket_id.all %}
+            ticket: {{ ticket.tickettype_id.type }} {{ ticket.tickettype_id.price }}<br>
+        {% endfor %}
 
-    Usuń rezerwację:
-    <br><br>
-{% endfor %}
-</body>
-</html>
+        Usuń rezerwację:
+        <br><br>
+    {% endfor %}
+{% endblock %}

@@ -1,0 +1,9 @@
+{% extends 'worker/base.html' %}
+{% block content %}
+    <br><br>
+    <a href="{% url 'reservation-worker' %}">Rezerwacje</a><br>
+    <a href="{% url 'showtime-list-worker' %}">Seanse</a><br>
+    <a href="{% url 'movie-list-worker' %}">Filmy</a><br>
+    Typy biletów<br>
+    Opłacanie rezerwacji<br>
+{% endblock %}

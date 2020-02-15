@@ -1,11 +1,8 @@
 {% extends 'worker/base.html' %}
-{% load static %}
 {% block content %}
     <form action="." method="post">{% csrf_token %}
         {{ form.as_p }}
         <input type="reset" value="Wyczyść"/>
         <input type="submit" value="Zapisz"/>
     </form>
-    <script type="text/javascript" src="{% static 'worker/js/date_time_widget.js' %}">
-    </script>
 {% endblock %}
