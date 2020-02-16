@@ -49,3 +49,12 @@ class ReservationModelForm(ModelForm):
                   'is_paid': 'Czy zapłacono'}
 
         fields = ['showtime_id', 'client_id', 'cost', 'is_paid', 'ticket_id']
+
+
+class TicketTypeModelForm(ModelForm):
+    class Meta:
+        model = TicketType
+        labels = {'type': 'Typ biletu',
+                  'price': 'Cena'}
+
+        fields = ['ticket_id', 'type', 'price']

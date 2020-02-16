@@ -2,7 +2,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.shortcuts import redirect
 from . import models
-from .forms import MovieModelForm, ShowtimeModelForm, ReservationModelForm
+from .forms import MovieModelForm, ShowtimeModelForm, ReservationModelForm, TicketTypeModelForm
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.shortcuts import get_object_or_404
@@ -30,15 +30,56 @@ def main(request):
         return render(request, 'main.html', context={})
 
 
+# typy biletów
+class TicketTypeListView(LoginRequiredMixin, ListView):
+    model = models.TicketType
+    template_name = 'worker/typy_biletow/typy_lista.html'
+    paginate_by = 10
+    # sortowanie asc po id, czyli wg kolejnosci dodania
+    ordering = ['ticket_id']
+
+
+class TicketTypeCreateView(LoginRequiredMixin, CreateView):
+    model = models.TicketType
+    template_name = 'worker/typy_biletow/dodaj_typ.html'
+    form_class = TicketTypeModelForm
+
+    def form_valid(self, form):
+        print(form.cleaned_data)
+        return super().form_valid(form)
+
+
+class TicketTypeDetailView(LoginRequiredMixin, DetailView):
+    model = models.TicketType
+    template_name = 'worker/typy_biletow/szczegoly_typu.html'
+
+
+class TicketTypeUpdateView(LoginRequiredMixin, UpdateView):
+    model = models.TicketType
+    template_name = 'worker/typy_biletow/dodaj_typ.html'
+    form_class = TicketTypeModelForm
+
+    # dane obecnego obiektu przeniesione do formularza
+    def get_object(self, queryset=None):
+        id_ = self.kwargs.get('pk')
+        return get_object_or_404(models.TicketType, ticket_id=id_)
+
+    def form_valid(self, form):
+        print(form.cleaned_data)
+        return super().form_valid(form)
+
+
+class TicketTypeDeleteView(LoginRequiredMixin, DeleteView):
+    model = models.TicketType
+    template_name = 'worker/typy_biletow/usun_typ.html'
+    success_url = reverse_lazy('tickettype-list-worker')
+
+
+# rezerwacje
 class ReservationListView(LoginRequiredMixin, ListView):
     model = models.Reservation
     template_name = 'worker/rezerwacje/rezerwacje_lista.html'
 
-
-#
-#     def get_context_data(self, *, object_list=None, **kwargs):
-#         context = super().get_context_data(object_list=object_list, **kwargs)
-#         return context
 
 class ReservationCreateView(LoginRequiredMixin, CreateView):
     model = models.Reservation
@@ -50,6 +91,7 @@ class ReservationCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
+# seanse
 class ShowtimeListView(LoginRequiredMixin, ListView):
     model = models.Showtime
     paginate_by = 10
@@ -100,6 +142,7 @@ class ShowtimeDeleteView(LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy('showtime-list-worker')
 
 
+# filmy
 class MovieListView(LoginRequiredMixin, ListView):
     model = models.Movie
     template_name = 'worker/filmy/lista_filmow.html'

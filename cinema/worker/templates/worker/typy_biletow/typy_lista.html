@@ -1,0 +1,9 @@
+{% extends 'worker/base_pagination.html' %}
+{% block content_pagination %}
+    <a href="{% url 'tickettype-create-worker' %}">Dodaj typ biletu</a><br><br>
+    {% for ticket in tickettype_list %}
+        <a href="{% url 'tickettype-details-worker' ticket.ticket_id %}">{{ forloop.counter }}. {{ ticket.type }},
+            {{ ticket.price }}</a>
+        <br>
+    {% endfor %}
+{% endblock %}

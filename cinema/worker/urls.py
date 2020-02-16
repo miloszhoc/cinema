@@ -11,6 +11,13 @@ urlpatterns = [
     path('panel/', views.panel, name='panel'),
     path('rezerwacje/', views.ReservationListView.as_view(), name='reservation-worker'),
 
+    # typy biletów
+    path('typy-biletow/', views.TicketTypeListView.as_view(), name='tickettype-list-worker'),
+    path('szczegoly-typu/<int:pk>', views.TicketTypeDetailView.as_view(), name='tickettype-details-worker'),
+    path('dodaj-typ/', views.TicketTypeCreateView.as_view(), name='tickettype-create-worker'),
+    path('<int:pk>/aktualizuj-typ/', views.TicketTypeUpdateView.as_view(), name='tickettype-update-worker'),
+    path('<int:pk>/usun-typ/', views.TicketTypeDeleteView.as_view(), name='tickettype-delete-worker'),
+
     # filmy
     path('filmy/', views.MovieListView.as_view(), name='movie-list-worker'),
     path('szczegoly-filmu/<int:pk>', views.MovieDetailView.as_view(), name='movie-details-worker'),
@@ -26,6 +33,10 @@ urlpatterns = [
     path('<int:pk>/usun-seans/', views.ShowtimeDeleteView.as_view(), name='showtime-delete-worker'),
 
     # rezerwacje
-    path('dodaj-rezerwacje/', views.ReservationCreateView.as_view(), name='reservations-create-worker')
+    path('dodaj-rezerwacje/', views.ReservationCreateView.as_view(), name='reservations-create-worker'),
     # path('reservation', ReservationListView.as_view(), name='worker-reservation-list'),
+
+    # bliety
+    # path('dodaj-bilet', views.TicketCreateView.as_view(), name='tickets-create-worker')
+    # path(''),
 ]

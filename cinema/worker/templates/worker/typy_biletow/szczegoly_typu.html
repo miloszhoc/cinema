@@ -1,0 +1,8 @@
+{% extends 'worker/base.html' %}
+{% block content %}
+    <a href="{% url 'tickettype-update-worker' tickettype.ticket_id %}">Aktualizuj informacje o typie biletu</a>
+    <a href="{% url 'tickettype-delete-worker' tickettype.ticket_id %}">Usuń typ biletu</a>
+    <br><br>
+    <b>Typ:</b> {{ object.type }}<br>
+    <b>Cena:</b> {{ object.price }}<br>
+{% endblock %}
