@@ -1,11 +1,9 @@
 {% extends 'worker/base.html' %}
+{% load static %}
 {% block content %}
-    {#    <form action="." method="post">{% csrf_token %}#}
-    <form action="" method="post">
-        {% csrf_token %}
+    <form action="" method="post">{% csrf_token %}
         <table>
-            {{ form }}<br>
-            {{ client_form }}<br>
+            {{ form }}
         </table>
         <input type="reset" value="Wyczyść"/>
         <input type="submit" value="Zapisz"/>

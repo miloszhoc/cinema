@@ -28,7 +28,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='reservation',
-            name='is_paid',
+            name='paid',
             field=models.BooleanField(null=True),
         ),
         migrations.AddField(

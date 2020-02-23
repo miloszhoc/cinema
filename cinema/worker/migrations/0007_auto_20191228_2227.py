@@ -12,7 +12,7 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AlterField(
             model_name='reservation',
-            name='is_paid',
+            name='paid',
             field=models.BooleanField(default=False),
         ),
     ]

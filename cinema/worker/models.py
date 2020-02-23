@@ -1,6 +1,8 @@
 from django.db import models
+from django.shortcuts import redirect
 from django.urls import reverse
 import datetime
+from django.utils import timezone
 
 
 class Client(models.Model):
@@ -8,6 +10,7 @@ class Client(models.Model):
     first_name = models.CharField(max_length=55)
     last_name = models.CharField(max_length=55)
     email = models.EmailField(max_length=255)
+    phone_number = models.CharField(max_length=15, null=True)
 
     def __str__(self):
         name = str(self.first_name) + ' ' + str(self.last_name)
@@ -97,8 +100,18 @@ class Reservation(models.Model):
     client_id = models.ForeignKey(Client, on_delete=models.PROTECT)
     showtime_id = models.ForeignKey(Showtime, on_delete=models.CASCADE)
     cost = models.DecimalField(max_digits=10, decimal_places=2, null=True)
-    is_paid = models.BooleanField(default=False)
+    paid = models.BooleanField(default=False)
     ticket_id = models.ManyToManyField(Ticket)
+    reservation_date = models.DateTimeField(default=timezone.now())
+    confirmed = models.BooleanField(default=False)
+
+    def get_absolute_url(self):
+        return reverse('reservation-details-worker', kwargs={'pk': self.reservation_id})
+
+    # def save(self, force_insert=False, force_update=False, using=None,
+    #          update_fields=None):
+    #     tickets = self.ticket_id.filter(reservation=self.reservation_id)
+    #     super(Reservation, self).save()
 
     def __str__(self):
         return str(self.reservation_id) + '. ' + str(self.client_id.first_name) + ' ' + str(

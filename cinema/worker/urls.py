@@ -1,11 +1,13 @@
 from django.urls import path
 from . import views
 from django.contrib.auth import views as auth_view
+from django.contrib.auth.forms import UserCreationForm
 
 urlpatterns = [
     # strona logowania i wylogowania
     path('login/', auth_view.LoginView.as_view(template_name='login.html'), name='login'),
     path('logout/', auth_view.LogoutView.as_view(template_name='logout.html'), name='logout'),
+    path('dodaj-uzytkownika', views.add_user, name='adduser-create-worker'),
 
     path('', views.main, name='main'),
     path('panel/', views.panel, name='panel'),
@@ -33,10 +35,13 @@ urlpatterns = [
     path('<int:pk>/usun-seans/', views.ShowtimeDeleteView.as_view(), name='showtime-delete-worker'),
 
     # rezerwacje
-    path('dodaj-rezerwacje/', views.ReservationCreateView.as_view(), name='reservations-create-worker'),
-    # path('reservation', ReservationListView.as_view(), name='worker-reservation-list'),
+    path('dodaj-rezerwacje/<int:showtime_id>', views.ReservationCreateView.as_view(),
+         name='reservations-create-worker'),
+    path('szczegoly-rezerwacji/<int:pk>', views.ReservationDetailView.as_view(),
+         name='reservation-details-worker'),
 
     # bliety
-    # path('dodaj-bilet', views.TicketCreateView.as_view(), name='tickets-create-worker')
+    path('dodaj-bilet/<int:reservation_id>/<int:client_id>', views.TicketCreateView.as_view(),
+         name='ticket-create-worker')
     # path(''),
 ]

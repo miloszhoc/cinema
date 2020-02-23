@@ -1,6 +1,9 @@
 {% extends 'worker/base.html' %}
 {% block content %}
     <br><br>
+    {% if user.get_username == 'admin' %}
+        <a href="{% url 'adduser-create-worker' %}">Dodaj użytkownika</a><br>
+    {% endif %}
     <a href="{% url 'reservation-worker' %}">Rezerwacje</a><br>
     <a href="{% url 'showtime-list-worker' %}">Seanse</a><br>
     <a href="{% url 'movie-list-worker' %}">Filmy</a><br>
