@@ -107,64 +107,6 @@ class ReservationListView(LoginRequiredMixin, ListView):
     template_name = 'worker/rezerwacje/rezerwacje_lista.html'
 
 
-# class ReservationCreateView(LoginRequiredMixin, View, FormMixin):
-#     model = models.Reservation
-#     template_name = 'worker/rezerwacje/dodaj_rezerwacje.html'
-#
-#     # form_class = ReservationModelForm
-#
-#     def get(self, request, *args, **kwargs):
-#         reservation_form = ReservationModelForm
-#         client_form = ClientModelForm
-#         return render(request, self.template_name, context={'reservation_form': reservation_form,
-#                                                             'client_form': client_form})
-#
-#         # success_url = reverse('showtime-list-worker')
-#
-#     # queryset = models.Reservation.objects.all()
-#     # @transaction.atomic
-#     # def form_valid(self, form):
-#     #     client = self.client_form.save()
-#     #     form = self.reservation_form.save(commit=False)
-#     #     form.client_id = client
-#     #     # self.object = form.save(commit=False)
-#     #     # self.object.name = showtime
-#     #     # self.object.save()
-#     #     return super(ReservationCreateView, self).form_valid(form)
-#
-#     # def get_context_data(self, **kwargs):
-#     #     context = super().get_context_data(**kwargs)
-#     #     self.client_form = ClientModelForm
-#     # context['client_form'] = ClientModelForm
-#     # return context
-#
-#     # def get_form_kwargs(self):
-#     #     kwargs = super().get_form_kwargs()
-#     #     kwargs['showtime_id'] = self.kwargs['showtime_id']
-#     #     return kwargs
-#
-#     # jesli wystapi blad, to nic nie zostaje zapisane do bazy
-#     @transaction.atomic
-#     def post(self, request, *args, **kwargs):
-#         reservation_form = ReservationModelForm(showtime_id=self.kwargs['showtime_id'])
-#         client_form = ClientModelForm(request.POST)
-#         print(self.request.pk)
-#         if reservation_form.is_valid() and client_form.is_valid():
-#             pass
-#             # reservation_form
-#             # print('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
-#             # reservation = reservation_form.save()
-#             # client = client_form.save()
-#             # reservation.client_id = client.client_id
-#             # client.save()
-#             # return super().post(request, *args, **kwargs)
-#
-#     def get_form_kwargs(self):
-#         kwargs = super().get_form_kwargs()
-#         kwargs['showtime_id'] = self.kwargs['showtime_id']
-#         return kwargs
-
-
 class ReservationCreateView(LoginRequiredMixin, CreateView):
     model = models.Reservation
     template_name = 'worker/rezerwacje/dodaj_rezerwacje.html'
@@ -202,31 +144,6 @@ class ReservationCreateView(LoginRequiredMixin, CreateView):
 class ReservationDetailView(LoginRequiredMixin, DetailView):
     model = models.Reservation
     template_name = 'worker/rezerwacje/szczegoly_rezerwacji.html'
-
-
-# @login_required()
-# def new_reservation(request):
-#     if request.method == 'POST':
-#         reservation_form = ReservationModelForm(request.POST)
-#         ticket_form = TicketModelForm(request.POST)
-#         if reservation_form.is_valid() and ticket_form.is_valid():
-#             reservation = reservation_form.save()
-#             ticket = ticket_form.save()
-#             reservation.ticket_id = ticket
-#             ticket.save()
-#             return redirect(reverse('reservation-worker'))
-#     else:
-#         reservation_form = ReservationModelForm()
-#         ticket_form = TicketModelForm()
-#         print(request.GET)
-#     args = {}
-#     args.update(csrf(request))
-#     args['reservation_form'] = reservation_form
-#     args['ticket_form'] = ticket_form
-#     return render(request, 'worker/rezerwacje/dodaj_rezerwacje.html', context=args)
-#
-
-pass
 
 
 # seanse
