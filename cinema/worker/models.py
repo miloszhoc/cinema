@@ -1,3 +1,5 @@
+import uuid
+
 from django.db import models
 from django.shortcuts import redirect
 from django.urls import reverse
@@ -102,16 +104,18 @@ class Reservation(models.Model):
     cost = models.DecimalField(max_digits=10, decimal_places=2, null=True)
     paid = models.BooleanField(default=False)
     ticket_id = models.ManyToManyField(Ticket)
-    reservation_date = models.DateTimeField(default=timezone.now())
+    reservation_date = models.DateTimeField(null=True)
+    reservation_expire = models.DateTimeField(null=True)
     confirmed = models.BooleanField(default=False)
 
     def get_absolute_url(self):
         return reverse('reservation-details-worker', kwargs={'pk': self.reservation_id})
 
-    # def save(self, force_insert=False, force_update=False, using=None,
-    #          update_fields=None):
-    #     tickets = self.ticket_id.filter(reservation=self.reservation_id)
-    #     super(Reservation, self).save()
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        self.reservation_date = timezone.now()
+        self.reservation_expire = self.reservation_date + timezone.timedelta(minutes=30)
+        return super(Reservation, self).save()
 
     def __str__(self):
         return str(self.reservation_id) + '. ' + str(self.client_id.first_name) + ' ' + str(
