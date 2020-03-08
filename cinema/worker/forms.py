@@ -35,8 +35,10 @@ class ShowtimeModelForm(ModelForm):
                   }
 
         fields = ['movie_id', 'start_date', 'show_break']
+
+        # https://simpleisbetterthancomplex.com/tutorial/2019/01/03/how-to-use-date-picker-with-django.html
         widgets = {
-            'start_date': admin_widget.AdminSplitDateTime(),
+            'start_date': DateTimeInput(attrs={'class': 'datetimepicker'}),
             'show_break': TextInput(attrs={'class': 'timepicker', 'autocomplete': 'off'})}
 
 
