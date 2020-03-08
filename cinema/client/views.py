@@ -1,10 +1,14 @@
+from django.db import transaction
+from django.forms import modelformset_factory
 from django.shortcuts import render
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, CreateView
 from worker.models import *
+from . import forms
 # nalezy uzywac metody timezone.now(),
 # aby wyeliminowac problem "RuntimeWarning: DateTimeField Showtime.start_date received a naive datetime
 # while time zone support is active."
 from django.utils import timezone
+from .forms import ReservationModelForm
 
 
 class IndexMovieListView(ListView):
@@ -54,37 +58,99 @@ class FilmMovieDetailView(DetailView):
         return context
 
 
-class RezerwacjaNaSeansShowtimeDetailView(DetailView):
-    template_name = 'client/rezerwacja_na_seans.html'
-    model = Showtime
+@transaction.atomic
+def reservation_form(request, **kwargs):  # kwargs przekazywanie z urls
+    showtime_id = kwargs['showtime_id']
+    showtime = Showtime.objects.get(showtime_id=showtime_id)
 
-    # queryset = Showtime.objects.all()
+    # pass initial data to form https://www.geeksforgeeks.org/initial-form-data-django-forms/
+    initial = {'showtime_id': showtime_id}
+    r_form = forms.ReservationModelForm(initial=initial)
+    client_form = forms.ClientModelForm()
 
-    def get_context_data(self, **kwargs):
-        context = super(RezerwacjaNaSeansShowtimeDetailView, self).get_context_data(**kwargs)
-        # tylko zajete miejsca lako lista zawierajaca tylko id siedzen
-        # potrzebna, aby iterowac po siedzeniach w rzedzie i sprawdzac czy dane siedzenie jest zajete
-        context['taken_seats'] = [seat[0] for seat in
-                                  Ticket.objects.filter(showtime_id=self.get_object()).values_list('seat_id')]
+    # lista zajetych siedzien
+    taken_seats = Ticket.objects.filter(showtime_id=showtime_id).values_list('seat_id', flat=True)
+    # siedzenia wolne
+    seats = Seat.objects
+    ticket = Ticket.objects
+    seats_row_a = seats.filter(row_number='A')
+    seats_row_b = seats.filter(row_number='B')
+    seats_row_c = seats.filter(row_number='C')
+    seats_row_d = seats.filter(row_number='D')
+    seats_row_e = seats.filter(row_number='E')
+    seats_row_f = seats.filter(row_number='F')
+    seats_row_g = seats.filter(row_number='G')
+    seats_row_h = seats.filter(row_number='H')
+    seats_row_i = seats.filter(row_number='I')
+    seats_row_j = seats.filter(row_number='J')
 
-        context['seats_row_a'] = Seat.objects.filter(row_number='A')
-        context['seats_row_b'] = Seat.objects.filter(row_number='B')
-        context['seats_row_c'] = Seat.objects.filter(row_number='C')
-        context['seats_row_d'] = Seat.objects.filter(row_number='D')
-        context['seats_row_e'] = Seat.objects.filter(row_number='E')
-        context['seats_row_f'] = Seat.objects.filter(row_number='F')
-        context['seats_row_g'] = Seat.objects.filter(row_number='G')
-        context['seats_row_h'] = Seat.objects.filter(row_number='H')
-        context['seats_row_i'] = Seat.objects.filter(row_number='I')
-        context['seats_row_j'] = Seat.objects.filter(row_number='J')
+    ticket_formset = modelformset_factory(Ticket,
+                                          fields=('seat_id', 'tickettype_id'),
+                                          labels={'seat_id': 'Miejsce',
+                                                  'tickettype_id': 'Typ Biletu'},
+                                          extra=1,
+                                          can_delete=True)
+    ticket_form = ticket_formset(queryset=Ticket.objects.none())
+    if request.POST:
+        if 'ticket_number' in request.POST:
+            ticket_formset = modelformset_factory(Ticket,
+                                                  fields=('seat_id', 'tickettype_id'),
+                                                  labels={'seat_id': 'Miejsce',
+                                                          'tickettype_id': 'Typ Biletu'},
+                                                  extra=int(request.POST['ticket_select']), can_delete=True)
 
-        return context
+            ticket_form = ticket_formset(queryset=Ticket.objects.none())
+        else:
+            # https://www.youtube.com/watch?v=FnZgy-y6hGA
+            ticket_form = ticket_formset(request.POST)
 
+            r_form = forms.ReservationModelForm(request.POST)
+            client_form = forms.ClientModelForm(request.POST)
 
-#
+            if ticket_form.is_valid() and (client_form.is_valid() and r_form.is_valid()):
+                showtime = Showtime.objects.get(showtime_id=showtime_id)  # obiekt seansu
+                client = client_form.save()
+                reservation = r_form.save(commit=False)
+                reservation.client_id = client
 
-# def index(request):
-#     return render(request, 'client/index.html', context={})
+                # https://docs.djangoproject.com/en/3.0/topics/db/examples/many_to_many/#many-to-many-relationships
+                instances = ticket_form.save(commit=False)
+
+                # get total price
+                total_price = 0
+                for instance in instances:
+                    total_price += TicketType.objects.get(ticket_id=instance.tickettype_id_id).price
+
+                reservation.cost = total_price
+                reservation.save()
+
+                for instance in instances:
+                    instance.client_id = client
+                    instance.showtime_id = showtime
+                    instance.save()
+                    reservation.ticket_id.add(instance)
+
+                r_form.save_m2m()
+                return redirect(reverse('movie-details-client', kwargs={'pk': str(showtime.movie_id.movie_id)}))
+
+    return render(request, 'client/rezerwacja_na_seans.html', context={'showtime': showtime,
+                                                                       'showtime_id': showtime_id,
+                                                                       'client_form': client_form,
+                                                                       'reservation_form': r_form,
+                                                                       'ticket_form': ticket_form,
+                                                                       'ticket_number': [i for i in
+                                                                                         range(1, 11)],
+                                                                       'seats_row_a': seats_row_a,
+                                                                       'seats_row_b': seats_row_b,
+                                                                       'seats_row_c': seats_row_c,
+                                                                       'seats_row_d': seats_row_d,
+                                                                       'seats_row_e': seats_row_e,
+                                                                       'seats_row_f': seats_row_f,
+                                                                       'seats_row_g': seats_row_g,
+                                                                       'seats_row_h': seats_row_h,
+                                                                       'seats_row_i': seats_row_i,
+                                                                       'seats_row_j': seats_row_j,
+                                                                       'taken_seats': taken_seats})
 
 
 def cennik(request):
@@ -117,10 +183,6 @@ class RepertuarShowtimeListView(ListView):
         # 14 dni od dzisiejszego dnia
         context['dates'] = list(map(lambda x: timezone.now() + timezone.timedelta(days=x), range(14)))
         return context
-
-
-# def repertuar(request):
-#     return render(request, 'client/repertuar.html', context={})
 
 
 def rezerwacja(request):

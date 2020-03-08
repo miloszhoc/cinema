@@ -13,8 +13,8 @@ urlpatterns = [
     path('movie/<int:pk>', views.FilmMovieDetailView.as_view(), name='movie-details-client'),
     #     path('', views.MoviesListView.as_view(), name='movie-list'),
     # path('', views.RepertuarListView.as_view(), name='client-showtime-list'),
-    path('showtime/<int:pk>', views.RezerwacjaNaSeansShowtimeDetailView.as_view(), name='showtime-details-client'),
+    path('rezerwuj-miejsce/<int:showtime_id>', views.reservation_form, name='reservation-form-client'),
 
     # list views
-    path('repertuar/', views.RepertuarShowtimeListView.as_view(), name='repertoire-list-client')
+    path('repertuar/', views.RepertuarShowtimeListView.as_view(), name='repertoire-list-client'),
 ]

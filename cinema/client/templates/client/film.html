@@ -22,7 +22,7 @@ Najbliższe seanse:<br>
 {% if showtime %}
     {% for x in showtime %}
         {{ x.start_date| date:"d.m.Y H:i" }}
-        <a href="{% url 'showtime-details-client' x.showtime_id %}">Zarezerwuj miejsce</a><br>
+        <a href="{% url 'reservation-form-client' x.showtime_id %}">Zarezerwuj miejsce</a><br>
     {% endfor %}
 {% else %}
     <b>Przepraszamy, wybrany film nie jest obecnie wyświetlany.</b>

@@ -46,7 +46,7 @@ class Seat(models.Model):
     row_number = models.CharField(null=True, max_length=1)
 
     def __str__(self):
-        return str(self.seat_id) + ' - ' + str(self.row_number) + ' ' + str(self.seat_number)
+        return str(self.row_number) + '' + str(self.seat_number)
 
 
 class Showtime(models.Model):

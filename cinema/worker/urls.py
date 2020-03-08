@@ -37,11 +37,11 @@ urlpatterns = [
     # rezerwacje
     path('dodaj-rezerwacje/<int:showtime_id>', views.ReservationCreateView.as_view(),
          name='reservations-create-worker'),
-    path('szczegoly-rezerwacji/<int:pk>', views.ReservationDetailView.as_view(),
-         name='reservation-details-worker'),
-
+    # path('szczegoly-rezerwacji/<int:pk>', views.ReservationDetailView.as_view(),
+    #      name='reservation-details-worker'),
+    # path('dodaj-rezerwacje-cd/<int:showtime_id>')
     # bliety
     path('dodaj-bilet/<int:reservation_id>/<int:client_id>', views.TicketCreateView.as_view(),
-         name='ticket-create-worker')
-    # path(''),
+         name='ticket-create-worker'),
+    path('test-form/<int:showtime_id>', views.reservation_form, name='reservation-form-worker'),
 ]

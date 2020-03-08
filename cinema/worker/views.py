@@ -2,16 +2,10 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.shortcuts import redirect
 from django.views import View
-from django.views.generic.edit import FormMixin
-
+from django.urls import resolve
 from . import models
-from .forms import (MovieModelForm,
-                    ShowtimeModelForm,
-                    TicketTypeModelForm,
-                    ReservationModelForm,
-                    TicketModelForm,
-                    ClientModelForm,
-                    ReservationTicketModelForm)
+from . import forms
+from django.forms import modelformset_factory
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.shortcuts import get_object_or_404
@@ -62,7 +56,7 @@ class TicketTypeListView(LoginRequiredMixin, ListView):
 class TicketTypeCreateView(LoginRequiredMixin, CreateView):
     model = models.TicketType
     template_name = 'worker/typy_biletow/dodaj_typ.html'
-    form_class = TicketTypeModelForm
+    form_class = forms.TicketTypeModelForm
     success_url = reverse_lazy('tickettype-list-worker')
 
     def form_valid(self, form):
@@ -82,7 +76,7 @@ class TicketTypeDetailView(LoginRequiredMixin, DetailView):
 class TicketTypeUpdateView(LoginRequiredMixin, UpdateView):
     model = models.TicketType
     template_name = 'worker/typy_biletow/dodaj_typ.html'
-    form_class = TicketTypeModelForm
+    form_class = forms.TicketTypeModelForm
     success_url = reverse_lazy('tickettype-list-worker')
 
     # dane obecnego obiektu przeniesione do formularza
@@ -110,7 +104,7 @@ class ReservationListView(LoginRequiredMixin, ListView):
 class ReservationCreateView(LoginRequiredMixin, CreateView):
     model = models.Reservation
     template_name = 'worker/rezerwacje/dodaj_rezerwacje.html'
-    form_class = ReservationModelForm
+    form_class = forms.ReservationModelForm
 
     # jesli wystapi blad, to nic nie zostaje zapisane do bazy
     @transaction.atomic
@@ -127,18 +121,118 @@ class ReservationCreateView(LoginRequiredMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         if self.request.POST:
-            context['client_form'] = ClientModelForm(self.request.POST)
-            context['form'] = ReservationModelForm(self.kwargs['showtime_id'], self.request.POST)
+            context['ticket_form'] = forms.TicketModelForm(self.request.POST)
+            context['client_form'] = forms.ClientModelForm(self.request.POST)
+            context['form'] = forms.ReservationModelForm(self.kwargs['showtime_id'], models.Seat.objects.all(),
+                                                         self.request.POST)
         else:
-            context['client_form'] = ClientModelForm()
-            context['form'] = ReservationModelForm(self.kwargs['showtime_id'])
-
+            context['client_form'] = forms.ClientModelForm()
+            context['ticket_form'] = forms.TicketModelForm()
+            context['form'] = forms.ReservationModelForm(self.kwargs['showtime_id'],
+                                                         models.Ticket.objects.filter(
+                                                             showtime_id=self.kwargs['showtime_id']),
+                                                         models.Seat.objects.all())
         return context
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs['showtime_id'] = self.kwargs['showtime_id']
+        kwargs['taken_seats'] = models.Ticket.objects.filter(showtime_id=self.kwargs['showtime_id'])
+        kwargs['all_seats'] = models.Seat.objects.all()
         return kwargs
+
+
+@login_required
+@transaction.atomic
+def reservation_form(request, **kwargs):  # kwargs przekazywanie z urls
+    showtime_id = kwargs['showtime_id']
+    # pass initial data to form https://www.geeksforgeeks.org/initial-form-data-django-forms/
+    initial = {'showtime_id': showtime_id}
+    r_form = forms.ReservationModelForm(initial=initial)
+    client_form = forms.ClientModelForm()
+
+    # lista zajetych siedzien
+    taken_seats = models.Ticket.objects.filter(showtime_id=showtime_id).values_list('seat_id', flat=True)
+    # siedzenia wolne
+    seats = models.Seat.objects
+    ticket = models.Ticket.objects
+    seats_row_a = seats.filter(row_number='A')
+    seats_row_b = seats.filter(row_number='B')
+    seats_row_c = seats.filter(row_number='C')
+    seats_row_d = seats.filter(row_number='D')
+    seats_row_e = seats.filter(row_number='E')
+    seats_row_f = seats.filter(row_number='F')
+    seats_row_g = seats.filter(row_number='G')
+    seats_row_h = seats.filter(row_number='H')
+    seats_row_i = seats.filter(row_number='I')
+    seats_row_j = seats.filter(row_number='J')
+
+    ticket_formset = modelformset_factory(models.Ticket,
+                                          fields=('seat_id', 'tickettype_id'),
+                                          labels={'seat_id': 'Miejsce',
+                                                  'tickettype_id': 'Typ Biletu'},
+                                          extra=1,
+                                          can_delete=True)
+    ticket_form = ticket_formset(queryset=models.Ticket.objects.none())
+    if request.POST:
+        if 'ticket_number' in request.POST:
+            ticket_formset = modelformset_factory(models.Ticket,
+                                                  fields=('seat_id', 'tickettype_id'),
+                                                  labels={'seat_id': 'Miejsce',
+                                                          'tickettype_id': 'Typ Biletu'},
+                                                  extra=int(request.POST['ticket_select']), can_delete=True)
+
+            ticket_form = ticket_formset(queryset=models.Ticket.objects.none())
+        else:
+            # https://www.youtube.com/watch?v=FnZgy-y6hGA
+            ticket_form = ticket_formset(request.POST)
+
+            r_form = forms.ReservationModelForm(request.POST)
+            client_form = forms.ClientModelForm(request.POST)
+
+            if ticket_form.is_valid() and (client_form.is_valid() and r_form.is_valid()):
+                showtime = models.Showtime.objects.get(showtime_id=showtime_id)  # obiekt seansu
+                client = client_form.save()
+                reservation = r_form.save(commit=False)
+                reservation.client_id = client
+
+                # https://docs.djangoproject.com/en/3.0/topics/db/examples/many_to_many/#many-to-many-relationships
+                instances = ticket_form.save(commit=False)
+
+                # get total price
+                total_price = 0
+                for instance in instances:
+                    total_price += models.TicketType.objects.get(ticket_id=instance.tickettype_id_id).price
+
+                reservation.cost = total_price
+                reservation.save()
+
+                for instance in instances:
+                    instance.client_id = client
+                    instance.showtime_id = showtime
+                    instance.save()
+                    reservation.ticket_id.add(instance)
+
+                r_form.save_m2m()
+                return redirect(reverse('showtime-details-worker', kwargs={'pk': kwargs['showtime_id']}))
+
+    return render(request, 'worker/rezerwacje/dodaj_rezerwacje.html', context={'showtime_id': showtime_id,
+                                                                               'client_form': client_form,
+                                                                               'reservation_form': r_form,
+                                                                               'ticket_form': ticket_form,
+                                                                               'ticket_number': [i for i in
+                                                                                                 range(1, 11)],
+                                                                               'seats_row_a': seats_row_a,
+                                                                               'seats_row_b': seats_row_b,
+                                                                               'seats_row_c': seats_row_c,
+                                                                               'seats_row_d': seats_row_d,
+                                                                               'seats_row_e': seats_row_e,
+                                                                               'seats_row_f': seats_row_f,
+                                                                               'seats_row_g': seats_row_g,
+                                                                               'seats_row_h': seats_row_h,
+                                                                               'seats_row_i': seats_row_i,
+                                                                               'seats_row_j': seats_row_j,
+                                                                               'taken_seats': taken_seats})
 
 
 class ReservationDetailView(LoginRequiredMixin, DetailView):
@@ -169,7 +263,7 @@ class ShowtimeDetailView(LoginRequiredMixin, DetailView):
 class ShowtimeCreateView(LoginRequiredMixin, CreateView):
     model = models.Showtime
     template_name = 'worker/seanse/dodaj_seans.html'
-    form_class = ShowtimeModelForm
+    form_class = forms.ShowtimeModelForm
 
     def form_valid(self, form):
         print(form.cleaned_data)
@@ -179,7 +273,7 @@ class ShowtimeCreateView(LoginRequiredMixin, CreateView):
 class ShowtimeUpdateView(LoginRequiredMixin, UpdateView):
     model = models.Showtime
     template_name = 'worker/seanse/dodaj_seans.html'
-    form_class = ShowtimeModelForm
+    form_class = forms.ShowtimeModelForm
 
     # dane obecnego obiektu przeniesione do formularza
     def get_object(self, queryset=None):
@@ -218,7 +312,7 @@ class MovieDetailView(LoginRequiredMixin, DetailView):
 class MovieCreateView(LoginRequiredMixin, CreateView):
     model = models.Movie
     template_name = 'worker/filmy/dodaj_film.html'
-    form_class = MovieModelForm
+    form_class = forms.MovieModelForm
 
     def form_valid(self, form):
         print(form.cleaned_data)
@@ -228,7 +322,7 @@ class MovieCreateView(LoginRequiredMixin, CreateView):
 class MovieUpdateView(LoginRequiredMixin, UpdateView):
     model = models.Movie
     template_name = 'worker/filmy/dodaj_film.html'
-    form_class = MovieModelForm
+    form_class = forms.MovieModelForm
 
     # dane obecnego obiektu przeniesione do formularza
     def get_object(self, queryset=None):
@@ -250,11 +344,27 @@ class MovieDeleteView(LoginRequiredMixin, DeleteView):
 class TicketCreateView(LoginRequiredMixin, CreateView):
     model = models.Ticket
     template_name = 'worker/bilety/dodaj_bilet.html'
-    form_class = ReservationTicketModelForm
+    form_class = forms.ReservationTicketModelForm
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs['reservation_id'] = self.kwargs['reservation_id']
         kwargs['client_id'] = self.kwargs['client_id']
-        print(kwargs)
         return kwargs
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(object_list=object_list, **kwargs)
+        # context['taken_seats'] = [seat[0] for seat in
+        #                           models.Ticket.objects.filter(showtime_id=self.get_object()).values_list('seat_id')]
+
+        context['seats_row_a'] = models.Seat.objects.filter(row_number='A')
+        context['seats_row_b'] = models.Seat.objects.filter(row_number='B')
+        context['seats_row_c'] = models.Seat.objects.filter(row_number='C')
+        context['seats_row_d'] = models.Seat.objects.filter(row_number='D')
+        context['seats_row_e'] = models.Seat.objects.filter(row_number='E')
+        context['seats_row_f'] = models.Seat.objects.filter(row_number='F')
+        context['seats_row_g'] = models.Seat.objects.filter(row_number='G')
+        context['seats_row_h'] = models.Seat.objects.filter(row_number='H')
+        context['seats_row_i'] = models.Seat.objects.filter(row_number='I')
+        context['seats_row_j'] = models.Seat.objects.filter(row_number='J')
+        return context

@@ -1,10 +1,6 @@
 from django.forms import *
 from .models import *
 from django.contrib.admin import widgets as admin_widget
-from django.forms.models import modelformset_factory
-
-ReservationFormSet = modelformset_factory(Reservation, fields=('ticket_id', 'showtime_id'))
-formset = ReservationFormSet(queryset=Reservation.objects.all())
 
 
 class MovieModelForm(ModelForm):
@@ -45,44 +41,101 @@ class ShowtimeModelForm(ModelForm):
 
 
 class ReservationModelForm(ModelForm):
+    # seats_row_a = ModelMultipleChoiceField(label='', queryset=Seat.objects.filter(row_number='A'),
+    #                                        widget=CheckboxSelectMultiple)
+    # seats_row_b = ModelMultipleChoiceField(label='', queryset=Seat.objects.filter(row_number='B'),
+    #                                        widget=CheckboxSelectMultiple)
+    # seats_row_c = ModelMultipleChoiceField(label='', queryset=Seat.objects.filter(row_number='C'),
+    #                                        widget=CheckboxSelectMultiple)
+    # seats_row_d = ModelMultipleChoiceField(label='', queryset=Seat.objects.filter(row_number='D'),
+    #                                        widget=CheckboxSelectMultiple)
+    # seats_row_e = ModelMultipleChoiceField(label='', queryset=Seat.objects.filter(row_number='E'),
+    #                                        widget=CheckboxSelectMultiple)
+    # seats_row_f = ModelMultipleChoiceField(label='', queryset=Seat.objects.filter(row_number='F'),
+    #                                        widget=CheckboxSelectMultiple)
+    # seats_row_g = ModelMultipleChoiceField(label='', queryset=Seat.objects.filter(row_number='G'),
+    #                                        widget=CheckboxSelectMultiple)
+    # seats_row_h = ModelMultipleChoiceField(label='', queryset=Seat.objects.filter(row_number='H'),
+    #                                        widget=CheckboxSelectMultiple)
+    # seats_row_i = ModelMultipleChoiceField(label='', queryset=Seat.objects.filter(row_number='I'),
+    #                                        widget=CheckboxSelectMultiple)
+    # seats_row_j = ModelMultipleChoiceField(label='', queryset=Seat.objects.filter(row_number='J'),
+    #                                        widget=CheckboxSelectMultiple)
+
     class Meta:
         model = Reservation
-        labels = {'showtime_id': 'Seans', }
+        labels = {'showtime_id': '', }
+        fields = ['showtime_id', 'confirmed', 'paid']
 
-        fields = ['showtime_id']
-
-    def __init__(self, showtime_id, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super(ReservationModelForm, self).__init__(*args, **kwargs)
-        # self.fields['ticket_id'].queryset = Reservation.objects.filter(showtime_id=self.showtime_id)
 
-        # jesli user zostal przekierowany na ta strone z seansu o id 23,
-        # to seans automatycznie podstawia sie w polu bez mozliwosci zmiany
-        self.fields['showtime_id'].initial = showtime_id
-        self.fields['showtime_id'].disabled = True
+        # pass initial data to form https://www.geeksforgeeks.org/initial-form-data-django-forms/
+        if 'initial' in kwargs:
+            self.showtime_id = kwargs['initial']['showtime_id']
+            taken_seats = Ticket.objects.filter(showtime_id=self.showtime_id)
+            # jesli user zostal przekierowany na ta strone z seansu o id 23,
+            # to seans automatycznie podstawia sie w polu bez mozliwosci zmiany
+            self.fields['showtime_id'].initial = self.showtime_id
+
+            # https://stackoverflow.com/questions/4662848/disabled-field-is-not-passed-through-workaround-needed
+            # jesli pole bylo ustawione jako disabled, to nie wysylalo się w poscie
+            self.fields['showtime_id'].widget.attrs['style'] = 'display:none;'
+
+        # all_seats = Seat.objects.all()
+        # self.fields['seats_row_a'].initial = (taken_seats.values_list('seat_id', flat=True))
+        # self.fields['seats_row_b'].initial = (taken_seats.values_list('seat_id', flat=True))
+        # self.fields['seats_row_c'].initial = (taken_seats.values_list('seat_id', flat=True))
+        # self.fields['seats_row_d'].initial = (taken_seats.values_list('seat_id', flat=True))
+        # self.fields['seats_row_e'].initial = (taken_seats.values_list('seat_id', flat=True))
+        # self.fields['seats_row_f'].initial = (taken_seats.values_list('seat_id', flat=True))
+        # self.fields['seats_row_g'].initial = (taken_seats.values_list('seat_id', flat=True))
+        # self.fields['seats_row_h'].initial = (taken_seats.values_list('seat_id', flat=True))
+        # self.fields['seats_row_i'].initial = (taken_seats.values_list('seat_id', flat=True))
+        # self.fields['seats_row_j'].initial = (taken_seats.values_list('seat_id', flat=True))
+
+    class Media:
+        js = ('js/hover_reservation.js',)
 
 
 class TicketModelForm(ModelForm):
     class Meta:
         model = Ticket
-        fields = ['client_id', 'seat_id']
+        fields = ['seat_id', 'tickettype_id']
 
-    def __init__(self, client_id, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super(TicketModelForm, self).__init__(*args, **kwargs)
 
-        self.fields['client_id'].initial = client_id
-        # self.fields[''].disabled = True
 
-
+# do biletow
 class ReservationTicketModelForm(ModelForm):
+    # seats = ModelMultipleChoiceField(queryset=Seat.objects.all(), widget=CheckboxSelectMultiple)
+
     class Meta:
         model = Reservation
-        fields = ['client_id', 'ticket_id']
+
+        labels = {'client_id': 'Klient', 'ticket_id': 'Bilety'}
+        fields = ['client_id']
 
     def __init__(self, reservation_id, client_id, *args, **kwargs):
         super(ReservationTicketModelForm, self).__init__(*args, **kwargs)
+        # seats = ModelMultipleChoiceField(queryset=Ticket.objects.filter(showtime_id=).values_list('seat_id'),
+        #                                  widget=CheckboxSelectMultiple)
+
+        kwargs['seats_row_a'] = Seat.objects.filter(row_number='A')
+        kwargs['seats_row_b'] = Seat.objects.filter(row_number='B')
+        kwargs['seats_row_c'] = Seat.objects.filter(row_number='C')
+        kwargs['seats_row_d'] = Seat.objects.filter(row_number='D')
+        kwargs['seats_row_e'] = Seat.objects.filter(row_number='E')
+        kwargs['seats_row_f'] = Seat.objects.filter(row_number='F')
+        kwargs['seats_row_g'] = Seat.objects.filter(row_number='G')
+        kwargs['seats_row_h'] = Seat.objects.filter(row_number='H')
+        kwargs['seats_row_i'] = Seat.objects.filter(row_number='I')
+        kwargs['seats_row_j'] = Seat.objects.filter(row_number='J')
+
         self.fields['client_id'].initial = client_id
         self.fields['client_id'].disabled = True
-        self.fields['ticket_id'].queryset = Ticket.objects.filter(reservation__reservation_id=reservation_id)
+        self.reservation_id = reservation_id
 
 
 class TicketTypeModelForm(ModelForm):

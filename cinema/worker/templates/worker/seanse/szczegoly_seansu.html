@@ -14,7 +14,7 @@
     <hr>
     <h3>Rezerwacje na seans:</h3>
 
-    <a href="{% url 'reservations-create-worker' showtime.showtime_id %}">Dodaj rezerwację</a>
+    <a href="{% url 'reservation-form-worker' showtime.showtime_id %}">Dodaj rezerwację</a>
     <p>Imię, Nazwisko | email | telefon | cena | czy opłacono</p>
     {% for reservation in reservations %}
         {{ forloop.counter }}. {{ reservation.client_id.first_name }} {{ reservation.client_id.last_name }},
