@@ -45,16 +45,6 @@
 
 <div class="container series">
 
-    <h2>Najbliższe wydarzenia:</h2><br>
-    {% if events %}
-        {% for event in events %}
-            {{ event }}<br>
-            {{ event.description }}
-            {{ event }}
-        {% endfor %}
-    {% else %}
-        <h3>Brak wydarzeń</h3>
-    {% endif %}
 
     {% if today|length > 0 %}
         <h2>Dzisiaj gramy:</h2>

@@ -30,22 +30,22 @@ class IndexMovieListView(ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(IndexMovieListView, self).get_context_data(**kwargs)
 
+        # obecny czas w strefie czasowej CET
+        tz_now = timezone.now()
         # context['events'] = Event.objects.all()  # todo dodac sortowanie wg daty
         # wyswietla filmy ktore sa grane dzisiaj,
         # oraz data rozpoczecia jest w przyszlosci - czyli od obecnej godziny do północy
-        context['today'] = Movie.objects.filter(showtime__start_date__day=timezone.now().day,
-                                                showtime__start_date__gte=timezone.now()).distinct()
-        # obecny czas w strefie czasowej CET
-        tz_now = timezone.now()
-
+        # context['today'] = Movie.objects.filter(showtime__start_date__day=tz_now.day,
+        #                                         showtime__start_date__gte=tz_now).distinct()
+        context['today'] = Movie.objects.filter(showtime__start_date__day=tz_now.day,
+                                                showtime__start_date__gte=tz_now).distinct()
         # jutrzejszy dzień  - godzina 00:00:00
         tomorrow = tz_now - timezone.timedelta(hours=tz_now.hour,
                                                minutes=tz_now.minute,
                                                seconds=tz_now.second) + timezone.timedelta(days=1)
 
         context['future'] = Movie.objects.filter(movie_id__in=Showtime.objects.values('movie_id'),
-                                                 showtime__start_date__gt=timezone.now() + timezone.timedelta(
-                                                     days=1)).distinct()
+                                                 showtime__start_date__gt=tomorrow).distinct()
 
         return context
 

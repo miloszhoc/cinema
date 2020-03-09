@@ -38,7 +38,7 @@ class ShowtimeModelForm(ModelForm):
 
         # https://simpleisbetterthancomplex.com/tutorial/2019/01/03/how-to-use-date-picker-with-django.html
         widgets = {
-            'start_date': DateTimeInput(attrs={'class': 'datetimepicker'}),
+            'start_date': DateTimeInput(attrs={'class': 'datetimepicker', 'autocomplete': 'off'}),
             'show_break': TextInput(attrs={'class': 'timepicker', 'autocomplete': 'off'})}
 
 
