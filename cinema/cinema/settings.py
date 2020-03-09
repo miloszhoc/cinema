@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # 'django_celery_beat',  # https://djangopy.org/how-to/handle-asynchronous-tasks-with-celery-and-django
 ]
 
 MIDDLEWARE = [
@@ -128,3 +129,16 @@ STATIC_URL = '/static/'
 LOGIN_REDIRECT_URL = 'panel'  # przekieowanie po zalogowaniu
 LOGIN_URL = 'main'  # kiedy chemy sie dostac do sciezki niedostepnej bez logowania to przekierowuje na ten adres url
 LOGOUT_REDIRECT_URL = 'main'  # przekierowanie po wykogowaniu
+
+# mail data
+# https://support.google.com/mail/answer/7126229?hl=pl
+# EMAIL_HOST = 'in-v3.mailjet.com'
+# EMAIL_PORT = 587
+# EMAIL_HOST_USER = '31a784aba900ffc4cf6654bb9f610381'
+# EMAIL_HOST_PASSWORD = '01e49c57f7fa56eadb1efa357ffe31aa'
+# EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'moviecitycinema@gmail.com'
+EMAIL_HOST_PASSWORD = 'Licencjat123!'
+EMAIL_USE_TLS = True

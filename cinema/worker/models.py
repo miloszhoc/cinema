@@ -1,7 +1,5 @@
 import uuid
-
 from django.db import models
-from django.shortcuts import redirect
 from django.urls import reverse
 import datetime
 from django.utils import timezone
@@ -107,6 +105,8 @@ class Reservation(models.Model):
     reservation_date = models.DateTimeField(null=True)
     reservation_expire = models.DateTimeField(null=True)
     confirmed = models.BooleanField(default=False)
+    # https://stackoverflow.com/questions/16925129/generate-unique-id-in-django-from-a-model-field
+    reservation_confirmation_code = models.UUIDField(primary_key=False, default=uuid.uuid4, editable=False)
 
     def get_absolute_url(self):
         return reverse('reservation-details-worker', kwargs={'pk': self.reservation_id})

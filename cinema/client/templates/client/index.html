@@ -11,6 +11,11 @@
 
 </head>
 <body>
+{% if messages %}
+    {% for message in messages %}
+        {{ message }}
+    {% endfor %}
+{% endif %}
 <div class="container">
     <img src="../../static/client/images/logo.png" class="logo">
 </div>

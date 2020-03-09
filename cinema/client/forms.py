@@ -6,11 +6,10 @@ from django.contrib.admin import widgets as admin_widget
 
 
 class ReservationModelForm(ModelForm):
-
     class Meta:
         model = Reservation
         labels = {'showtime_id': '', }
-        fields = ['showtime_id',]
+        fields = ['showtime_id', ]
 
     def __init__(self, *args, **kwargs):
         super(ReservationModelForm, self).__init__(*args, **kwargs)
@@ -40,5 +39,8 @@ class ClientModelForm(ModelForm):
             'email': 'Email',
             'phone_number': 'Numer telefonu'
         }
-
         fields = ['first_name', 'last_name', 'email', 'phone_number']
+
+
+class ConfirmReservationForm(Form):
+    text_field = CharField(max_length=255, widget=TextInput(attrs={'size': '40', 'hidden': ''}), label='')

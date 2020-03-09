@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Potwierdzanie rezerwacji</title>
+</head>
+<body>
+<center>
+    {% if messages %}
+        {% for message in messages %}
+            {{ message }}
+        {% endfor %}
+    {% endif %}
+    <h3>Aby potwierdzić rezerwację prosimy kliknąć poniższy przycisk.</h3>
+    <form action="" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <br>
+        <input type="submit" value="Potwierdź">
+    </form>
+</center>
+</body>
+</html>

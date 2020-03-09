@@ -17,4 +17,8 @@ urlpatterns = [
 
     # list views
     path('repertuar/', views.RepertuarShowtimeListView.as_view(), name='repertoire-list-client'),
+    # rezerwacje
+    # https://stackoverflow.com/questions/32950432/django-urls-uuid-not-working
+    path('potwierdz/<uuid:id>', views.rezerwacja_potwierdz, name='reservation-accept-client'),
+    path('anuluj/<uuid:id>', views.rezerwacja_anuluj, name='reservation-deny-client'),
 ]

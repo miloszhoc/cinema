@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="utf-8">
+</head>
+<body>
+<p>Witaj {{ first_name }} {{ last_name }}!</p>Dziękujemy za wybranie naszego kina!<br><br><br>
+Aby potwierdzić rezerwację prosimy kliknąć, lub skopiować poniższy link.<br>
+<a href={{ domain }}{% url 'reservation-accept-client' uuid %}>Potwierdź</a><br>
+{{ domain }}{% url 'reservation-accept-client' uuid %}
+<br><br>
+Jeśli nie potwierdzą Państwo rezerwacji w ciągu 30 minut, to zostanie ona automatycznie usunięta z systemu.
+<br><br><br>
+Aby zrezygnować z rezerwacji prosimy kliknąć, lub skopiować poniższy link.<br>
+<a href={{ domain }}{% url 'reservation-deny-client' uuid %}>Zrezygnuj</a><br>
+{{ domain }}{% url 'reservation-deny-client' uuid %}
+<br><br><br><br>
+<hr>
+Serdecznie pozdrawiamy,<br>
+Zespół MovieCity.
+</body>
+</html>

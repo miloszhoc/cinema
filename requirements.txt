@@ -1,6 +1,15 @@
 asgiref==3.2.3
+DateTime==4.3
 Django==3.0.1
+django-multiselectfield==0.1.12
+django-static-jquery==2.1.4
+django-timezone-field==4.0
+pip-autoremove==0.9.1
 psycopg2==2.8.4
 PyMySQL==0.9.3
+python-crontab==2.4.0
+python-dateutil==2.8.1
 pytz==2019.3
+six==1.14.0
 sqlparse==0.3.0
+zope.interface==4.7.1

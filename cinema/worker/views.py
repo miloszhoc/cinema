@@ -195,7 +195,7 @@ def reservation_form(request, **kwargs):  # kwargs przekazywanie z urls
                 client = client_form.save()
                 reservation = r_form.save(commit=False)
                 reservation.client_id = client
-
+                reservation.confirmed = True
                 # https://docs.djangoproject.com/en/3.0/topics/db/examples/many_to_many/#many-to-many-relationships
                 instances = ticket_form.save(commit=False)
 

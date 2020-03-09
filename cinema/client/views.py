@@ -1,6 +1,7 @@
+from django.core.mail import send_mail
 from django.db import transaction
 from django.forms import modelformset_factory
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.generic import ListView, DetailView, CreateView
 from worker.models import *
 from . import forms
@@ -8,7 +9,10 @@ from . import forms
 # aby wyeliminowac problem "RuntimeWarning: DateTimeField Showtime.start_date received a naive datetime
 # while time zone support is active."
 from django.utils import timezone
-from .forms import ReservationModelForm
+from cinema.settings import EMAIL_HOST_USER
+from django.template import loader
+from django.contrib import messages
+from django.shortcuts import get_object_or_404
 
 
 class IndexMovieListView(ListView):
@@ -131,6 +135,22 @@ def reservation_form(request, **kwargs):  # kwargs przekazywanie z urls
                     reservation.ticket_id.add(instance)
 
                 r_form.save_m2m()
+                # full_email = EMAIL_HOST_USER + '@' + EMAIL_DOMAIN
+                # https://simpleisbetterthancomplex.com/tutorial/2016/06/13/how-to-send-email.html
+                # https://stackoverflow.com/questions/29466796/sending-a-html-email-in-django
+                html_mail = loader.render_to_string(template_name='client/rezerwacja/email.html',
+                                                    context={'first_name': client.first_name,
+                                                             'last_name': client.last_name,
+                                                             'uuid': reservation.reservation_confirmation_code,
+                                                             'domain': request.META['HTTP_HOST']})
+
+                print(send_mail(subject='Potwierdzenie rezerwacji',
+                                message='',
+                                from_email=EMAIL_HOST_USER,
+                                recipient_list=[client.email, ],
+                                fail_silently=False,
+                                html_message=html_mail))
+
                 return redirect(reverse('movie-details-client', kwargs={'pk': str(showtime.movie_id.movie_id)}))
 
     return render(request, 'client/rezerwacja_na_seans.html', context={'showtime': showtime,
@@ -187,3 +207,49 @@ class RepertuarShowtimeListView(ListView):
 
 def rezerwacja(request):
     return render(request, 'client/rezerwacja.html', context={})
+
+
+# potwierdza rezerwacje
+@transaction.atomic()
+def rezerwacja_potwierdz(request, **kwargs):
+    reservation_uuid = kwargs['id']
+    form = forms.ConfirmReservationForm(initial={'text_field': reservation_uuid})
+    if request.POST:
+        form = forms.ConfirmReservationForm(request.POST, initial={'text_field': reservation_uuid})
+
+        if form.is_valid() and not get_object_or_404(Reservation,
+                                                     reservation_confirmation_code=reservation_uuid).confirmed:
+            Reservation.objects.filter(reservation_confirmation_code=reservation_uuid).update(confirmed=True)
+            messages.success(request, messages.SUCCESS, 'Rezerwacja została pomyślnie potwierdzona.')
+            return redirect('index-client')
+        else:
+            messages.add_message(request, messages.ERROR, 'Rezerwacja została już potwierdzona.')
+    return render(request, 'client/rezerwacja/potwierdz_rezerwacje.html', context={'reservation_uuid': reservation_uuid,
+                                                                                   'form': form})
+
+
+# usuwa rezerwacje tylko jesli rezerwacja nie zostala wczesniej potwierdzona
+@transaction.atomic()
+def rezerwacja_anuluj(request, **kwargs):
+    reservation_uuid = kwargs['id']
+    form = forms.ConfirmReservationForm(initial={'text_field': reservation_uuid})
+
+    if request.POST:
+        form = forms.ConfirmReservationForm(request.POST, initial={'text_field': reservation_uuid})
+
+        if form.is_valid() and not get_object_or_404(Reservation,
+                                                     reservation_confirmation_code=reservation_uuid).confirmed:
+            reservation = Reservation.objects.get(reservation_confirmation_code=reservation_uuid)
+            tickets = Ticket.objects.filter(reservation__reservation_confirmation_code=reservation_uuid)
+            # usuwa wszytkie bilety powiązane z rezerwacją, oraz rezerwację
+            for t in tickets.iterator():
+                t.delete()
+            reservation.delete()
+
+            messages.success(request, messages.SUCCESS, 'Rezerwacja została pomyślnie usunięta.')
+            return redirect('index-client')
+        else:
+            # https://www.kodefork.com/questions/30/how-to-pass-a-message-when-we-redirect-to-some-template-from-django-views/
+            messages.add_message(request, messages.ERROR, 'Nie można anulować! Rezerwacja została już potwierdzona.')
+    return render(request, 'client/rezerwacja/anuluj_rezerwacje.html', context={'reservation_uuid': reservation_uuid,
+                                                                                'form': form})
