@@ -44,4 +44,5 @@ urlpatterns = [
     # bliety
     path('dodaj-bilet/<int:reservation_id>/<int:client_id>', views.TicketCreateView.as_view(),
          name='ticket-create-worker'),
+    path('podsumowanie/', views.summary, name='summary-worker'),
 ]

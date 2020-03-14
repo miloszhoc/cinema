@@ -2,7 +2,6 @@ from django.forms import *
 from django.forms.utils import ErrorList
 
 from worker.models import *
-from django.contrib.admin import widgets as admin_widget
 
 
 class ReservationModelForm(ModelForm):
@@ -44,3 +43,44 @@ class ClientModelForm(ModelForm):
 
 class ConfirmReservationForm(Form):
     text_field = CharField(max_length=255, widget=TextInput(attrs={'size': '40', 'hidden': ''}), label='')
+
+
+class SeatForm(Form):
+    seats_row_a = ModelMultipleChoiceField(label='a', queryset=Seat.objects.filter(row_number='A'),
+                                           widget=CheckboxSelectMultiple)
+    seats_row_b = ModelMultipleChoiceField(label='b', queryset=Seat.objects.filter(row_number='B'),
+                                           widget=CheckboxSelectMultiple)
+    seats_row_c = ModelMultipleChoiceField(label='c', queryset=Seat.objects.filter(row_number='C'),
+                                           widget=CheckboxSelectMultiple)
+    seats_row_d = ModelMultipleChoiceField(label='d', queryset=Seat.objects.filter(row_number='D'),
+                                           widget=CheckboxSelectMultiple)
+    seats_row_e = ModelMultipleChoiceField(label='e', queryset=Seat.objects.filter(row_number='E'),
+                                           widget=CheckboxSelectMultiple)
+    seats_row_f = ModelMultipleChoiceField(label='f', queryset=Seat.objects.filter(row_number='F'),
+                                           widget=CheckboxSelectMultiple)
+    seats_row_g = ModelMultipleChoiceField(label='g', queryset=Seat.objects.filter(row_number='G'),
+                                           widget=CheckboxSelectMultiple)
+    seats_row_h = ModelMultipleChoiceField(label='h', queryset=Seat.objects.filter(row_number='H'),
+                                           widget=CheckboxSelectMultiple)
+    seats_row_i = ModelMultipleChoiceField(label='i', queryset=Seat.objects.filter(row_number='I'),
+                                           widget=CheckboxSelectMultiple)
+    seats_row_j = ModelMultipleChoiceField(label='j', queryset=Seat.objects.filter(row_number='J'),
+                                           widget=CheckboxSelectMultiple)
+
+    def __init__(self, taken_seats, data=None, files=None, auto_id='id_%s', prefix=None, initial=None,
+                 error_class=ErrorList,
+                 label_suffix=None, empty_permitted=False, field_order=None, use_required_attribute=None,
+                 renderer=None):
+        super().__init__(data, files, auto_id, prefix, initial, error_class, label_suffix, empty_permitted, field_order,
+                         use_required_attribute, renderer)
+
+        self.fields['seats_row_a'].initial = (taken_seats.values_list('seat_id', flat=True))
+        self.fields['seats_row_b'].initial = (taken_seats.values_list('seat_id', flat=True))
+        self.fields['seats_row_c'].initial = (taken_seats.values_list('seat_id', flat=True))
+        self.fields['seats_row_d'].initial = (taken_seats.values_list('seat_id', flat=True))
+        self.fields['seats_row_e'].initial = (taken_seats.values_list('seat_id', flat=True))
+        self.fields['seats_row_f'].initial = (taken_seats.values_list('seat_id', flat=True))
+        self.fields['seats_row_g'].initial = (taken_seats.values_list('seat_id', flat=True))
+        self.fields['seats_row_h'].initial = (taken_seats.values_list('seat_id', flat=True))
+        self.fields['seats_row_i'].initial = (taken_seats.values_list('seat_id', flat=True))
+        self.fields['seats_row_j'].initial = (taken_seats.values_list('seat_id', flat=True))

@@ -8,216 +8,202 @@
 {% endblock %}
 
 {% block content %}
-    <form action="" method="post">
+    {#    <form action="" method="post">#}
+    {#        {% csrf_token %}#}
+    {#        <table>#}
+    {#            {{ client_form }}#}
+    {#            {{ reservation_form }}#}
+    {#            {{ ticket_form }}#}
+    {#        </table>#}
+    {#            {{ s_form.as_p }}#}
+
+    {#            {% for i in s_form.seats_row_a %}#}
+    {#                {% if i.data.selected %}#}
+    {#                    <label for="{{ i.data.id }}">#}
+    {#                        <input type="checkbox" name="{{ i.data.name }}" value="{{ i.data.value }}" id="{{ i.data.id }}"#}
+    {#                               checked#}
+    {#                               disabled>#}
+    {#                    </label>#}
+    {#                {% else %}#}
+    {#                    {{ i }}#}
+    {#                {% endif %}#}
+    {#            {% endfor %}#}
+
+    {#        </table>#}
+    {#        <input type="reset" value="Wyczyść"/>#}
+    {#        <input type="submit" value="Zapisz"/>#}
+    {#    </form>#}
+    {#    <br><br>#}
+
+
+    {#    <form action="" method="post" id="ticket_no">#}
+    {#        {% csrf_token %}#}
+    {#        <label>Wybierz ilość biletów:#}
+    {#            <select form="ticket_no" name="ticket_select">#}
+    {#                {% for i in ticket_number %}#}
+    {#                    <option value="{{ i }}">{{ i }}</option>#}
+    {#                {% endfor %}#}
+    {#            </select>#}
+    {#        </label>#}
+    {#        <input type="hidden" name="ticket_number">#}
+    {#        <input type="submit" value="Dodaj">#}
+    {#    </form>#}
+
+
+    <form action="" method="post" id="ticket_no">
         {% csrf_token %}
         <table>
             {{ client_form }}
             {{ reservation_form }}
             {{ ticket_form }}
         </table>
-        <input type="reset" value="Wyczyść"/>
-        <input type="submit" value="Zapisz"/>
-    </form>
-    <br><br>
+        <div class="screen">
+            <center><h1>Mapa miejsc</h1></center>
+            <div class="exit exit--front">
+            </div>
+            <ol class="front">
+                <li class="row row--A">
+                    <ol class="seats" type="A">
 
+                        {% for i in s_form.seats_row_a %}
+                            {% if i.data.selected %}
+                                <label for="{{ i.data.id }}"></label>
+                                <input type="checkbox" name="{{ i.data.name }}" value="{{ i.data.value }}"
+                                       id="{{ i.data.id }}" checked disabled>
+                            {% else %}
+                                {{ i }}
+                            {% endif %}
+                        {% endfor %}
+                    </ol>
+                </li>
 
-    <form action="" method="post" id="ticket_no">
-        {% csrf_token %}
-        <label>Wybierz ilość biletów:
-            <select form="ticket_no" name="ticket_select">
-                {% for i in ticket_number %}
-                    <option value="{{ i }}">{{ i }}</option>
-                {% endfor %}
-            </select>
-        </label>
-        <input type="hidden" name="ticket_number">
-        <input type="submit" value="Dodaj">
-    </form>
+                <li class="row row--B">
+                    <ol class="seats" type="B">
+                        {% for i in s_form.seats_row_b %}
+                            {% if i.data.selected %}
+                                <label for="{{ i.data.id }}"></label>
+                                <input type="checkbox" name="{{ i.data.name }}" value="{{ i.data.value }}"
+                                       id="{{ i.data.id }}" checked disabled>
+                            {% else %}
+                                {{ i }}
+                            {% endif %}
+                        {% endfor %}
+                    </ol>
+                </li>
 
-    <div class="screen">
-        <center><h1>Mapa miejsc</h1></center>
-        <div class="exit exit--front">
+                <li class="row row--C">
+                    <ol class="seats" type="C">
+                        {% for i in s_form.seats_row_c %}
+                            {% if i.data.selected %}
+                                <label for="{{ i.data.id }}"></label>
+                                <input type="checkbox" name="{{ i.data.name }}" value="{{ i.data.value }}"
+                                       id="{{ i.data.id }}" checked disabled>
+                            {% else %}
+                                {{ i }}
+                            {% endif %}
+                        {% endfor %}
+                    </ol>
+                </li>
+
+                <li class="row row--D">
+                    <ol class="seats" type="D">
+                        {% for i in s_form.seats_row_d %}
+                            {% if i.data.selected %}
+                                <label for="{{ i.data.id }}"></label>
+                                <input type="checkbox" name="{{ i.data.name }}" value="{{ i.data.value }}"
+                                       id="{{ i.data.id }}" checked disabled>
+                            {% else %}
+                                {{ i }}
+                            {% endif %}
+                        {% endfor %}
+                    </ol>
+                </li>
+
+                <li class="row row--E">
+                    <ol class="seats" type="E">
+                        {% for i in s_form.seats_row_e %}
+                            {% if i.data.selected %}
+                                <label for="{{ i.data.id }}"></label>
+                                <input type="checkbox" name="{{ i.data.name }}" value="{{ i.data.value }}"
+                                       id="{{ i.data.id }}" checked disabled>
+                            {% else %}
+                                {{ i }}
+                            {% endif %}
+                        {% endfor %}
+                    </ol>
+                </li>
+
+                <li class="row row--F">
+                    <ol class="seats" type="F">
+                        {% for i in s_form.seats_row_f %}
+                            {% if i.data.selected %}
+                                <label for="{{ i.data.id }}"></label>
+                                <input type="checkbox" name="{{ i.data.name }}" value="{{ i.data.value }}"
+                                       id="{{ i.data.id }}" checked disabled>
+                            {% else %}
+                                {{ i }}
+                            {% endif %}
+                        {% endfor %}
+                    </ol>
+                </li>
+
+                <li class="row row--G">
+                    <ol class="seats" type="G">
+                        {% for i in s_form.seats_row_g %}
+                            {% if i.data.selected %}
+                                <label for="{{ i.data.id }}"></label>
+                                <input type="checkbox" name="{{ i.data.name }}" value="{{ i.data.value }}"
+                                       id="{{ i.data.id }}" checked disabled>
+                            {% else %}
+                                {{ i }}
+                            {% endif %}
+                        {% endfor %}
+                    </ol>
+                </li>
+
+                <li class="row row--H">
+                    <ol class="seats" type="H">
+                        {% for i in s_form.seats_row_h %}
+                            {% if i.data.selected %}
+                                <label for="{{ i.data.id }}"></label>
+                                <input type="checkbox" name="{{ i.data.name }}" value="{{ i.data.value }}"
+                                       id="{{ i.data.id }}" checked disabled>
+                            {% else %}
+                                {{ i }}
+                            {% endif %}
+                        {% endfor %}
+                    </ol>
+                </li>
+
+                <li class="row row--I">
+                    <ol class="seats" type="I">
+                        {% for i in s_form.seats_row_i %}
+                            {% if i.data.selected %}
+                                <label for="{{ i.data.id }}"></label>
+                                <input type="checkbox" name="{{ i.data.name }}" value="{{ i.data.value }}"
+                                       id="{{ i.data.id }}" checked disabled>
+                            {% else %}
+                                {{ i }}
+                            {% endif %}
+                        {% endfor %}
+                    </ol>
+                </li>
+
+                <li class="row row--J">
+                    <ol class="seats" type="J">
+                        {% for i in s_form.seats_row_j %}
+                            {% if i.data.selected %}
+                                <label for="{{ i.data.id }}"></label>
+                                <input type="checkbox" name="{{ i.data.name }}" value="{{ i.data.value }}"
+                                       id="{{ i.data.id }}" checked disabled>
+                            {% else %}
+                                {{ i }}
+                            {% endif %}
+                        {% endfor %}
+                    </ol>
+                </li>
+            </ol>
         </div>
-        <ol class="front">
-            <li class="row row--A">
-                <ol class="seats" type="A">
-                    {% for seat in seats_row_a %}
-                        {% if seat.seat_id in taken_seats %}
-                            <li class="seat">
-                                <input type="checkbox" id="A{{ seat.seat_number }}" disabled/>
-                                <label for="A{{ seat.seat_id }}">A{{ seat.seat_id }}</label>
-                            </li>
-                        {% else %}
-                            <li class="seat">
-                                <input type="checkbox" id="A{{ seat.seat_number }}"/>
-                                <label for="A{{ seat.seat_id }}">A{{ seat.seat_id }}</label>
-                            </li>
-                        {% endif %}
-                    {% endfor %}
-                </ol>
-            </li>
-
-            <li class="row row--B">
-                <ol class="seats" type="B">
-                    {% for seat in seats_row_b %}
-                        {% if seat.seat_id in taken_seats %}
-                            <li class="seat">
-                                <input type="checkbox" id="{{ seat.seat_id }}" disabled/>
-                                <label for="{{ seat.seat_id }}">B{{ seat.seat_number }}</label>
-                            </li>
-                        {% else %}
-                            <li class="seat">
-                                <input type="checkbox" id="{{ seat.seat_id }}"/>
-                                <label for="{{ seat.seat_id }}">B{{ seat.seat_number }}</label>
-                            </li>
-                        {% endif %}
-                    {% endfor %}
-                </ol>
-            </li>
-
-            <li class="row row--C">
-                <ol class="seats" type="C">
-                    {% for seat in seats_row_c %}
-                        {% if seat.seat_id in taken_seats %}
-                            <li class="seat">
-                                <input type="checkbox" id="{{ seat.seat_id }}" disabled/>
-                                <label for="{{ seat.seat_id }}">C{{ seat.seat_number }}</label>
-                            </li>
-                        {% else %}
-                            <li class="seat">
-                                <input type="checkbox" id="{{ seat.seat_id }}"/>
-                                <label for="{{ seat.seat_id }}">C{{ seat.seat_number }}</label>
-                            </li>
-                        {% endif %}
-                    {% endfor %}
-                </ol>
-            </li>
-
-            <li class="row row--D">
-                <ol class="seats" type="D">
-                    {% for seat in seats_row_d %}
-                        {% if seat.seat_id in taken_seats %}
-                            <li class="seat">
-                                <input type="checkbox" id="{{ seat.seat_id }}" disabled/>
-                                <label for="{{ seat.seat_id }}">D{{ seat.seat_number }}</label>
-                            </li>
-                        {% else %}
-                            <li class="seat">
-                                <input type="checkbox" id="{{ seat.seat_id }}"/>
-                                <label for="{{ seat.seat_id }}">D{{ seat.seat_number }}</label>
-                            </li>
-                        {% endif %}
-                    {% endfor %}
-                </ol>
-            </li>
-
-            <li class="row row--E">
-                <ol class="seats" type="E">
-                    {% for seat in seats_row_e %}
-                        {% if seat.seat_id in taken_seats %}
-                            <li class="seat">
-                                <input type="checkbox" id="{{ seat.seat_id }}" disabled/>
-                                <label for="{{ seat.seat_id }}">E{{ seat.seat_number }}</label>
-                            </li>
-                        {% else %}
-                            <li class="seat">
-                                <input type="checkbox" id="{{ seat.seat_id }}"/>
-                                <label for="{{ seat.seat_id }}">E{{ seat.seat_number }}</label>
-                            </li>
-                        {% endif %}
-                    {% endfor %}
-                </ol>
-            </li>
-
-            <li class="row row--F">
-                <ol class="seats" type="F">
-                    {% for seat in seats_row_f %}
-                        {% if seat.seat_id in taken_seats %}
-                            <li class="seat">
-                                <input type="checkbox" id="{{ seat.seat_id }}" disabled/>
-                                <label for="{{ seat.seat_id }}">F{{ seat.seat_number }}</label>
-                            </li>
-                        {% else %}
-                            <li class="seat">
-                                <input type="checkbox" id="{{ seat.seat_id }}"/>
-                                <label for="{{ seat.seat_id }}">F{{ seat.seat_number }}</label>
-                            </li>
-                        {% endif %}
-                    {% endfor %}
-                </ol>
-            </li>
-
-            <li class="row row--G">
-                <ol class="seats" type="G">
-                    {% for seat in seats_row_g %}
-                        {% if seat.seat_id in taken_seats %}
-                            <li class="seat">
-                                <input type="checkbox" id="{{ seat.seat_id }}" disabled/>
-                                <label for="{{ seat.seat_id }}">G{{ seat.seat_number }}</label>
-                            </li>
-                        {% else %}
-                            <li class="seat">
-                                <input type="checkbox" id="{{ seat.seat_id }}"/>
-                                <label for="{{ seat.seat_id }}">G{{ seat.seat_number }}</label>
-                            </li>
-                        {% endif %}
-                    {% endfor %}
-                </ol>
-            </li>
-
-            <li class="row row--H">
-                <ol class="seats" type="H">
-                    {% for seat in seats_row_h %}
-                        {% if seat.seat_id in taken_seats %}
-                            <li class="seat">
-                                <input type="checkbox" id="{{ seat.seat_id }}" disabled/>
-                                <label for="{{ seat.seat_id }}">H{{ seat.seat_number }}</label>
-                            </li>
-                        {% else %}
-                            <li class="seat">
-                                <input type="checkbox" id="{{ seat.seat_id }}"/>
-                                <label for="{{ seat.seat_id }}">H{{ seat.seat_number }}</label>
-                            </li>
-                        {% endif %}
-                    {% endfor %}
-                </ol>
-            </li>
-
-            <li class="row row--I">
-                <ol class="seats" type="I">
-                    {% for seat in seats_row_i %}
-                        {% if seat.seat_id in taken_seats %}
-                            <li class="seat">
-                                <input type="checkbox" id="{{ seat.seat_id }}" disabled/>
-                                <label for="{{ seat.seat_id }}">I{{ seat.seat_number }}</label>
-                            </li>
-                        {% else %}
-                            <li class="seat">
-                                <input type="checkbox" id="{{ seat.seat_id }}"/>
-                                <label for="{{ seat.seat_id }}">I{{ seat.seat_number }}</label>
-                            </li>
-                        {% endif %}
-                    {% endfor %}
-                </ol>
-            </li>
-
-            <li class="row row--J">
-                <ol class="seats" type="J">
-                    {% for seat in seats_row_j %}
-                        {% if seat.seat_id in taken_seats %}
-                            <li class="seat">
-                                <input type="checkbox" id="{{ seat.seat_id }}" disabled/>
-                                <label for="{{ seat.seat_id }}">J{{ seat.seat_number }}</label>
-                            </li>
-                        {% else %}
-                            <li class="seat">
-                                <input type="checkbox" id="{{ seat.seat_id }}"/>
-                                <label for="{{ seat.seat_id }}">J{{ seat.seat_number }}</label>
-                            </li>
-                        {% endif %}
-                    {% endfor %}
-                </ol>
-            </li>
-        </ol>
-    </div>
+        <center><input type="submit" value="Dalej"></center>
+    </form>
 {% endblock %}

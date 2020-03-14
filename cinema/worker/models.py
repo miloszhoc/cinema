@@ -84,7 +84,7 @@ class TicketType(models.Model):
 
 class Ticket(models.Model):
     ticket_id = models.AutoField(primary_key=True, null=False)
-    client_id = models.ForeignKey(Client, on_delete=models.PROTECT)
+    client_id = models.ForeignKey(Client, on_delete=models.CASCADE)
     tickettype_id = models.ForeignKey(TicketType, on_delete=models.PROTECT)
     seat_id = models.ForeignKey(Seat, on_delete=models.PROTECT)
     showtime_id = models.ForeignKey(Showtime, on_delete=models.CASCADE)
@@ -97,7 +97,7 @@ class Ticket(models.Model):
 
 class Reservation(models.Model):
     reservation_id = models.AutoField(primary_key=True, null=False)
-    client_id = models.ForeignKey(Client, on_delete=models.PROTECT)
+    client_id = models.ForeignKey(Client, on_delete=models.CASCADE)
     showtime_id = models.ForeignKey(Showtime, on_delete=models.CASCADE)
     cost = models.DecimalField(max_digits=10, decimal_places=2, null=True)
     paid = models.BooleanField(default=False)
@@ -121,20 +121,3 @@ class Reservation(models.Model):
         return str(self.reservation_id) + '. ' + str(self.client_id.first_name) + ' ' + str(
             self.client_id.last_name) + ' - ' + str(self.showtime_id.movie_id.title) + ' - ' \
                + str(self.showtime_id.start_date)
-
-# class Event(models.Model):
-#     # event_id = models.AutoField(primary_key=True, null=False)
-#     showtime_id = models.ForeignKey(Showtime, on_delete=models.PROTECT, null=True, blank=True)
-#     title = models.CharField(null=False, max_length=255)
-#     description = models.TextField(null=True)
-#     date = models.DateTimeField(null=True)  # todo data wydarzenia = dacie i godzinie startu filmu
-#
-#     # jesli seans jest powiazany z wydarzeniem, to data rozpoczecia wydarzenia jest datą rozpoczecia seansu
-#     def save(self, force_insert=False, force_update=False, using=None,
-#              update_fields=None):
-#         if self.showtime_id:
-#             self.date = self.showtime_id.start_date
-#         super(Event, self).save()
-#
-#     def __str__(self):
-#         return self.title

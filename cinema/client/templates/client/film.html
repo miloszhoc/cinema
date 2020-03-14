@@ -6,6 +6,11 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
 </head>
 <body>
+{% if messages %}
+    {% for message in messages %}
+        {{ message }}
+    {% endfor %}
+{% endif %}
 <img src="{{ object.thumbnail }}" alt="{{ object.title }}"/><br>
 <b>tytuł:</b> {{ object.title }}<br><br>
 <b>reżyser:</b> {{ object.director }}<br>
