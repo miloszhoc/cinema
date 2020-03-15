@@ -238,17 +238,11 @@ def okinie(request):
 class RepertuarShowtimeListView(ListView):
     template_name = 'client/repertuar.html'
 
-    # wszystkie seanse od dzisiaj, które nie powtarzaja sie
-    queryset = Showtime.objects.filter(movie_id__movie_id__in=Showtime.objects.all(),
-                                       movie_id__showtime__start_date__gt=timezone.now()).distinct()
+    queryset = Showtime.objects.filter(start_date__gte=timezone.now()).order_by('start_date')
     model = Showtime
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(object_list=object_list, **kwargs)
-
-        context['showtime_dates'] = Showtime.objects.filter(start_date__gte=timezone.now()).select_related()
-        # 14 dni od dzisiejszego dnia
-        context['dates'] = list(map(lambda x: timezone.now() + timezone.timedelta(days=x), range(14)))
         return context
 
 

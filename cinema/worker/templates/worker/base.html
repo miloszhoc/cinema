@@ -12,6 +12,7 @@
 <body>
 Zalogowano jako {{ user }} |
 <a href="{% url 'logout' %}">Wyloguj</a><br>
+<a href="{% url 'panel' %}"> Strona główna</a>
 <br><br>
 <div id="container">
     {% block content %}
