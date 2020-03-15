@@ -128,7 +128,7 @@ def reservation_form(request, **kwargs):  # kwargs przekazywanie z urls
                                                                        's_form': s_form})
 
 
-@transaction.atomic()
+@transaction.atomic
 def summary_client(request, **kwargs):
     if len(request.session.keys()) > 0:
         taken = request.session.get('taken')
@@ -290,9 +290,10 @@ class RepertuarShowtimeListView(ListView):
 
 
 # potwierdza rezerwacje
-@transaction.atomic()
+@transaction.atomic
 def rezerwacja_potwierdz(request, **kwargs):
     reservation_uuid = kwargs['id']
+    reservation = Reservation.objects.get(reservation_confirmation_code=reservation_uuid)
     form = forms.ConfirmReservationForm(initial={'text_field': reservation_uuid})
     if request.POST:
         form = forms.ConfirmReservationForm(request.POST, initial={'text_field': reservation_uuid})
@@ -305,13 +306,16 @@ def rezerwacja_potwierdz(request, **kwargs):
         else:
             messages.add_message(request, messages.ERROR, 'Rezerwacja została już potwierdzona.')
     return render(request, 'client/rezerwacja/potwierdz_rezerwacje.html', context={'reservation_uuid': reservation_uuid,
-                                                                                   'form': form})
+                                                                                   'form': form,
+                                                                                   'reservation': reservation})
+    # 'reservation': reservation})
 
 
 # usuwa rezerwacje tylko jesli rezerwacja nie zostala wczesniej potwierdzona
-@transaction.atomic()
+@transaction.atomic
 def rezerwacja_anuluj(request, **kwargs):
     reservation_uuid = kwargs['id']
+    reservation = Reservation.objects.get(reservation_confirmation_code=reservation_uuid)
     form = forms.ConfirmReservationForm(initial={'text_field': reservation_uuid})
 
     if request.POST:
@@ -334,4 +338,5 @@ def rezerwacja_anuluj(request, **kwargs):
             # https://www.kodefork.com/questions/30/how-to-pass-a-message-when-we-redirect-to-some-template-from-django-views/
             messages.add_message(request, messages.ERROR, 'Nie można anulować! Rezerwacja została już potwierdzona.')
     return render(request, 'client/rezerwacja/anuluj_rezerwacje.html', context={'reservation_uuid': reservation_uuid,
-                                                                                'form': form})
+                                                                                'form': form,
+                                                                                'reservation': reservation})
