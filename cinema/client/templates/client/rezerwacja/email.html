@@ -3,16 +3,67 @@
 <head>
     <meta charset="utf-8">
 </head>
+
 <body>
-<p>Witaj {{ first_name }} {{ last_name }}!</p>Dziękujemy za wybranie naszego kina!<br><br><br>
+<p>Witaj {{ first_name }} {{ last_name }}</p>Dziękujemy za wybranie naszego kina!<br><br><br>
 Aby potwierdzić rezerwację prosimy kliknąć, lub skopiować poniższy link.<br>
-{{ domain }}{% url 'reservation-accept-client' uuid %}
+{{ domain }}{% url 'reservation-accept-client' reservation.reservation_confirmation_code %}
 <br><br>
-Jeśli nie potwierdzą Państwo rezerwacji w ciągu 30 minut, to zostanie ona automatycznie usunięta z systemu.
+Jeśli rezerwacja nie zostanie potwierdzona w ciągu 30 minut, to zostanie automatycznie usunięta z systemu.
 <br><br><br>
+
 Aby zrezygnować z rezerwacji prosimy kliknąć, lub skopiować poniższy link.<br>
-{{ domain }}{% url 'reservation-deny-client' uuid %}
+{{ domain }}{% url 'reservation-deny-client' reservation.reservation_confirmation_code %}
+<br><br><br>
+<strong>Dane rezerwacji:</strong>
+<table>
+    <tr>
+        <td>Seans</td>
+        <td>{{ reservation.showtime_id }}</td>
+    </tr>
+
+    <tr>
+        <td>
+            Imię i nazwisko
+        </td>
+        <td>
+            {{ reservation.client_id.first_name }}
+            {{ reservation.client_id.last_name }}
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Adres Email
+        </td>
+        <td>
+            {{ reservation.client_id.email }}
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Do zapłaty
+        </td>
+        <td>
+            {{ reservation.cost }} PLN
+        </td>
+    </tr>
+</table>
+<br><br>
+<strong>Miejsca:</strong>
+<table>
+    <tr>
+        <td>Rząd</td>
+        <td>Miejsce</td>
+    </tr>
+    {% for i in  reservation.ticket_id.iterator %}
+        <tr>
+            <td>{{ i.seat_id.row_number }}</td>
+            <td>{{ i.seat_id.seat_number }}</td>
+        </tr>
+    {% endfor %}
+</table>
 <br><br><br><br>
+<h2>Prosimy o przybycie oraz płatność przynajmiej 15 minut przed rozpoczęciem seansu.</h2>
 <hr>
 Serdecznie pozdrawiamy,<br>
 Zespół MovieCity.

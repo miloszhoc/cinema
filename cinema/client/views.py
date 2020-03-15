@@ -209,7 +209,7 @@ def summary_client(request, **kwargs):
                 html_mail = loader.render_to_string(template_name='client/rezerwacja/email.html',
                                                     context={'first_name': client.first_name,
                                                              'last_name': client.last_name,
-                                                             'uuid': reservation.reservation_confirmation_code,
+                                                             'reservation': reservation,
                                                              'domain': request.META['HTTP_HOST']})
 
                 mail = send_mail(subject='Potwierdzenie rezerwacji',
