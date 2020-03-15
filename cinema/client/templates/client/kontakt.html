@@ -1,33 +1,45 @@
-<!DOCTYPE html>
-{% load static %}
-<html lang="pl">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+{% extends 'client/base.html' %}
+{% block head %}
     <title>Kontakt</title>
-    <link rel="stylesheet" href="{% static 'client/style.css' %}">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
-</head>
+    <style>
+        body {
+            width: 100%;
+            min-height: 100%;
+        }
 
-<body>
-<div class="container">
-    <img src="../../static/client/images/logo.png" class="logo">
-</div>
-<h1>KONTAKT</h1>
-<nav>
-        <ul class="menu">
+        h2.formularz {
+            color: #fff;
+            font-size: x-large;
+            text-align: center;
+            margin-top: 6%;
+            letter-spacing: 10px;
+        }
 
-            <li><a href="{% url 'about-client' %}">O kinie</a></li>
-            <li><a href="{% url 'price-list-client' %}">Cennik</a></li>
-            <li><a href="{% url 'repertoire-list-client' %}">Repertuar</a></li>
-            <li><a href="{% url 'reservation-client' %}">Rezerwacja miejsc</a></li>
-            <li><a href="{% url 'contact-client' %}">Kontakt</a></li>
+        h2.glowna {
+            margin-top: 10%;
+        }
 
-        </ul>
-    </nav>
-<h2 class="formularz">
+        a {
+            text-decoration: none;
+            color: grey;
+        }
+
+        a:hover {
+            color: #fff;
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+            letter-spacing: 5px;
+        }
+    </style>
+{% endblock %}
+{% block logo-text %}
+    <h1 class="logo-text">Kontakt</h1>
+{% endblock %}
+{% block content %}
+    <h2 class="formularz">
         <span style='background-color:grey'>
             Adres: <br>
             Wyższa Szkoła Bankowa <br>
@@ -39,45 +51,5 @@
             Strona WWW: <br>
             www.link.pl
         </span>
-</h2>
-<h2 class="glowna">
-    <a href="{% url 'index-client' %}">&#60 &#60 Strona główna</a>
-</h2>
-</body>
-<style>
-    body {
-        width: 100%;
-        min-height: 100%;
-    }
-
-    h2.formularz {
-        color: #fff;
-        font-size: x-large;
-        text-align: center;
-        margin-top: 6%;
-        letter-spacing: 10px;
-
-    }
-
-    h2.glowna {
-        margin-top: 10%;
-
-    }
-
-    a {
-        text-decoration: none;
-        color: grey;
-    }
-
-    a:hover {
-        color: #fff;
-    }
-
-    h1 {
-        text-align: center;
-        color: white;
-        letter-spacing: 5px;
-    }
-</style>
-
-</html>
+    </h2>
+{% endblock %}

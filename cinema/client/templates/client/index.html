@@ -1,88 +1,57 @@
-<!DOCTYPE html>
-{% load static %}
-<html lang="pl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Kino Objazdowe! Sprawdź najciekawsze oferty i zarezerwuj miejsca online już dziś!</title>
-    <link rel="stylesheet" href="{% static 'client/style.css' %}">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+{% extends 'client/base.html' %}
 
-</head>
-<body>
-{% if messages %}
-    {% for message in messages %}
-        {{ message }}
-    {% endfor %}
-{% endif %}
-<div class="container">
-    <img src="../../static/client/images/logo.png" class="logo">
-</div>
+{% block head %}
+    <title>Kino MovieCity</title>
+{% endblock %}
 
-<header>
+
+{% block logo-text %}
     <h1 class="logo-text">MOVIE CITY</h1>
-    <nav>
-        <ul class="menu">
-            <li><a href="{% url 'about-client' %}">O kinie</a></li>
-            <li><a href="{% url 'price-list-client' %}">Cennik</a></li>
-            <li><a href="{% url 'repertoire-list-client' %}">Repertuar</a></li>
-            <li><a href="{% url 'reservation-client' %}">Rezerwacja miejsc</a></li>
-            <li><a href="{% url 'contact-client' %}">Kontakt</a></li>
-        </ul>
-    </nav>
-</header>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
+{% endblock %}
 
-
-<div class="container series">
-
-
-    {% if today|length > 0 %}
-        <h2>Dzisiaj gramy:</h2>
-        <div class="row">
-        <div class="col-md-4">
-            <br>
-            {% for d in today %}
-                <div class="row">
-                    <div class="col-6"><a href="{% url 'movie-details-client' d.movie_id %}"
-                                          title="Zobacz szczególy filmu oraz zwiastun!"> <img src={{ d.thumbnail }}
-                                                                                                      width="120"
-                                                                                              height="120"></a>
-                    </div>
-                    <br>
-                </div>
-            {% endfor %}
-        </div>
+{% block content %}
+    {% if messages %}
+        {% for message in messages %}
+            {{ message }}
+        {% endfor %}
     {% endif %}
 
-    <h2>W najbliższe dni gramy:</h2>
-    <br>
-    <div class="row">
-        <div class="col-md-4">
-            {% for i in future %}
-                <div class="row">
-                    <div class="col-6"><a href="{% url 'movie-details-client' i.movie_id %}"
-                                          title="Zobacz szczególy filmu oraz zwiastun!"> <img src={{ i.thumbnail }}
-                                                                                                      width="120"
-                                                                                              height="120"></a>
+    <div class="container series">
+        {% if today|length > 0 %}
+            <h2>Dzisiaj gramy:</h2>
+            <div class="row">
+            <div class="col-md-4">
+                <br>
+                {% for d in today %}
+                    <div class="row">
+                        <div class="col-6"><a href="{% url 'movie-details-client' d.movie_id %}"
+                                              title="Zobacz szczególy filmu oraz zwiastun!"> <img src={{ d.thumbnail }}
+                                                                                                          width="120"
+                                                                                                  height="120"></a>
+                        </div>
+                        <br>
                     </div>
-                    <br>
-                </div>
-            {% endfor %}
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <h2>W najbliższe dni gramy:</h2>
+        <br>
+        <div class="row">
+            <div class="col-md-4">
+                {% for i in future %}
+                    <div class="row">
+                        <div class="col-6"><a href="{% url 'movie-details-client' i.movie_id %}"
+                                              title="Zobacz szczególy filmu oraz zwiastun!"> <img src={{ i.thumbnail }}
+                                                                                                          width="120"
+                                                                                                  height="120"></a>
+                        </div>
+                        <br>
+                    </div>
+                {% endfor %}
+            </div>
+
         </div>
-
+        </div>
     </div>
-    </div>
-
-
-</body>
-</html>
+{% endblock %}

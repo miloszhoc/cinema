@@ -1,54 +1,69 @@
-<!DOCTYPE html>
-{% load static %}
-<html lang="pl">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+{% extends 'client/base.html' %}
+{% block head %}
     <title>O kinie</title>
-    <link rel="stylesheet" href="{% static 'client/style.css' %}">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
-</head>
+{% endblock %}
 
-<body>
-<div class="container">
-    <img src="../../static/client/images/logo.png" class="logo">
-</div>
-<h1 class="okinie">
-    O KINIE</h1>
-<nav>
-        <ul class="menu">
+{% block logo-text %}
+    <h1 class="logo-text">O kinie</h1>
+{% endblock %}
 
-            <li><a href="{% url 'about-client' %}">O kinie</a></li>
-            <li><a href="{% url 'price-list-client' %}">Cennik</a></li>
-            <li><a href="{% url 'repertoire-list-client' %}">Repertuar</a></li>
-            <li><a href="{% url 'reservation-client' %}">Rezerwacja miejsc</a></li>
-            <li><a href="{% url 'contact-client' %}">Kontakt</a></li>
+{% block content %}
+    <style>
+        h1.okinie {
+            text-align: center;
+            color: white;
+            letter-spacing: 5px;
+        }
 
-        </ul>
-    </nav>
-<h1 class="czymjest">
-    KIM JESTEŚMY?
-</h1>
+        h1.czymjest {
+
+            color: yellow;
+            letter-spacing: 5px;
+            margin-bottom: 5px;
+        }
+
+        h2.formularz {
+            color: rgb(96, 243, 47);
+            margin-bottom: 2%;
+
+        }
+
+        h2.glowna {
+            margin-top: 2%;
+
+        }
+
+        a {
+            text-decoration: none;
+            color: grey;
+        }
+
+        a:hover {
+            color: #fff;
+        }
+    </style>
+
+    <h1 class="czymjest">
+        KIM JESTEŚMY?
+    </h1>
 
 
-<h2 class="formularz">
+    <h2 class="formularz">
 
-    <br>
-    <span style="background-color: rgb(23, 107, 175)">
+        <br>
+        <span style="background-color: rgb(23, 107, 175)">
 
             Kino Movie City znajduje się na Dolnym Śląsku, w samym sercu miasta. W miejscu, do którego bez problemu
             dotrzesz z każdego miejsca w mieście.
         </span>
-    <br>
-    <br>
-</h2>
-<h1 class="czymjest">
-    CO OFERUJEMY?
-</h1>
+        <br>
+        <br>
+    </h2>
+    <h1 class="czymjest">
+        CO OFERUJEMY?
+    </h1>
 
-<h2 class="formularz">
+    <h2 class="formularz">
 
         <span style="background-color: rgb(23, 107, 175)">
             Kino oferuje widzom największe filmowe hity, przedpremierowe pokazy i uroczyste premiery. Organizuje również
@@ -57,70 +72,30 @@
             Jesteśmy nastawieni na pokazy największych klasyków kinowych, aby każdy kinomaniak mógł sobie je przypomnieć
             razem z nami!
         </span>
-    <br>
-    <br>
-</h2>
-<h1 class="czymjest">
-    JAK WYGLĄDA KINO?
-</h1>
-<h2 class="formularz">
+        <br>
+        <br>
+    </h2>
+    <h1 class="czymjest">
+        JAK WYGLĄDA KINO?
+    </h1>
+    <h2 class="formularz">
         <span style="background-color: rgb(23, 107, 175)">
             Niepowtarzalna atmosfera i klimat wnętrza sprawia, że kino cieszy się dużą popularnością. Dodatkowym atutem
             kina są super wygodne dwuosobowe kanapy, które znajdują się w ostatnich rzędach każdej z sal.
         </span>
+        <br>
+
+
+    </h2>
+    <div style='float:left'>
+        <img src='../../static/client/images/okinie/cinema.jpg' width="300" height="150">
+    </div>
+    <div style='position:absolute; left:40%'>
+        <img src='../../static/client/images/okinie/cinema2.jpg' width="300" height="150">
+    </div>
+    <div style='float:right'>
+        <img src='../../static/client/images/okinie/cinema3.jpg' style='float:right' width="300" height="150">
+    </div>
+    <div style="clear:both"></div>
     <br>
-
-
-</h2>
-<div style='float:left'>
-    <img src='../../static/client/images/okinie/cinema.jpg' width="300" height="150">
-</div>
-<div style='position:absolute; left:40%'>
-    <img src='../../static/client/images/okinie/cinema2.jpg' width="300" height="150">
-</div>
-<div style='float:right'>
-    <img src='../../static/client/images/okinie/cinema3.jpg' style='float:right' width="300" height="150">
-</div>
-<div style="clear:both"></div>
-
-<h2 class="glowna">
-    <a href="{% url 'index-client' %}">&#60 &#60 Strona główna</a>
-
-</h2>
-</body>
-<style>
-    h1.okinie {
-        text-align: center;
-        color: white;
-        letter-spacing: 5px;
-    }
-
-    h1.czymjest {
-
-        color: yellow;
-        letter-spacing: 5px;
-        margin-bottom: 5px;
-    }
-
-    h2.formularz {
-        color: rgb(96, 243, 47);
-        margin-bottom: 2%;
-
-    }
-
-    h2.glowna {
-        margin-top: 2%;
-
-    }
-
-    a {
-        text-decoration: none;
-        color: grey;
-    }
-
-    a:hover {
-        color: #fff;
-    }
-</style>
-
-</html>
+{% endblock %}

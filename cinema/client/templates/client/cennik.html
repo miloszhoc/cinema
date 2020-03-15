@@ -1,80 +1,8 @@
-<!DOCTYPE html>
+{% extends 'client/base.html' %}
 {% load static %}
-<html lang="pl">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+{% block head %}
     <title>Cennik</title>
-    <link rel="stylesheet" href="{% static 'client/style.css' %}">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
-</head>
-
-<body>
-<div class="container">
-    <img src="../../static/client/images/logo.png" class="logo">
-</div>
-<h1>CENNIK BILETÓW</h1>
-<nav>
-        <ul class="menu">
-
-            <li><a href="{% url 'about-client' %}">O kinie</a></li>
-            <li><a href="{% url 'price-list-client' %}">Cennik</a></li>
-            <li><a href="{% url 'repertoire-list-client' %}">Repertuar</a></li>
-            <li><a href="{% url 'reservation-client' %}">Rezerwacja miejsc</a></li>
-            <li><a href="{% url 'contact-client' %}">Kontakt</a></li>
-
-        </ul>
-    </nav>
-<br>
-<br>
-<table class="table">
-
-    <tbody>
-
-    <tr>
-
-        <td><strong>Bilety</strong></td>
-
-        <td><strong>Normalny*</strong></td>
-
-        <td><strong>Ulgowy**</strong></td>
-
-    </tr>
-
-    <tr>
-
-        <td>Pn, Śr, Czw</td>
-
-        <td>21 zł</td>
-
-        <td>17 zł</td>
-
-    </tr>
-
-    <tr>
-        <td>Tanie wtorki!</td>
-
-        <td>15 zł</td>
-
-        <td>15 zł</td>
-
-    </tr>
-
-    <tr>
-
-        <td>Pt-Nd, Święta</td>
-
-        <td>24 zł</td>
-
-        <td>19 zł</td>
-
-    </tr>
-
-
     <style>
-
         .table {
             width: 100%;
             border-collapse: collapse;
@@ -89,13 +17,11 @@
             padding: 5px 12px;
             text-align: left;
             vertical-align: top;
-
         }
 
         .table tbody tr:nth-child(even) td {
             background-color: #f3f3f3;
         }
-
 
         .table tbody tr:nth-child(odd) td {
             background-color: grey;
@@ -113,7 +39,6 @@
 
         h2 {
             margin-top: 5%;
-
         }
 
         a {
@@ -124,21 +49,41 @@
         a:hover {
             color: #fff;
         }
-
     </style>
+{% endblock %}
 
-    </tbody>
-
-
-</table>
-<h3>
-    Normalny* - sprzedawany bez dodatkowych dokumentów kwalifikujących do ceny ulgowej <br>
-    Ulgowy** - sprzedawany wyłącznie za ukazaniem ważnej legitymacji uczniowskiej/studenckiej
-</h3>
-<h2>
-    <a href="{% url 'index-client' %}">&#60 &#60 Strona główna</a>
-</h2>
-
-</body>
-
-</html>
+{% block logo-text %}
+    <h1 class="logo-text">Cennik</h1>
+{% endblock %}
+{% block content %}
+    <br>
+    <br>
+    <table class="table">
+        <tbody>
+        <tr>
+            <td><strong>Bilety</strong></td>
+            <td><strong>Normalny*</strong></td>
+            <td><strong>Ulgowy**</strong></td>
+        </tr>
+        <tr>
+            <td>Pn, Śr, Czw</td>
+            <td>21 zł</td>
+            <td>17 zł</td>
+        </tr>
+        <tr>
+            <td>Tanie wtorki!</td>
+            <td>15 zł</td>
+            <td>15 zł</td>
+        </tr>
+        <tr>
+            <td>Pt-Nd, Święta</td>
+            <td>24 zł</td>
+            <td>19 zł</td>
+        </tr>
+        </tbody>
+    </table>
+    <h3>
+        Normalny* - sprzedawany bez dodatkowych dokumentów kwalifikujących do ceny ulgowej <br>
+        Ulgowy** - sprzedawany wyłącznie za ukazaniem ważnej legitymacji uczniowskiej/studenckiej
+    </h3>
+{% endblock %}

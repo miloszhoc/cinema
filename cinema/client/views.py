@@ -130,100 +130,120 @@ def reservation_form(request, **kwargs):  # kwargs przekazywanie z urls
 
 @transaction.atomic
 def summary_client(request, **kwargs):
-    taken = request.session.get('taken')
-    data = request.session.get('data')
-    showtime_id = data['showtime_id']
+    if len(request.session.keys()) > 0:
+        taken = request.session.get('taken')
+        data = request.session.get('data')
+        showtime_id = data['showtime_id']
 
-    paid = data['paid'] if data.get('paid') else ''
-    confirmed = data['confirmed'] if data.get('confirmed') else ''
+        paid = data['paid'] if data.get('paid') else ''
+        confirmed = data['confirmed'] if data.get('confirmed') else ''
 
-    reservation_initial = {'showtime_id': data['showtime_id'],
-                           'confirmed': confirmed,
-                           'paid': paid}
+        reservation_initial = {'showtime_id': data['showtime_id'],
+                               'confirmed': confirmed,
+                               'paid': paid}
 
-    client_initial = {'first_name': data['first_name'],
-                      'last_name': data['last_name'],
-                      'email': data['email'],
-                      'phone_number': data['phone_number']}
+        client_initial = {'first_name': data['first_name'],
+                          'last_name': data['last_name'],
+                          'email': data['email'],
+                          'phone_number': data['phone_number']}
 
-    showtime = Showtime.objects.get(showtime_id=showtime_id)
+        showtime = Showtime.objects.get(showtime_id=showtime_id)
 
-    r_form = forms.ReservationModelForm(initial=reservation_initial)
-    r_form.fields['showtime_id'].widget = r_form.fields['showtime_id'].hidden_widget()
+        r_form = forms.ReservationModelForm(initial=reservation_initial)
+        r_form.fields['showtime_id'].widget = r_form.fields['showtime_id'].hidden_widget()
 
-    client_form = forms.ClientModelForm(initial=client_initial)
-    client_form.fields['first_name'].widget = client_form.fields['first_name'].hidden_widget()
-    client_form.fields['last_name'].widget = client_form.fields['last_name'].hidden_widget()
-    client_form.fields['email'].widget = client_form.fields['email'].hidden_widget()
-    client_form.fields['phone_number'].widget = client_form.fields['phone_number'].hidden_widget()
+        client_form = forms.ClientModelForm(initial=client_initial)
+        client_form.fields['first_name'].widget = client_form.fields['first_name'].hidden_widget()
+        client_form.fields['last_name'].widget = client_form.fields['last_name'].hidden_widget()
+        client_form.fields['email'].widget = client_form.fields['email'].hidden_widget()
+        client_form.fields['phone_number'].widget = client_form.fields['phone_number'].hidden_widget()
 
-    ticket_formset = modelformset_factory(Ticket,
-                                          fields=('seat_id', 'tickettype_id'),
-                                          labels={'seat_id': '',
-                                                  'tickettype_id': 'Typ Biletu'},
-                                          extra=len(taken),
-                                          widgets={'seat_id': django.forms.Select(attrs={'hidden': ''})},
-                                          max_num=10)
+        ticket_formset = modelformset_factory(Ticket,
+                                              fields=('seat_id', 'tickettype_id'),
+                                              labels={'seat_id': '',
+                                                      'tickettype_id': 'Typ Biletu'},
+                                              extra=len(taken),
+                                              widgets={'seat_id': django.forms.Select(attrs={'hidden': ''})},
+                                              max_num=10)
 
-    ticket_form = ticket_formset(queryset=Ticket.objects.none(), initial=[{'seat_id': z} for z in taken])
-    if request.POST:
-        r_form = forms.ReservationModelForm(request.POST)
-        client_form = forms.ClientModelForm(request.POST)
-        ticket_form = ticket_formset(request.POST)
+        ticket_form = ticket_formset(queryset=Ticket.objects.none(), initial=[{'seat_id': z} for z in taken])
+        if request.POST:
+            r_form = forms.ReservationModelForm(request.POST)
+            client_form = forms.ClientModelForm(request.POST)
+            ticket_form = ticket_formset(request.POST)
 
-        if ticket_form.is_valid() and (client_form.is_valid() and r_form.is_valid()):
-            showtime = Showtime.objects.get(showtime_id=showtime_id)  # obiekt seansu
-            client = client_form.save()
-            reservation = r_form.save(commit=False)
-            reservation.client_id = client
+            if ticket_form.is_valid() and (client_form.is_valid() and r_form.is_valid()):
+                showtime = Showtime.objects.get(showtime_id=showtime_id)  # obiekt seansu
+                client = client_form.save()
+                reservation = r_form.save(commit=False)
+                reservation.client_id = client
 
-            # https://docs.djangoproject.com/en/3.0/topics/db/examples/many_to_many/#many-to-many-relationships
-            instances = ticket_form.save(commit=False)
+                # https://docs.djangoproject.com/en/3.0/topics/db/examples/many_to_many/#many-to-many-relationships
+                instances = ticket_form.save(commit=False)
 
-            # get total price
-            total_price = 0
-            for instance in instances:
-                total_price += TicketType.objects.get(ticket_id=instance.tickettype_id_id).price
+                # get total price
+                total_price = 0
+                for instance in instances:
+                    total_price += TicketType.objects.get(ticket_id=instance.tickettype_id_id).price
 
-            reservation.cost = total_price
-            reservation.save()
+                reservation.cost = total_price
+                reservation.save()
 
-            for instance in instances:
-                instance.client_id = client
-                instance.showtime_id = showtime
-                instance.save()
-                reservation.ticket_id.add(instance)
+                for instance in instances:
+                    instance.client_id = client
+                    instance.showtime_id = showtime
+                    instance.save()
+                    reservation.ticket_id.add(instance)
 
-            r_form.save_m2m()
-            # full_email = EMAIL_HOST_USER + '@' + EMAIL_DOMAIN
-            # https://simpleisbetterthancomplex.com/tutorial/2016/06/13/how-to-send-email.html
-            # https://stackoverflow.com/questions/29466796/sending-a-html-email-in-django
-            html_mail = loader.render_to_string(template_name='client/rezerwacja/email.html',
-                                                context={'first_name': client.first_name,
-                                                         'last_name': client.last_name,
-                                                         'uuid': reservation.reservation_confirmation_code,
-                                                         'domain': request.META['HTTP_HOST']})
+                r_form.save_m2m()
+                # full_email = EMAIL_HOST_USER + '@' + EMAIL_DOMAIN
+                # https://simpleisbetterthancomplex.com/tutorial/2016/06/13/how-to-send-email.html
+                # https://stackoverflow.com/questions/29466796/sending-a-html-email-in-django
+                html_mail = loader.render_to_string(template_name='client/rezerwacja/email.html',
+                                                    context={'first_name': client.first_name,
+                                                             'last_name': client.last_name,
+                                                             'uuid': reservation.reservation_confirmation_code,
+                                                             'domain': request.META['HTTP_HOST']})
 
-            print(send_mail(subject='Potwierdzenie rezerwacji',
-                            message='',
-                            from_email=EMAIL_HOST_USER,
-                            recipient_list=[client.email, ],
-                            fail_silently=False,
-                            html_message=html_mail))
+                mail = send_mail(subject='Potwierdzenie rezerwacji',
+                                 message='',
+                                 from_email=EMAIL_HOST_USER,
+                                 recipient_list=[client.email, ],
+                                 fail_silently=True,
+                                 html_message=html_mail)
+                if mail:
+                    messages.add_message(request, messages.SUCCESS,
+                                         'Rezerwacja została pomyślnie utworzona, na twój adres'
+                                         'mailowy została wysłana wiadomość z potwierdzeniem.'
+                                         'Jeśli nie potwierdzisz rezerwacji w ciągu 15 minut, '
+                                         'to zostanie ona usunięta z systemu')
+                else:
+                    messages.add_message(request, messages.ERROR, 'Nie udało się zarezerwować wybranych miejsc.')
+                request.session.flush()
+                return redirect(reverse('movie-details-client', kwargs={'pk': str(showtime.movie_id.movie_id)}))
 
-            messages.add_message(request, messages.SUCCESS, 'Rezerwacja została pomyślnie utworzona, na twój adres'
-                                                            'mailowy została wysłana wiadomość z potwierdzeniem.'
-                                                            'Jeśli nie potwierdzisz rezerwacji w ciągu 30 minut, '
-                                                            'to zostanie ona usunięta z systemu')
-            return redirect(reverse('movie-details-client', kwargs={'pk': str(showtime.movie_id.movie_id)}))
-
-    return render(request, 'client/podsumowanie.html', context={'taken': taken,
-                                                                'ticket_form': ticket_form,
-                                                                'reservation_form': r_form,
-                                                                'client_form': client_form,
-                                                                'client_initial': client_initial,
-                                                                'reservation_initial': reservation_initial,
-                                                                'showtime': showtime})
+        return render(request, 'client/podsumowanie.html', context={'taken': taken,
+                                                                    'ticket_form': ticket_form,
+                                                                    'reservation_form': r_form,
+                                                                    'client_form': client_form,
+                                                                    'client_initial': client_initial,
+                                                                    'reservation_initial': reservation_initial,
+                                                                    'showtime': showtime})
+    else:
+        taken = ''
+        ticket_form = ''
+        r_form = ''
+        client_form = ''
+        reservation_initial = ''
+        client_initial = ''
+        showtime = ''
+        return render(request, 'client/podsumowanie.html', context={'taken': taken,
+                                                                    'ticket_form': ticket_form,
+                                                                    'reservation_form': r_form,
+                                                                    'client_form': client_form,
+                                                                    'client_initial': client_initial,
+                                                                    'reservation_initial': reservation_initial,
+                                                                    'showtime': showtime})
 
 
 def cennik(request):
@@ -250,10 +270,6 @@ class RepertuarShowtimeListView(ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(object_list=object_list, **kwargs)
         return context
-
-
-def rezerwacja(request):
-    return render(request, 'client/rezerwacja.html', context={})
 
 
 # potwierdza rezerwacje

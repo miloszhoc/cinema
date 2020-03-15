@@ -6,7 +6,6 @@ urlpatterns = [
     path('cennik/', views.cennik, name='price-list-client'),
     path('kontakt/', views.kontakt, name='contact-client'),
     path('okinie/', views.okinie, name='about-client'),
-    path('rezerwacja/', views.rezerwacja, name='reservation-client'),
 
     # detail views
     path('movie/<int:pk>', views.FilmMovieDetailView.as_view(), name='movie-details-client'),
