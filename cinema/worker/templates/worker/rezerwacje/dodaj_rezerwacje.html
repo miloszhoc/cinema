@@ -8,48 +8,6 @@
 {% endblock %}
 
 {% block content %}
-    {#    <form action="" method="post">#}
-    {#        {% csrf_token %}#}
-    {#        <table>#}
-    {#            {{ client_form }}#}
-    {#            {{ reservation_form }}#}
-    {#            {{ ticket_form }}#}
-    {#        </table>#}
-    {#            {{ s_form.as_p }}#}
-
-    {#            {% for i in s_form.seats_row_a %}#}
-    {#                {% if i.data.selected %}#}
-    {#                    <label for="{{ i.data.id }}">#}
-    {#                        <input type="checkbox" name="{{ i.data.name }}" value="{{ i.data.value }}" id="{{ i.data.id }}"#}
-    {#                               checked#}
-    {#                               disabled>#}
-    {#                    </label>#}
-    {#                {% else %}#}
-    {#                    {{ i }}#}
-    {#                {% endif %}#}
-    {#            {% endfor %}#}
-
-    {#        </table>#}
-    {#        <input type="reset" value="Wyczyść"/>#}
-    {#        <input type="submit" value="Zapisz"/>#}
-    {#    </form>#}
-    {#    <br><br>#}
-
-
-    {#    <form action="" method="post" id="ticket_no">#}
-    {#        {% csrf_token %}#}
-    {#        <label>Wybierz ilość biletów:#}
-    {#            <select form="ticket_no" name="ticket_select">#}
-    {#                {% for i in ticket_number %}#}
-    {#                    <option value="{{ i }}">{{ i }}</option>#}
-    {#                {% endfor %}#}
-    {#            </select>#}
-    {#        </label>#}
-    {#        <input type="hidden" name="ticket_number">#}
-    {#        <input type="submit" value="Dodaj">#}
-    {#    </form>#}
-
-
     <form action="" method="post" id="ticket_no">
         {% csrf_token %}
         <table>

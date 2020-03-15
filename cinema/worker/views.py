@@ -1,4 +1,3 @@
-from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.shortcuts import redirect
 import django.forms
@@ -34,12 +33,12 @@ def main(request):
 
 @login_required()
 def add_user(request):
+    form = UserCreationForm()
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
         if form.is_valid():
             form.cleaned_data.get('username')
-    else:
-        form = UserCreationForm()
+
     return render(request, 'worker/uzytkownicy/dodaj_uzytkownika.html', context={'form': form})
 
 
@@ -95,52 +94,6 @@ class TicketTypeDeleteView(LoginRequiredMixin, DeleteView):
 
 
 # rezerwacje
-class ReservationListView(LoginRequiredMixin, ListView):
-    model = models.Reservation
-    template_name = 'worker/rezerwacje/rezerwacje_lista.html'
-
-
-class ReservationCreateView(LoginRequiredMixin, CreateView):
-    model = models.Reservation
-    template_name = 'worker/rezerwacje/dodaj_rezerwacje.html'
-    form_class = forms.ReservationModelForm
-
-    # jesli wystapi blad, to nic nie zostaje zapisane do bazy
-    @transaction.atomic
-    def form_valid(self, form):
-        context = self.get_context_data()
-        client_form = context['client_form']
-        if client_form.is_valid() and form.is_valid():
-            c = client_form.save()
-            f = form.save(commit=False)
-            f.client_id = c
-            f.save()
-            return redirect(reverse('showtime-details-worker', kwargs={'pk': self.kwargs['showtime_id']}))
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        if self.request.POST:
-            context['ticket_form'] = forms.TicketModelForm(self.request.POST)
-            context['client_form'] = forms.ClientModelForm(self.request.POST)
-            context['form'] = forms.ReservationModelForm(self.kwargs['showtime_id'], models.Seat.objects.all(),
-                                                         self.request.POST)
-        else:
-            context['client_form'] = forms.ClientModelForm()
-            context['ticket_form'] = forms.TicketModelForm()
-            context['form'] = forms.ReservationModelForm(self.kwargs['showtime_id'],
-                                                         models.Ticket.objects.filter(
-                                                             showtime_id=self.kwargs['showtime_id']),
-                                                         models.Seat.objects.all())
-        return context
-
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs['showtime_id'] = self.kwargs['showtime_id']
-        kwargs['taken_seats'] = models.Ticket.objects.filter(showtime_id=self.kwargs['showtime_id'])
-        kwargs['all_seats'] = models.Seat.objects.all()
-        return kwargs
-
-
 @login_required
 @transaction.atomic
 def reservation_form(request, **kwargs):  # kwargs przekazywanie z urls
@@ -283,9 +236,95 @@ def summary(request, **kwargs):
                                                                            'showtime': showtime})
 
 
-class ReservationDetailView(LoginRequiredMixin, DetailView):
-    model = models.Reservation
-    template_name = 'worker/rezerwacje/szczegoly_rezerwacji.html'
+@login_required
+@transaction.atomic
+def reservation_update(request, **kwargs):
+    reservation_id = kwargs['reservation_id']
+    reservation = models.Reservation.objects.get(reservation_id=reservation_id)
+
+    # bilety przekazywane jako initial do formset factory
+    tickets_initial = reservation.ticket_id.values('seat_id', 'tickettype_id')
+
+    showtime_id = reservation.showtime_id.showtime_id
+
+    reservation_initial = {'showtime_id': reservation.showtime_id.showtime_id,
+                           'confirmed': reservation.confirmed,
+                           'paid': reservation.paid}
+    r_form = forms.ReservationModelForm(initial=reservation_initial)
+
+    client_initial = {'first_name': reservation.client_id.first_name,
+                      'last_name': reservation.client_id.last_name,
+                      'email': reservation.client_id.email,
+                      'phone_number': reservation.client_id.phone_number}
+    client_form = forms.ClientModelForm(initial=client_initial)
+
+    ticket_formset = modelformset_factory(models.Ticket,
+                                          fields=('seat_id', 'tickettype_id'),
+                                          labels={'seat_id': 'Miejsce',
+                                                  'tickettype_id': 'Typ Biletu', },
+                                          extra=len(reservation.ticket_id.values()),
+                                          max_num=10, can_delete=True)
+
+    ticket_form = ticket_formset(queryset=models.Ticket.objects.none(), initial=tickets_initial)
+
+    if request.POST:
+        if 'ticket_num' in request.POST:
+            ticket_formset = modelformset_factory(models.Ticket,
+                                                  fields=('seat_id', 'tickettype_id'),
+                                                  labels={'seat_id': 'Miejsce',
+                                                          'tickettype_id': 'Typ Biletu', },
+                                                  extra=int(request.POST['ticket_select']),
+                                                  max_num=10, can_delete=True)
+
+            ticket_form = ticket_formset(queryset=models.Ticket.objects.none(), initial=tickets_initial)
+
+        else:
+            # current objects
+            reservation_object = get_object_or_404(models.Reservation, reservation_id=reservation_id)
+            client_object = get_object_or_404(models.Client, client_id=reservation.client_id.client_id)
+
+            r_form = forms.ReservationModelForm(request.POST, instance=reservation_object)
+            ticket_form = ticket_formset(request.POST)
+            client_form = forms.ClientModelForm(request.POST, instance=client_object)
+
+            if ticket_form.is_valid() and (client_form.is_valid() and r_form.is_valid()):
+                showtime = models.Showtime.objects.get(showtime_id=showtime_id)  # obiekt seansu
+                client = client_form.save()
+                reservation = r_form.save(commit=False)
+                reservation.client_id = client
+
+                # https://docs.djangoproject.com/en/3.0/topics/db/examples/many_to_many/#many-to-many-relationships
+                instances = ticket_form.save(commit=False)
+
+                # get total price
+                total_price = 0
+                for instance in instances:
+                    total_price += models.TicketType.objects.get(ticket_id=instance.tickettype_id_id).price
+
+                reservation.cost = total_price
+                reservation.save()
+
+                tickets = models.Ticket.objects.filter(reservation__reservation_id=reservation_id)
+
+                # usuwa wszytkie bilety powiązane z rezerwacją, oraz rezerwację
+                for t in tickets.iterator():
+                    t.delete()
+
+                for instance in instances:
+                    instance.client_id = client
+                    instance.showtime_id = showtime
+                    instance.save()
+                    reservation.ticket_id.add(instance)
+
+                r_form.save_m2m()
+                return redirect(reverse('movie-details-worker', kwargs={'pk': str(showtime.movie_id.movie_id)}))
+
+    return render(request, 'worker/rezerwacje/edytuj-rezerwacje.html', context={'reservation': reservation,
+                                                                                'r_form': r_form,
+                                                                                'client_form': client_form,
+                                                                                'ticket_form': ticket_form,
+                                                                                'ticket_number': [x for x in
+                                                                                                  range(1, 11)], })
 
 
 # seanse
@@ -386,33 +425,3 @@ class MovieDeleteView(LoginRequiredMixin, DeleteView):
     model = models.Movie
     template_name = 'worker/filmy/usun_film.html'
     success_url = reverse_lazy('movie-list-worker')
-
-
-# bilety
-class TicketCreateView(LoginRequiredMixin, CreateView):
-    model = models.Ticket
-    template_name = 'worker/bilety/dodaj_bilet.html'
-    form_class = forms.ReservationTicketModelForm
-
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs['reservation_id'] = self.kwargs['reservation_id']
-        kwargs['client_id'] = self.kwargs['client_id']
-        return kwargs
-
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(object_list=object_list, **kwargs)
-        # context['taken_seats'] = [seat[0] for seat in
-        #                           models.Ticket.objects.filter(showtime_id=self.get_object()).values_list('seat_id')]
-
-        context['seats_row_a'] = models.Seat.objects.filter(row_number='A')
-        context['seats_row_b'] = models.Seat.objects.filter(row_number='B')
-        context['seats_row_c'] = models.Seat.objects.filter(row_number='C')
-        context['seats_row_d'] = models.Seat.objects.filter(row_number='D')
-        context['seats_row_e'] = models.Seat.objects.filter(row_number='E')
-        context['seats_row_f'] = models.Seat.objects.filter(row_number='F')
-        context['seats_row_g'] = models.Seat.objects.filter(row_number='G')
-        context['seats_row_h'] = models.Seat.objects.filter(row_number='H')
-        context['seats_row_i'] = models.Seat.objects.filter(row_number='I')
-        context['seats_row_j'] = models.Seat.objects.filter(row_number='J')
-        return context

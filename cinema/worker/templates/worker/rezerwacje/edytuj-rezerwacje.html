@@ -1,0 +1,30 @@
+{% extends 'worker/base.html' %}
+{% block content %}
+    {% if user.get_username == 'admin' %}
+        <form action="" method="post" id="ticket_no">
+            {% csrf_token %}
+            <table>
+                {{ client_form }}
+                {{ r_form }}
+                {{ ticket_form }}
+            </table>
+            <input type="submit" value="Zatwierdź">
+        </form>
+        <br><br>
+
+        <form action="" method="post" id="ticket_html_form">
+            {% csrf_token %}
+            <label>Edytuj ilość biletów:
+                <select form="ticket_html_form" name="ticket_select">
+                    {% for i in ticket_number %}
+                        <option value="{{ i }}">{{ i }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+            <input type="hidden" name="ticket_num">
+            <input type="submit" value="Dodaj">
+        </form>
+    {% else %}
+        <h2>Musisz być administratorem, aby modyfikować rezerwacje.</h2>
+    {% endif %}
+{% endblock %}

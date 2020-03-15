@@ -47,9 +47,10 @@ class ReservationModelForm(ModelForm):
     class Meta:
         model = Reservation
         labels = {'showtime_id': '',
-                  'paid': 'Opłacona'}
+                  'paid': 'Opłacona',
+                  'confirmed': 'Potwierdzona'}
 
-        fields = ['showtime_id', 'paid']
+        fields = ['showtime_id', 'paid', 'confirmed']
 
     def __init__(self, *args, **kwargs):
         super(ReservationModelForm, self).__init__(*args, **kwargs)
@@ -57,7 +58,6 @@ class ReservationModelForm(ModelForm):
         # pass initial data to form https://www.geeksforgeeks.org/initial-form-data-django-forms/
         if 'initial' in kwargs:
             self.showtime_id = kwargs['initial']['showtime_id']
-            taken_seats = Ticket.objects.filter(showtime_id=self.showtime_id)
             # jesli user zostal przekierowany na ta strone z seansu o id 23,
             # to seans automatycznie podstawia sie w polu bez mozliwosci zmiany
             self.fields['showtime_id'].initial = self.showtime_id
@@ -80,30 +80,30 @@ class TicketModelForm(ModelForm):
 
 
 # do biletow
-class ReservationTicketModelForm(ModelForm):
-    class Meta:
-        model = Reservation
-
-        labels = {'client_id': 'Klient', 'ticket_id': 'Bilety'}
-        fields = ['client_id']
-
-    def __init__(self, reservation_id, client_id, *args, **kwargs):
-        super(ReservationTicketModelForm, self).__init__(*args, **kwargs)
-
-        kwargs['seats_row_a'] = Seat.objects.filter(row_number='A')
-        kwargs['seats_row_b'] = Seat.objects.filter(row_number='B')
-        kwargs['seats_row_c'] = Seat.objects.filter(row_number='C')
-        kwargs['seats_row_d'] = Seat.objects.filter(row_number='D')
-        kwargs['seats_row_e'] = Seat.objects.filter(row_number='E')
-        kwargs['seats_row_f'] = Seat.objects.filter(row_number='F')
-        kwargs['seats_row_g'] = Seat.objects.filter(row_number='G')
-        kwargs['seats_row_h'] = Seat.objects.filter(row_number='H')
-        kwargs['seats_row_i'] = Seat.objects.filter(row_number='I')
-        kwargs['seats_row_j'] = Seat.objects.filter(row_number='J')
-
-        self.fields['client_id'].initial = client_id
-        self.fields['client_id'].disabled = True
-        self.reservation_id = reservation_id
+# class ReservationTicketModelForm(ModelForm):
+#     class Meta:
+#         model = Reservation
+#
+#         labels = {'client_id': 'Klient', 'ticket_id': 'Bilety'}
+#         fields = ['client_id']
+#
+#     def __init__(self, reservation_id, client_id, *args, **kwargs):
+#         super(ReservationTicketModelForm, self).__init__(*args, **kwargs)
+#
+#         kwargs['seats_row_a'] = Seat.objects.filter(row_number='A')
+#         kwargs['seats_row_b'] = Seat.objects.filter(row_number='B')
+#         kwargs['seats_row_c'] = Seat.objects.filter(row_number='C')
+#         kwargs['seats_row_d'] = Seat.objects.filter(row_number='D')
+#         kwargs['seats_row_e'] = Seat.objects.filter(row_number='E')
+#         kwargs['seats_row_f'] = Seat.objects.filter(row_number='F')
+#         kwargs['seats_row_g'] = Seat.objects.filter(row_number='G')
+#         kwargs['seats_row_h'] = Seat.objects.filter(row_number='H')
+#         kwargs['seats_row_i'] = Seat.objects.filter(row_number='I')
+#         kwargs['seats_row_j'] = Seat.objects.filter(row_number='J')
+#
+#         self.fields['client_id'].initial = client_id
+#         self.fields['client_id'].disabled = True
+#         self.reservation_id = reservation_id
 
 
 class TicketTypeModelForm(ModelForm):

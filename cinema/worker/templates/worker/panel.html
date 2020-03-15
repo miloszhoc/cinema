@@ -3,10 +3,8 @@
     <br><br>
     {% if user.get_username == 'admin' %}
         <a href="{% url 'adduser-create-worker' %}">Dodaj użytkownika</a><br>
-    {% endif %}
-    <a href="{% url 'reservation-worker' %}">Rezerwacje</a><br>
+    {% endif %}<br>
     <a href="{% url 'showtime-list-worker' %}">Seanse</a><br>
     <a href="{% url 'movie-list-worker' %}">Filmy</a><br>
     <a href="{% url 'tickettype-list-worker' %}">Typy biletów</a><br>
-    Opłacanie rezerwacji<br>
 {% endblock %}

@@ -1,17 +1,15 @@
 from django.urls import path
 from . import views
 from django.contrib.auth import views as auth_view
-from django.contrib.auth.forms import UserCreationForm
 
 urlpatterns = [
     # strona logowania i wylogowania
     path('login/', auth_view.LoginView.as_view(template_name='login.html'), name='login'),
     path('logout/', auth_view.LogoutView.as_view(template_name='logout.html'), name='logout'),
-    path('dodaj-uzytkownika', views.add_user, name='adduser-create-worker'),
+    path('dodaj-uzytkownika/', views.add_user, name='adduser-create-worker'),
 
     path('', views.main, name='main'),
     path('panel/', views.panel, name='panel'),
-    path('rezerwacje/', views.ReservationListView.as_view(), name='reservation-worker'),
 
     # typy biletów
     path('typy-biletow/', views.TicketTypeListView.as_view(), name='tickettype-list-worker'),
@@ -36,13 +34,6 @@ urlpatterns = [
 
     # rezerwacje
     path('dodaj-rezerwacje/<int:showtime_id>', views.reservation_form, name='reservation-form-worker'),
-    # path('dodaj-rezerwacje/<int:showtime_id>', views.ReservationCreateView.as_view(),
-    #      name='reservations-create-worker'),
-    # path('szczegoly-rezerwacji/<int:pk>', views.ReservationDetailView.as_view(),
-    #      name='reservation-details-worker'),
-    # path('dodaj-rezerwacje-cd/<int:showtime_id>')
-    # bliety
-    path('dodaj-bilet/<int:reservation_id>/<int:client_id>', views.TicketCreateView.as_view(),
-         name='ticket-create-worker'),
+    path('edytuj-rezerwacje/<int:reservation_id>', views.reservation_update, name='reservation-update-worker'),
     path('podsumowanie/', views.summary, name='summary-worker'),
 ]
