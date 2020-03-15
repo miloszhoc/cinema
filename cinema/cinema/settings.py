@@ -133,13 +133,14 @@ LOGOUT_REDIRECT_URL = 'main'  # przekierowanie po wykogowaniu
 
 # mail data
 # https://support.google.com/mail/answer/7126229?hl=pl
-# EMAIL_HOST = 'in-v3.mailjet.com'
-# EMAIL_PORT = 587
-# EMAIL_HOST_USER = '31a784aba900ffc4cf6654bb9f610381'
-# EMAIL_HOST_PASSWORD = '01e49c57f7fa56eadb1efa357ffe31aa'
-# EMAIL_USE_TLS = True
+
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'moviecitycinema@gmail.com'
 EMAIL_HOST_PASSWORD = 'Licencjat123!'
 EMAIL_USE_TLS = True
+# EMAIL_HOST = 'localhost'
+# EMAIL_PORT = 465
+# EMAIL_HOST_USER = 'sender@localhost'
+# EMAIL_HOST_PASSWORD = ''
+# EMAIL_USE_TLS = False

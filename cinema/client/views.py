@@ -128,7 +128,7 @@ def reservation_form(request, **kwargs):  # kwargs przekazywanie z urls
                                                                        's_form': s_form})
 
 
-@transaction.atomic
+@transaction.atomic()
 def summary_client(request, **kwargs):
     if len(request.session.keys()) > 0:
         taken = request.session.get('taken')
@@ -225,7 +225,17 @@ def summary_client(request, **kwargs):
                                          'Jeśli nie potwierdzisz rezerwacji w ciągu 15 minut, '
                                          'to zostanie ona usunięta z systemu')
                 else:
-                    messages.add_message(request, messages.ERROR, 'Nie udało się zarezerwować wybranych miejsc.')
+                    confirm_url = request.META['HTTP_HOST'] + reverse('reservation-accept-client',
+                                                                      kwargs={'id': str(
+                                                                          reservation.reservation_confirmation_code)})
+                    reject_url = request.META['HTTP_HOST'] + reverse('reservation-deny-client',
+                                                                     kwargs={'id': str(
+                                                                         reservation.reservation_confirmation_code)})
+
+                    messages.add_message(request,
+                                         messages.ERROR,
+                                         'Wystąpił problem z wysłaniem wiadomości. W celu potwierdzenia rezerwacji prosimy przejść pod adres\n'
+                                         + confirm_url + '\nW celu odzucenia rezerwacji prosimy przejść pod adres\n' + reject_url)
                 request.session.flush()
                 return redirect(reverse('movie-details-client', kwargs={'pk': str(showtime.movie_id.movie_id)}))
 
