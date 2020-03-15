@@ -66,6 +66,7 @@ class FilmMovieDetailView(DetailView):
 @transaction.atomic
 def reservation_form(request, **kwargs):  # kwargs przekazywanie z urls
     showtime_id = kwargs['showtime_id']
+    showtime = Showtime.objects.get(showtime_id=showtime_id)
     # pass initial data to form https://www.geeksforgeeks.org/initial-form-data-django-forms/
     initial = {'showtime_id': showtime_id}
 
@@ -110,6 +111,7 @@ def reservation_form(request, **kwargs):  # kwargs przekazywanie z urls
                 return redirect('summary-client')
 
     return render(request, 'client/rezerwacja_na_seans.html', context={'showtime_id': showtime_id,
+                                                                       'showtime': showtime,
                                                                        'client_form': client_form,
                                                                        'reservation_form': r_form,
                                                                        'seats_row_a': seats_row_a,

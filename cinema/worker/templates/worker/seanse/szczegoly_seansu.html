@@ -18,11 +18,11 @@
     <h3>Rezerwacje na seans:</h3>
 
     <a href="{% url 'reservation-form-worker' showtime.showtime_id %}">Dodaj rezerwację</a>
-    <p>Imię, Nazwisko | email | telefon | cena | czy opłacono</p>
+    <p>Imię, Nazwisko | email | telefon | cena | czy opłacono | czy potwierdzono</p>
     {% for reservation in reservations %}
         {{ forloop.counter }}. {{ reservation.client_id.first_name }} {{ reservation.client_id.last_name }},
         {{ reservation.client_id.email }}, {{ reservation.client_id.phone_number }}, {{ reservation.cost }},
-        {{ reservation.paid }}
+        {{ reservation.paid }}, {{ reservation.confirmed }}
         <a href="{% url 'ticket-create-worker' reservation.reservation_id reservation.client_id.client_id %}">Dodaj
             bilet</a>
         <br>
