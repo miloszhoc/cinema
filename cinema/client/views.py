@@ -97,13 +97,17 @@ def reservation_form(request, **kwargs):  # kwargs przekazywanie z urls
                 taken.extend(i[1])
 
         r_form = forms.ReservationModelForm(request.POST)
+        r_form.fields['showtime_id'].widget = r_form.fields['showtime_id'].hidden_widget()
         client_form = forms.ClientModelForm(request.POST)
 
         if client_form.is_valid() and r_form.is_valid():
             request.session['taken'] = taken
             request.session['data'] = request.POST
 
-            return redirect('summary-client')
+            if len(taken) > 10:
+                messages.add_message(request, messages.ERROR, 'Możesz zarezerwować maksymalnie 10 miejsc!')
+            else:
+                return redirect('summary-client')
 
     return render(request, 'client/rezerwacja_na_seans.html', context={'showtime_id': showtime_id,
                                                                        'client_form': client_form,
@@ -205,10 +209,10 @@ def summary_client(request, **kwargs):
                             fail_silently=False,
                             html_message=html_mail))
 
-            messages.success(request, messages.SUCCESS, 'Rezerwacja została pomyślnie utworzona, na twój adres'
-                                                        'mailowy została wysłana wiadomość z potwierdzeniem.'
-                                                        'Jeśli nie potwierdzisz rezerwacji w ciągu 30 minut, '
-                                                        'to zostanie ona usunięta z systemu')
+            messages.add_message(request, messages.SUCCESS, 'Rezerwacja została pomyślnie utworzona, na twój adres'
+                                                            'mailowy została wysłana wiadomość z potwierdzeniem.'
+                                                            'Jeśli nie potwierdzisz rezerwacji w ciągu 30 minut, '
+                                                            'to zostanie ona usunięta z systemu')
             return redirect(reverse('movie-details-client', kwargs={'pk': str(showtime.movie_id.movie_id)}))
 
     return render(request, 'client/podsumowanie.html', context={'taken': taken,
@@ -261,7 +265,7 @@ def rezerwacja_potwierdz(request, **kwargs):
         if form.is_valid() and not get_object_or_404(Reservation,
                                                      reservation_confirmation_code=reservation_uuid).confirmed:
             Reservation.objects.filter(reservation_confirmation_code=reservation_uuid).update(confirmed=True)
-            messages.success(request, messages.SUCCESS, 'Rezerwacja została pomyślnie potwierdzona.')
+            messages.add_message(request, messages.SUCCESS, 'Rezerwacja została pomyślnie potwierdzona.')
             return redirect('index-client')
         else:
             messages.add_message(request, messages.ERROR, 'Rezerwacja została już potwierdzona.')
@@ -289,7 +293,7 @@ def rezerwacja_anuluj(request, **kwargs):
 
             Client.objects.get(client_id=reservation.client_id.client_id).delete()
 
-            messages.success(request, messages.SUCCESS, 'Rezerwacja została pomyślnie usunięta.')
+            messages.add_message(request, messages.SUCCESS, 'Rezerwacja została pomyślnie usunięta.')
             return redirect('index-client')
         else:
             # https://www.kodefork.com/questions/30/how-to-pass-a-message-when-we-redirect-to-some-template-from-django-views/
