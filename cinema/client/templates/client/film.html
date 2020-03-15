@@ -1,37 +1,35 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
+{% extends 'client/base.html' %}
+{% block head %}
     <title>{{ object.title }}</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
-</head>
-<body>
-{% if messages %}
-    {% for message in messages %}
-        {{ message }}
-    {% endfor %}
-{% endif %}
-<img src="{{ object.thumbnail }}" alt="{{ object.title }}"/><br>
-<b>tytuł:</b> {{ object.title }}<br><br>
-<b>reżyser:</b> {{ object.director }}<br>
-<b>data premiery:</b> {{ object.release_date }}<br>
-<b>czas trwania:</b> {{ object.duration }}<br><br>
-{{ object.description }}<br><br>
-<iframe width="560" height="315" src="https://www.youtube.com/embed/{{ object.trailer_youtube_id }}" frameborder="0"
-        allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-<br><br>
-Recenzje, oraz opinie o filmie znajdują się <a href="{{ object.link }}"><b>tutaj.</b></a>
-<br><br>
+{% endblock %}
 
-Najbliższe seanse:<br>
-{% if showtime %}
-    {% for x in showtime %}
-        {{ x.start_date| date:"d.m.Y H:i" }}
-        <a href="{% url 'reservation-form-client' x.showtime_id %}">Zarezerwuj miejsce</a><br>
-    {% endfor %}
-{% else %}
-    <b>Przepraszamy, wybrany film nie jest obecnie wyświetlany.</b>
-{% endif %}
+{% block content %}
+    {% if messages %}
+        {% for message in messages %}
+            {{ message }}
+        {% endfor %}
+    {% endif %}
+    <img src="{{ object.thumbnail }}" alt="{{ object.title }}"/><br>
+    <b>tytuł:</b> {{ object.title }}<br><br>
+    <b>reżyser:</b> {{ object.director }}<br>
+    <b>data premiery:</b> {{ object.release_date }}<br>
+    <b>czas trwania:</b> {{ object.duration }}<br><br>
+    {{ object.description }}<br><br>
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/{{ object.trailer_youtube_id }}" frameborder="0"
+            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    <br><br>
+    Recenzje, oraz opinie o filmie znajdują się <a href="{{ object.link }}"><b>tutaj.</b></a>
+    <br><br>
 
-</body>
-</html>
+    Najbliższe seanse:<br>
+    {% if showtime %}
+        {% for x in showtime %}
+            {{ x.start_date| date:"d.m.Y H:i" }}
+            <a href="{% url 'reservation-form-client' x.showtime_id %}">Zarezerwuj miejsce</a><br>
+        {% endfor %}
+    {% else %}
+        <b>Przepraszamy, wybrany film nie jest obecnie wyświetlany.</b>
+    {% endif %}
+
+{% endblock %}

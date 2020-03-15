@@ -172,6 +172,13 @@ def summary_client(request, **kwargs):
             client_form = forms.ClientModelForm(request.POST)
             ticket_form = ticket_formset(request.POST)
 
+            r_form.fields['showtime_id'].widget = r_form.fields['showtime_id'].hidden_widget()
+
+            client_form.fields['first_name'].widget = client_form.fields['first_name'].hidden_widget()
+            client_form.fields['last_name'].widget = client_form.fields['last_name'].hidden_widget()
+            client_form.fields['email'].widget = client_form.fields['email'].hidden_widget()
+            client_form.fields['phone_number'].widget = client_form.fields['phone_number'].hidden_widget()
+
             if ticket_form.is_valid() and (client_form.is_valid() and r_form.is_valid()):
                 showtime = Showtime.objects.get(showtime_id=showtime_id)  # obiekt seansu
                 client = client_form.save()
