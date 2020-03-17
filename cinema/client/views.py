@@ -327,6 +327,7 @@ def rezerwacja_anuluj(request, **kwargs):
 
         if form.is_valid() and not get_object_or_404(Reservation,
                                                      reservation_confirmation_code=reservation_uuid).confirmed:
+
             reservation = Reservation.objects.get(reservation_confirmation_code=reservation_uuid)
             tickets = Ticket.objects.filter(reservation__reservation_confirmation_code=reservation_uuid)
             # usuwa wszytkie bilety powiązane z rezerwacją, oraz rezerwację

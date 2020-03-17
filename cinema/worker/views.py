@@ -278,6 +278,14 @@ def summary(request, **kwargs):
                 request.session.pop('taken')
                 request.session.pop('data')
                 return redirect(reverse('showtime-details-worker', kwargs={'pk': showtime_id}))
+
+        return render(request, 'worker/rezerwacje/podsumowanie.html', context={'taken': taken,
+                                                                               'ticket_form': ticket_form,
+                                                                               'reservation_form': r_form,
+                                                                               'client_form': client_form,
+                                                                               'client_initial': client_initial,
+                                                                               'reservation_initial': reservation_initial,
+                                                                               'showtime': showtime})
     else:
         taken = ''
         ticket_form = ''
@@ -376,7 +384,7 @@ def reservation_update(request, **kwargs):
                     reservation.ticket_id.add(instance)
 
                 r_form.save_m2m()
-                return redirect(reverse('movie-details-worker', kwargs={'pk': str(showtime.movie_id.movie_id)}))
+                return redirect(reverse('showtime-details-worker', kwargs={'pk': str(showtime.showtime_id)}))
 
     return render(request, 'worker/rezerwacje/edytuj-rezerwacje.html', context={'reservation': reservation,
                                                                                 'r_form': r_form,
@@ -384,6 +392,35 @@ def reservation_update(request, **kwargs):
                                                                                 'ticket_form': ticket_form,
                                                                                 'ticket_number': [x for x in
                                                                                                   range(1, 11)], })
+
+
+@login_required
+@transaction.atomic
+def reservation_delete(request, **kwargs):
+    reservation_id = kwargs['reservation_id']
+    reservation = models.Reservation.objects.get(reservation_id=reservation_id)
+    form = forms.DeleteReservationForm(initial={'text_field': reservation_id})
+    if request.POST:
+        form = forms.DeleteReservationForm(request.POST, initial={'text_field': reservation_id})
+
+        if form.is_valid() and get_object_or_404(models.Reservation, reservation_id=reservation_id):
+            reservation = models.Reservation.objects.get(reservation_id=reservation_id)
+            tickets = models.Ticket.objects.filter(reservation__reservation_id=reservation_id)
+            # usuwa wszytkie bilety powiązane z rezerwacją, oraz rezerwację
+            for t in tickets.iterator():
+                t.delete()
+            reservation.delete()
+
+            models.Client.objects.get(client_id=reservation.client_id.client_id).delete()
+
+            messages.add_message(request, messages.SUCCESS, 'Rezerwacja została pomyślnie usunięta.')
+            return redirect(reverse('showtime-details-worker', kwargs={'pk': str(reservation.showtime_id.showtime_id)}))
+        else:
+            # https://www.kodefork.com/questions/30/how-to-pass-a-message-when-we-redirect-to-some-template-from-django-views/
+            messages.add_message(request, messages.ERROR, 'Nie można usunąć!')
+    return render(request, 'worker/rezerwacje/usun_rezerwacje.html', context={'reservation_id': reservation_id,
+                                                                              'form': form,
+                                                                              'reservation': reservation})
 
 
 # seanse

@@ -168,3 +168,7 @@ class SeatForm(Form):
         self.fields['seats_row_h'].initial = (taken_seats.values_list('seat_id', flat=True))
         self.fields['seats_row_i'].initial = (taken_seats.values_list('seat_id', flat=True))
         self.fields['seats_row_j'].initial = (taken_seats.values_list('seat_id', flat=True))
+
+
+class DeleteReservationForm(Form):
+    text_field = CharField(max_length=255, widget=TextInput(attrs={'size': '40', 'hidden': ''}), label='')

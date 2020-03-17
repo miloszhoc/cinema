@@ -28,6 +28,10 @@
             <th>Do zapłaty</th>
             <th>Czy opłacono</th>
             <th>Czy potwierdzono</th>
+            {% if user.get_username == 'admin' %}
+                <th>Edycja</th>
+                <th>Usuwanie</th>
+            {% endif %}
         </tr>
         {% for reservation in reservations %}
             <tr>
@@ -39,6 +43,9 @@
                 <td> {{ reservation.confirmed }}</td>
                 <td>
                     <a href="{% url 'reservation-update-worker' reservation.reservation_id %}">Edytuj Rezerwację</a>
+                </td>
+                <td>
+                    <a href="{% url 'reservation-delete-worker' reservation.reservation_id %}">Usuń Rezerwację</a>
                 </td>
             </tr>
             <tr>
