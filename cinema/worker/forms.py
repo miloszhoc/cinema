@@ -48,9 +48,10 @@ class ReservationModelForm(ModelForm):
         model = Reservation
         labels = {'showtime_id': '',
                   'paid': 'Opłacona',
-                  'confirmed': 'Potwierdzona'}
+                  'confirmed': 'Potwierdzona',
+                  'confirmation_email': 'Wyślij maila z potwierdzeniem'}
 
-        fields = ['showtime_id', 'paid', 'confirmed']
+        fields = ['showtime_id', 'paid', 'confirmed', 'confirmation_email']
 
     def __init__(self, *args, **kwargs):
         super(ReservationModelForm, self).__init__(*args, **kwargs)

@@ -130,7 +130,7 @@ def reservation_form(request, **kwargs):  # kwargs przekazywanie z urls
 
 @transaction.atomic
 def summary_client(request, **kwargs):
-    if len(request.session.keys()) > 0:
+    if 'data' in request.session:
         taken = request.session.get('taken')
         data = request.session.get('data')
         showtime_id = data['showtime_id']
@@ -193,6 +193,9 @@ def summary_client(request, **kwargs):
                 for instance in instances:
                     total_price += TicketType.objects.get(ticket_id=instance.tickettype_id_id).price
 
+                # wyslij maila do klienta
+                reservation.confirmation_email = True
+
                 reservation.cost = total_price
                 reservation.save()
 
@@ -203,39 +206,40 @@ def summary_client(request, **kwargs):
                     reservation.ticket_id.add(instance)
 
                 r_form.save_m2m()
-                # full_email = EMAIL_HOST_USER + '@' + EMAIL_DOMAIN
-                # https://simpleisbetterthancomplex.com/tutorial/2016/06/13/how-to-send-email.html
-                # https://stackoverflow.com/questions/29466796/sending-a-html-email-in-django
-                html_mail = loader.render_to_string(template_name='client/rezerwacja/email.html',
-                                                    context={'first_name': client.first_name,
-                                                             'last_name': client.last_name,
-                                                             'reservation': reservation,
-                                                             'domain': request.META['HTTP_HOST']})
 
-                mail = send_mail(subject='Potwierdzenie rezerwacji',
-                                 message='',
-                                 from_email=EMAIL_HOST_USER,
-                                 recipient_list=[client.email, ],
-                                 fail_silently=True,
-                                 html_message=html_mail)
-                if mail:
-                    messages.add_message(request, messages.SUCCESS,
-                                         'Rezerwacja została pomyślnie utworzona, na twój adres'
-                                         'mailowy została wysłana wiadomość z potwierdzeniem.'
-                                         'Jeśli nie potwierdzisz rezerwacji w ciągu 15 minut, '
-                                         'to zostanie ona usunięta z systemu')
-                else:
-                    confirm_url = request.META['HTTP_HOST'] + reverse('reservation-accept-client',
-                                                                      kwargs={'id': str(
-                                                                          reservation.reservation_confirmation_code)})
-                    reject_url = request.META['HTTP_HOST'] + reverse('reservation-deny-client',
-                                                                     kwargs={'id': str(
-                                                                         reservation.reservation_confirmation_code)})
+                if reservation.confirmation_email:
+                    # https://simpleisbetterthancomplex.com/tutorial/2016/06/13/how-to-send-email.html
+                    # https://stackoverflow.com/questions/29466796/sending-a-html-email-in-django
+                    html_mail = loader.render_to_string(template_name='client/rezerwacja/email.html',
+                                                        context={'first_name': client.first_name,
+                                                                 'last_name': client.last_name,
+                                                                 'reservation': reservation,
+                                                                 'domain': request.META['HTTP_HOST']})
 
-                    messages.add_message(request,
-                                         messages.ERROR,
-                                         'Wystąpił problem z wysłaniem wiadomości. W celu potwierdzenia rezerwacji prosimy przejść pod adres\n'
-                                         + confirm_url + '\nW celu odzucenia rezerwacji prosimy przejść pod adres\n' + reject_url)
+                    mail = send_mail(subject='Potwierdzenie rezerwacji',
+                                     message='',
+                                     from_email=EMAIL_HOST_USER,
+                                     recipient_list=[client.email, ],
+                                     fail_silently=True,
+                                     html_message=html_mail)
+                    if mail:
+                        messages.add_message(request, messages.SUCCESS,
+                                             'Rezerwacja została pomyślnie utworzona, na twój adres'
+                                             'mailowy została wysłana wiadomość z potwierdzeniem.'
+                                             'Jeśli nie potwierdzisz rezerwacji w ciągu 15 minut, '
+                                             'to zostanie ona usunięta z systemu')
+                    else:
+                        confirm_url = request.META['HTTP_HOST'] + reverse('reservation-accept-client',
+                                                                          kwargs={'id': str(
+                                                                              reservation.reservation_confirmation_code)})
+                        reject_url = request.META['HTTP_HOST'] + reverse('reservation-deny-client',
+                                                                         kwargs={'id': str(
+                                                                             reservation.reservation_confirmation_code)})
+
+                        messages.add_message(request,
+                                             messages.ERROR,
+                                             'Wystąpił problem z wysłaniem wiadomości. W celu potwierdzenia rezerwacji prosimy przejść pod adres\n'
+                                             + confirm_url + '\nW celu odzucenia rezerwacji prosimy przejść pod adres\n' + reject_url)
                 request.session.flush()
                 return redirect(reverse('movie-details-client', kwargs={'pk': str(showtime.movie_id.movie_id)}))
 

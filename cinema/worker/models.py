@@ -107,6 +107,7 @@ class Reservation(models.Model):
     confirmed = models.BooleanField(default=False)
     # https://stackoverflow.com/questions/16925129/generate-unique-id-in-django-from-a-model-field
     reservation_confirmation_code = models.UUIDField(primary_key=False, default=uuid.uuid4, editable=False)
+    confirmation_email = models.BooleanField(default=False)
 
     def get_absolute_url(self):
         return reverse('reservation-details-worker', kwargs={'pk': self.reservation_id})
