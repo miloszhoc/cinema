@@ -26,8 +26,9 @@
             <th>Email</th>
             <th>Telefon</th>
             <th>Do zapłaty</th>
-            <th>Czy opłacono</th>
-            <th>Czy potwierdzono</th>
+            <th>Opłacona</th>
+            <th>Potwierdzona</th>
+            <th>Data rezerwacji</th>
             {% if user.get_username == 'admin' %}
                 <th>Edycja</th>
                 <th>Usuwanie</th>
@@ -41,6 +42,7 @@
                 <td>{{ reservation.cost }} PLN</td>
                 <td>{{ reservation.paid }}</td>
                 <td> {{ reservation.confirmed }}</td>
+                <td> {{ reservation.reservation_date| date:"H:i d.m.Y" }}</td>
                 <td>
                     <a href="{% url 'reservation-update-worker' reservation.reservation_id %}">Edytuj Rezerwację</a>
                 </td>
