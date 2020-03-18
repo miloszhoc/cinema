@@ -9,6 +9,10 @@
     <b>data premiery:</b> {{ object.release_date }}<br>
     <b>czas trwania:</b> {{ object.duration }}<br><br>
     {{ object.description }}<br><br>
-    <iframe width="560" height="315" src="https://www.youtube.com/embed/{{ object.trailer_youtube_id }}" frameborder="0"
-            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    {% if object.trailer_youtube_id %}
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/{{ object.trailer_youtube_id }}"
+                frameborder="0"
+                allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen></iframe>
+    {% endif %}
 {% endblock %}

@@ -5,6 +5,8 @@ from .models import *
 
 
 class MovieModelForm(ModelForm):
+    trailer_youtube_id = CharField(required=False)
+
     class Meta:
         model = Movie
         labels = {

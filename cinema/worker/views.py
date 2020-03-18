@@ -448,9 +448,6 @@ class ShowtimeCreateView(LoginRequiredMixin, CreateView):
     template_name = 'worker/seanse/dodaj_seans.html'
     form_class = forms.ShowtimeModelForm
 
-    def form_valid(self, form):
-        print(form.cleaned_data)
-        return super().form_valid(form)
 
 
 class ShowtimeUpdateView(LoginRequiredMixin, UpdateView):
