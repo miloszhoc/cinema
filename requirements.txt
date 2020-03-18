@@ -1,6 +1,6 @@
 asgiref==3.2.3
 DateTime==4.3
-Django==3.0.1
+Django==3.0.3
 django-multiselectfield==0.1.12
 django-static-jquery==2.1.4
 django-timezone-field==4.0
