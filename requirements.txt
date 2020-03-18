@@ -1,6 +1,7 @@
-asgiref==3.2.3
+asgiref==3.2.5
 DateTime==4.3
-Django==3.0.1
+Django==3.0.4
+django-crispy-forms==1.9.0
 django-multiselectfield==0.1.12
 django-static-jquery==2.1.4
 django-timezone-field==4.0
@@ -11,5 +12,5 @@ python-crontab==2.4.0
 python-dateutil==2.8.1
 pytz==2019.3
 six==1.14.0
-sqlparse==0.3.0
-zope.interface==4.7.1
+sqlparse==0.3.1
+zope.interface==4.7.2
