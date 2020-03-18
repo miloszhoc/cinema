@@ -341,7 +341,7 @@ def reservation_update(request, **kwargs):
                                                   labels={'seat_id': 'Miejsce',
                                                           'tickettype_id': 'Typ Biletu', },
                                                   extra=int(request.POST['ticket_select']),
-                                                  max_num=10, can_delete=True)
+                                                  max_num=60, can_delete=True)
 
             ticket_form = ticket_formset(queryset=models.Ticket.objects.none(), initial=tickets_initial)
 
@@ -391,7 +391,7 @@ def reservation_update(request, **kwargs):
                                                                                 'client_form': client_form,
                                                                                 'ticket_form': ticket_form,
                                                                                 'ticket_number': [x for x in
-                                                                                                  range(1, 11)], })
+                                                                                                  range(1, 61)], })
 
 
 @login_required
