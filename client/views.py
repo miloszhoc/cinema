@@ -268,7 +268,8 @@ def summary_client(request, **kwargs):
 
 
 def cennik(request):
-    return render(request, 'client/cennik.html', context={})
+    ticket_types = TicketType.objects.all()
+    return render(request, 'client/cennik.html', context={'ticket_types': ticket_types})
 
 
 def kontakt(request):

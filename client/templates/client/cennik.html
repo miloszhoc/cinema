@@ -86,4 +86,9 @@
         Normalny* - sprzedawany bez dodatkowych dokumentów kwalifikujących do ceny ulgowej <br>
         Ulgowy** - sprzedawany wyłącznie za ukazaniem ważnej legitymacji uczniowskiej/studenckiej
     </h3>
+
+    {% for i in ticket_types %}
+        {{ i.type }} - {{ i.price }}<br>
+        {{ i.conditions }}<br><br>
+    {% endfor %}
 {% endblock %}

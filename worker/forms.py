@@ -113,9 +113,10 @@ class TicketTypeModelForm(ModelForm):
     class Meta:
         model = TicketType
         labels = {'type': 'Typ biletu',
-                  'price': 'Cena'}
+                  'price': 'Cena',
+                  'conditions': 'Dodatkowe informacje'}
 
-        fields = ['ticket_id', 'type', 'price']
+        fields = ['ticket_id', 'type', 'price', 'conditions']
 
 
 class ClientModelForm(ModelForm):
