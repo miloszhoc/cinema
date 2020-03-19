@@ -12,175 +12,179 @@
 {% endblock %}
 
 {% block content %}
-    {% if messages %}
-        {% for message in messages %}
-            {{ message }}
-        {% endfor %}
-    {% endif %}
+    {% if showtime.start_date > time_now %}
+        {% if messages %}
+            {% for message in messages %}
+                {{ message }}
+            {% endfor %}
+        {% endif %}
 
-    <script type="text/javascript" src="{% static 'client/js/scripts.js' %}">
-    </script>
-    <img src="{{ showtime.movie_id.thumbnail }}" alt="{{ showtime.movie_id.title }}"/><br>
-    <b>tytuł:</b> {{ showtime.movie_id.title }}<br><br>
-    <b>reżyser:</b> {{ showtime.movie_id.director }}<br>
-    <b>data i godzina rozpoczęcia seansu:</b>
-    {{ showtime.start_date| time:"H:i" }}
-    {{ showtime.start_date| date:"d.m.Y" }} r.<br>
-    <b>czas trwania:</b> {{ showtime.movie_id.duration }}<br><br>
-    <form action="" method="post" id="ticket_no">
-        {% csrf_token %}
-        <table>
-            {{ client_form }}
-            {{ reservation_form }}
-            {{ ticket_form }}
-        </table>
-        <div class="screen">
-            <center><h1>Mapa miejsc</h1></center>
-            <div class="exit exit--front">
+        <script type="text/javascript" src="{% static 'client/js/scripts.js' %}">
+        </script>
+        <img src="{{ showtime.movie_id.thumbnail }}" alt="{{ showtime.movie_id.title }}"/><br>
+        <b>tytuł:</b> {{ showtime.movie_id.title }}<br><br>
+        <b>reżyser:</b> {{ showtime.movie_id.director }}<br>
+        <b>data i godzina rozpoczęcia seansu:</b>
+        {{ showtime.start_date| time:"H:i" }}
+        {{ showtime.start_date| date:"d.m.Y" }} r.<br>
+        <b>czas trwania:</b> {{ showtime.movie_id.duration }}<br><br>
+        <form action="" method="post" id="ticket_no">
+            {% csrf_token %}
+            <table>
+                {{ client_form }}
+                {{ reservation_form }}
+                {{ ticket_form }}
+            </table>
+            <div class="screen">
+                <center><h1>Mapa miejsc</h1></center>
+                <div class="exit exit--front">
+                </div>
+                <ol class="front">
+                    <li class="row row--A">
+                        <ol class="seats" type="A">
+
+                            {% for i in s_form.seats_row_a %}
+                                {% if i.data.selected %}
+                                    <label for="{{ i.data.id }}"></label>
+                                    <input type="checkbox" name="{{ i.data.name }}" value="{{ i.data.value }}"
+                                           id="{{ i.data.id }}" checked disabled>
+                                {% else %}
+                                    {{ i }}
+                                {% endif %}
+                            {% endfor %}
+                        </ol>
+                    </li>
+
+                    <li class="row row--B">
+                        <ol class="seats" type="B">
+                            {% for i in s_form.seats_row_b %}
+                                {% if i.data.selected %}
+                                    <label for="{{ i.data.id }}"></label>
+                                    <input type="checkbox" name="{{ i.data.name }}" value="{{ i.data.value }}"
+                                           id="{{ i.data.id }}" checked disabled>
+                                {% else %}
+                                    {{ i }}
+                                {% endif %}
+                            {% endfor %}
+                        </ol>
+                    </li>
+
+                    <li class="row row--C">
+                        <ol class="seats" type="C">
+                            {% for i in s_form.seats_row_c %}
+                                {% if i.data.selected %}
+                                    <label for="{{ i.data.id }}"></label>
+                                    <input type="checkbox" name="{{ i.data.name }}" value="{{ i.data.value }}"
+                                           id="{{ i.data.id }}" checked disabled>
+                                {% else %}
+                                    {{ i }}
+                                {% endif %}
+                            {% endfor %}
+                        </ol>
+                    </li>
+
+                    <li class="row row--D">
+                        <ol class="seats" type="D">
+                            {% for i in s_form.seats_row_d %}
+                                {% if i.data.selected %}
+                                    <label for="{{ i.data.id }}"></label>
+                                    <input type="checkbox" name="{{ i.data.name }}" value="{{ i.data.value }}"
+                                           id="{{ i.data.id }}" checked disabled>
+                                {% else %}
+                                    {{ i }}
+                                {% endif %}
+                            {% endfor %}
+                        </ol>
+                    </li>
+
+                    <li class="row row--E">
+                        <ol class="seats" type="E">
+                            {% for i in s_form.seats_row_e %}
+                                {% if i.data.selected %}
+                                    <label for="{{ i.data.id }}"></label>
+                                    <input type="checkbox" name="{{ i.data.name }}" value="{{ i.data.value }}"
+                                           id="{{ i.data.id }}" checked disabled>
+                                {% else %}
+                                    {{ i }}
+                                {% endif %}
+                            {% endfor %}
+                        </ol>
+                    </li>
+
+                    <li class="row row--F">
+                        <ol class="seats" type="F">
+                            {% for i in s_form.seats_row_f %}
+                                {% if i.data.selected %}
+                                    <label for="{{ i.data.id }}"></label>
+                                    <input type="checkbox" name="{{ i.data.name }}" value="{{ i.data.value }}"
+                                           id="{{ i.data.id }}" checked disabled>
+                                {% else %}
+                                    {{ i }}
+                                {% endif %}
+                            {% endfor %}
+                        </ol>
+                    </li>
+
+                    <li class="row row--G">
+                        <ol class="seats" type="G">
+                            {% for i in s_form.seats_row_g %}
+                                {% if i.data.selected %}
+                                    <label for="{{ i.data.id }}"></label>
+                                    <input type="checkbox" name="{{ i.data.name }}" value="{{ i.data.value }}"
+                                           id="{{ i.data.id }}" checked disabled>
+                                {% else %}
+                                    {{ i }}
+                                {% endif %}
+                            {% endfor %}
+                        </ol>
+                    </li>
+
+                    <li class="row row--H">
+                        <ol class="seats" type="H">
+                            {% for i in s_form.seats_row_h %}
+                                {% if i.data.selected %}
+                                    <label for="{{ i.data.id }}"></label>
+                                    <input type="checkbox" name="{{ i.data.name }}" value="{{ i.data.value }}"
+                                           id="{{ i.data.id }}" checked disabled>
+                                {% else %}
+                                    {{ i }}
+                                {% endif %}
+                            {% endfor %}
+                        </ol>
+                    </li>
+
+                    <li class="row row--I">
+                        <ol class="seats" type="I">
+                            {% for i in s_form.seats_row_i %}
+                                {% if i.data.selected %}
+                                    <label for="{{ i.data.id }}"></label>
+                                    <input type="checkbox" name="{{ i.data.name }}" value="{{ i.data.value }}"
+                                           id="{{ i.data.id }}" checked disabled>
+                                {% else %}
+                                    {{ i }}
+                                {% endif %}
+                            {% endfor %}
+                        </ol>
+                    </li>
+
+                    <li class="row row--J">
+                        <ol class="seats" type="J">
+                            {% for i in s_form.seats_row_j %}
+                                {% if i.data.selected %}
+                                    <label for="{{ i.data.id }}"></label>
+                                    <input type="checkbox" name="{{ i.data.name }}" value="{{ i.data.value }}"
+                                           id="{{ i.data.id }}" checked disabled>
+                                {% else %}
+                                    {{ i }}
+                                {% endif %}
+                            {% endfor %}
+                        </ol>
+                    </li>
+                </ol>
             </div>
-            <ol class="front">
-                <li class="row row--A">
-                    <ol class="seats" type="A">
-
-                        {% for i in s_form.seats_row_a %}
-                            {% if i.data.selected %}
-                                <label for="{{ i.data.id }}"></label>
-                                <input type="checkbox" name="{{ i.data.name }}" value="{{ i.data.value }}"
-                                       id="{{ i.data.id }}" checked disabled>
-                            {% else %}
-                                {{ i }}
-                            {% endif %}
-                        {% endfor %}
-                    </ol>
-                </li>
-
-                <li class="row row--B">
-                    <ol class="seats" type="B">
-                        {% for i in s_form.seats_row_b %}
-                            {% if i.data.selected %}
-                                <label for="{{ i.data.id }}"></label>
-                                <input type="checkbox" name="{{ i.data.name }}" value="{{ i.data.value }}"
-                                       id="{{ i.data.id }}" checked disabled>
-                            {% else %}
-                                {{ i }}
-                            {% endif %}
-                        {% endfor %}
-                    </ol>
-                </li>
-
-                <li class="row row--C">
-                    <ol class="seats" type="C">
-                        {% for i in s_form.seats_row_c %}
-                            {% if i.data.selected %}
-                                <label for="{{ i.data.id }}"></label>
-                                <input type="checkbox" name="{{ i.data.name }}" value="{{ i.data.value }}"
-                                       id="{{ i.data.id }}" checked disabled>
-                            {% else %}
-                                {{ i }}
-                            {% endif %}
-                        {% endfor %}
-                    </ol>
-                </li>
-
-                <li class="row row--D">
-                    <ol class="seats" type="D">
-                        {% for i in s_form.seats_row_d %}
-                            {% if i.data.selected %}
-                                <label for="{{ i.data.id }}"></label>
-                                <input type="checkbox" name="{{ i.data.name }}" value="{{ i.data.value }}"
-                                       id="{{ i.data.id }}" checked disabled>
-                            {% else %}
-                                {{ i }}
-                            {% endif %}
-                        {% endfor %}
-                    </ol>
-                </li>
-
-                <li class="row row--E">
-                    <ol class="seats" type="E">
-                        {% for i in s_form.seats_row_e %}
-                            {% if i.data.selected %}
-                                <label for="{{ i.data.id }}"></label>
-                                <input type="checkbox" name="{{ i.data.name }}" value="{{ i.data.value }}"
-                                       id="{{ i.data.id }}" checked disabled>
-                            {% else %}
-                                {{ i }}
-                            {% endif %}
-                        {% endfor %}
-                    </ol>
-                </li>
-
-                <li class="row row--F">
-                    <ol class="seats" type="F">
-                        {% for i in s_form.seats_row_f %}
-                            {% if i.data.selected %}
-                                <label for="{{ i.data.id }}"></label>
-                                <input type="checkbox" name="{{ i.data.name }}" value="{{ i.data.value }}"
-                                       id="{{ i.data.id }}" checked disabled>
-                            {% else %}
-                                {{ i }}
-                            {% endif %}
-                        {% endfor %}
-                    </ol>
-                </li>
-
-                <li class="row row--G">
-                    <ol class="seats" type="G">
-                        {% for i in s_form.seats_row_g %}
-                            {% if i.data.selected %}
-                                <label for="{{ i.data.id }}"></label>
-                                <input type="checkbox" name="{{ i.data.name }}" value="{{ i.data.value }}"
-                                       id="{{ i.data.id }}" checked disabled>
-                            {% else %}
-                                {{ i }}
-                            {% endif %}
-                        {% endfor %}
-                    </ol>
-                </li>
-
-                <li class="row row--H">
-                    <ol class="seats" type="H">
-                        {% for i in s_form.seats_row_h %}
-                            {% if i.data.selected %}
-                                <label for="{{ i.data.id }}"></label>
-                                <input type="checkbox" name="{{ i.data.name }}" value="{{ i.data.value }}"
-                                       id="{{ i.data.id }}" checked disabled>
-                            {% else %}
-                                {{ i }}
-                            {% endif %}
-                        {% endfor %}
-                    </ol>
-                </li>
-
-                <li class="row row--I">
-                    <ol class="seats" type="I">
-                        {% for i in s_form.seats_row_i %}
-                            {% if i.data.selected %}
-                                <label for="{{ i.data.id }}"></label>
-                                <input type="checkbox" name="{{ i.data.name }}" value="{{ i.data.value }}"
-                                       id="{{ i.data.id }}" checked disabled>
-                            {% else %}
-                                {{ i }}
-                            {% endif %}
-                        {% endfor %}
-                    </ol>
-                </li>
-
-                <li class="row row--J">
-                    <ol class="seats" type="J">
-                        {% for i in s_form.seats_row_j %}
-                            {% if i.data.selected %}
-                                <label for="{{ i.data.id }}"></label>
-                                <input type="checkbox" name="{{ i.data.name }}" value="{{ i.data.value }}"
-                                       id="{{ i.data.id }}" checked disabled>
-                            {% else %}
-                                {{ i }}
-                            {% endif %}
-                        {% endfor %}
-                    </ol>
-                </li>
-            </ol>
-        </div>
-        <center><input type="submit" value="Dalej"></center>
-    </form>
+            <center><input type="submit" value="Dalej"></center>
+        </form>
+    {% else %}
+        <h2>Nie można zarezerwować miejsc, seans już się odbył.</h2>
+    {% endif %}
 {% endblock %}

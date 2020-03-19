@@ -64,6 +64,7 @@ class FilmMovieDetailView(DetailView):
 
 
 def reservation_form(request, **kwargs):  # kwargs przekazywanie z urls
+    time_now = timezone.now()
     showtime_id = kwargs['showtime_id']
     showtime = Showtime.objects.get(showtime_id=showtime_id)
     # pass initial data to form https://www.geeksforgeeks.org/initial-form-data-django-forms/
@@ -124,7 +125,8 @@ def reservation_form(request, **kwargs):  # kwargs przekazywanie z urls
                                                                        'seats_row_i': seats_row_i,
                                                                        'seats_row_j': seats_row_j,
                                                                        'taken_seats': taken_seats,
-                                                                       's_form': s_form})
+                                                                       's_form': s_form,
+                                                                       'time_now': time_now})
 
 
 def ticket_types_client(request, **kwargs):
