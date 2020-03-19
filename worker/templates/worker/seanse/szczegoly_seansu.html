@@ -1,6 +1,12 @@
 {% extends 'worker/base.html' %}
 {% load static %}
 {% block content %}
+    {% if messages %}
+        {% for message in messages %}
+            {{ message }}
+        {% endfor %}
+    {% endif %}
+
     <a href="{% url 'showtime-update-worker' showtime.showtime_id %}">Aktualizuj informacje o seansie</a>
     <a href="{% url 'showtime-delete-worker' showtime.showtime_id %}">Usuń seans</a>
     <br><br>

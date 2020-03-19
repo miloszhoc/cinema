@@ -370,11 +370,9 @@ def summary(request, **kwargs):
                                              'Wystąpił problem z wysłaniem wiadomości. Prosimy o ręczne potwierdzenie rezerwacji pod linkiem: \n'
                                              + confirm_url + '\nW celu odzucenia rezerwacji prosimy przejść pod adres\n' + reject_url)
                 else:
-                    reservation.confirmed = True
                     messages.add_message(request, messages.SUCCESS,
-                                         'Nie została zaznaczona opcja wysyłki wiadomości email do klienta (rezerwacja zostanie '
-                                         'usunięta w ciągu 30min), \n'
-                                         'lub została zaznaczona opcję wysyłki wiadomości i potwierdzenia rezerwacji.')
+                                         'Rezerwacja została pomyślnie zakutalizowana! \n'
+                                         'Uwaga! Nie została zaznaczona opcja wysyłki wiadomości email do klienta.')
                 request.session.pop('taken')
                 request.session.pop('data')
                 request.session.pop('formset_data')
@@ -489,6 +487,45 @@ def reservation_update(request, **kwargs):
                     reservation.ticket_id.add(instance)
 
                 r_form.save_m2m()
+
+                # https://simpleisbetterthancomplex.com/tutorial/2016/06/13/how-to-send-email.html
+                # https://stackoverflow.com/questions/29466796/sending-a-html-email-in-django
+                if reservation.confirmation_email and not reservation.confirmed:
+                    html_mail = loader.render_to_string(template_name='client/rezerwacja/email.html',
+                                                        context={'first_name': client.first_name,
+                                                                 'last_name': client.last_name,
+                                                                 'reservation': reservation,
+                                                                 'domain': request.META['HTTP_HOST']})
+
+                    mail = send_mail(subject='Potwierdzenie rezerwacji',
+                                     message='',
+                                     from_email=EMAIL_HOST_USER,
+                                     recipient_list=[client.email, ],
+                                     fail_silently=True,
+                                     html_message=html_mail)
+                    if mail:
+                        messages.add_message(request, messages.SUCCESS,
+                                             'Rezerwacja została pomyślnie utworzona, na adres'
+                                             'mailowy klienta została wysłana wiadomość z potwierdzeniem.'
+                                             'Jeśli klient nie potwierdzi rezerwacji w ciągu 30 minut, '
+                                             'to zostanie ona usunięta z systemu')
+                    else:
+                        confirm_url = request.META['HTTP_HOST'] + reverse('reservation-accept-client',
+                                                                          kwargs={'id': str(
+                                                                              reservation.reservation_confirmation_code)})
+                        reject_url = request.META['HTTP_HOST'] + reverse('reservation-deny-client',
+                                                                         kwargs={'id': str(
+                                                                             reservation.reservation_confirmation_code)})
+
+                        messages.add_message(request,
+                                             messages.ERROR,
+                                             'Wystąpił problem z wysłaniem wiadomości. Prosimy o ręczne potwierdzenie rezerwacji pod linkiem: \n'
+                                             + confirm_url + '\nW celu odzucenia rezerwacji prosimy przejść pod adres\n' + reject_url)
+                else:
+                    messages.add_message(request, messages.SUCCESS,
+                                         'Nie została zaznaczona opcja wysyłki wiadomości email do klienta (rezerwacja zostanie '
+                                         'usunięta w ciągu 30min), \n Przejdź do edycji rezerwacji, aby wysłać wiadomość, '
+                                         'lub potwierdzić rezerwację za klienta.')
                 return redirect(reverse('showtime-details-worker', kwargs={'pk': str(showtime.showtime_id)}))
 
     return render(request, 'worker/rezerwacje/edytuj-rezerwacje.html', context={'reservation': reservation,

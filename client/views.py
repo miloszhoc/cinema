@@ -63,7 +63,6 @@ class FilmMovieDetailView(DetailView):
         return context
 
 
-@transaction.atomic
 def reservation_form(request, **kwargs):  # kwargs przekazywanie z urls
     showtime_id = kwargs['showtime_id']
     showtime = Showtime.objects.get(showtime_id=showtime_id)
@@ -108,7 +107,7 @@ def reservation_form(request, **kwargs):  # kwargs przekazywanie z urls
             if len(taken) > 10:
                 messages.add_message(request, messages.ERROR, 'Możesz zarezerwować maksymalnie 10 miejsc!')
             else:
-                return redirect('summary-client')
+                return redirect('reservation-tickets-client')
 
     return render(request, 'client/rezerwacja_na_seans.html', context={'showtime_id': showtime_id,
                                                                        'showtime': showtime,
@@ -128,8 +127,7 @@ def reservation_form(request, **kwargs):  # kwargs przekazywanie z urls
                                                                        's_form': s_form})
 
 
-@transaction.atomic
-def summary_client(request, **kwargs):
+def ticket_types_client(request, **kwargs):
     if 'data' in request.session:
         taken = request.session.get('taken')
         data = request.session.get('data')
@@ -167,6 +165,99 @@ def summary_client(request, **kwargs):
                                               max_num=10)
 
         ticket_form = ticket_formset(queryset=Ticket.objects.none(), initial=[{'seat_id': z} for z in taken])
+
+        if request.POST:
+            r_form = forms.ReservationModelForm(request.POST)
+            client_form = forms.ClientModelForm(request.POST)
+            ticket_form = ticket_formset(request.POST)
+            r_form.fields['showtime_id'].widget = r_form.fields['showtime_id'].hidden_widget()
+
+            client_form.fields['first_name'].widget = client_form.fields['first_name'].hidden_widget()
+            client_form.fields['last_name'].widget = client_form.fields['last_name'].hidden_widget()
+            client_form.fields['email'].widget = client_form.fields['email'].hidden_widget()
+            client_form.fields['phone_number'].widget = client_form.fields['phone_number'].hidden_widget()
+
+            if ticket_form.is_valid() and (client_form.is_valid() and r_form.is_valid()):
+                request.session['formset_data'] = ticket_form.data
+
+                return redirect('summary-client')
+
+        return render(request, 'client/wybierz_typy_biletow.html', context={'taken': taken,
+                                                                            'ticket_form': ticket_form,
+                                                                            'reservation_form': r_form,
+                                                                            'client_form': client_form,
+                                                                            'client_initial': client_initial,
+                                                                            'reservation_initial': reservation_initial,
+                                                                            'showtime': showtime})
+    else:
+        taken = ''
+        ticket_form = ''
+        r_form = ''
+        client_form = ''
+        reservation_initial = ''
+        client_initial = ''
+        showtime = ''
+        return render(request, 'client/wybierz_typy_biletow.html', context={'taken': taken,
+                                                                            'ticket_form': ticket_form,
+                                                                            'reservation_form': r_form,
+                                                                            'client_form': client_form,
+                                                                            'client_initial': client_initial,
+                                                                            'reservation_initial': reservation_initial,
+                                                                            'showtime': showtime})
+
+
+@transaction.atomic
+def summary_client(request, **kwargs):
+    if 'formset_data' in request.session:
+
+        formset_data = request.session['formset_data']
+
+        # wyliczanie koncowej ceny do wyswietlenia userowi
+        total_price = 0
+        for k, v in formset_data.items():
+            if k.endswith('tickettype_id'):
+                total_price += TicketType.objects.get(ticket_id=v).price
+
+        taken = request.session.get('taken')
+        data = request.session.get('data')
+        showtime_id = data['showtime_id']
+
+        paid = data['paid'] if data.get('paid') else ''
+        confirmed = data['confirmed'] if data.get('confirmed') else ''
+
+        reservation_initial = {'showtime_id': data['showtime_id'],
+                               'confirmed': confirmed,
+                               'paid': paid}
+
+        client_initial = {'first_name': data['first_name'],
+                          'last_name': data['last_name'],
+                          'email': data['email'],
+                          'phone_number': data['phone_number']}
+
+        showtime = Showtime.objects.get(showtime_id=showtime_id)
+
+        r_form = forms.ReservationModelForm(initial=reservation_initial)
+        r_form.fields['showtime_id'].widget = r_form.fields['showtime_id'].hidden_widget()
+
+        client_form = forms.ClientModelForm(initial=client_initial)
+        client_form.fields['first_name'].widget = client_form.fields['first_name'].hidden_widget()
+        client_form.fields['last_name'].widget = client_form.fields['last_name'].hidden_widget()
+        client_form.fields['email'].widget = client_form.fields['email'].hidden_widget()
+        client_form.fields['phone_number'].widget = client_form.fields['phone_number'].hidden_widget()
+
+        ticket_formset = modelformset_factory(Ticket,
+                                              fields=('seat_id', 'tickettype_id'),
+                                              labels={'seat_id': '',
+                                                      'tickettype_id': ''},
+                                              extra=len(taken),
+                                              widgets={'seat_id': django.forms.Select(attrs={'hidden': ''}),
+                                                       'tickettype_id': django.forms.Select(attrs={'hidden': ''})},
+                                              max_num=10)
+
+        ticket_form = ticket_formset(queryset=Ticket.objects.none(), data=formset_data)
+
+        db_ticket_types = TicketType.objects.all()
+
         if request.POST:
             r_form = forms.ReservationModelForm(request.POST)
             client_form = forms.ClientModelForm(request.POST)
@@ -226,7 +317,7 @@ def summary_client(request, **kwargs):
                         messages.add_message(request, messages.SUCCESS,
                                              'Rezerwacja została pomyślnie utworzona, na twój adres'
                                              'mailowy została wysłana wiadomość z potwierdzeniem.'
-                                             'Jeśli nie potwierdzisz rezerwacji w ciągu 15 minut, '
+                                             'Jeśli nie potwierdzisz rezerwacji w ciągu 30 minut, '
                                              'to zostanie ona usunięta z systemu')
                     else:
                         confirm_url = request.META['HTTP_HOST'] + reverse('reservation-accept-client',
@@ -249,7 +340,9 @@ def summary_client(request, **kwargs):
                                                                     'client_form': client_form,
                                                                     'client_initial': client_initial,
                                                                     'reservation_initial': reservation_initial,
-                                                                    'showtime': showtime})
+                                                                    'showtime': showtime,
+                                                                    'total': total_price,
+                                                                    'db_ticket_types': db_ticket_types})
     else:
         taken = ''
         ticket_form = ''
@@ -258,13 +351,15 @@ def summary_client(request, **kwargs):
         reservation_initial = ''
         client_initial = ''
         showtime = ''
+        db_ticket_types = ''
         return render(request, 'client/podsumowanie.html', context={'taken': taken,
                                                                     'ticket_form': ticket_form,
                                                                     'reservation_form': r_form,
                                                                     'client_form': client_form,
                                                                     'client_initial': client_initial,
                                                                     'reservation_initial': reservation_initial,
-                                                                    'showtime': showtime})
+                                                                    'showtime': showtime,
+                                                                    'db_ticket_types': db_ticket_types})
 
 
 def cennik(request):

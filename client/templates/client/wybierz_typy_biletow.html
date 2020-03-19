@@ -1,12 +1,11 @@
 {% extends 'client/base.html' %}
-
+{% load static %}
+{% block logo-text %}
+    <h1 class="logo-text">Rezerwacja</h1>
+{% endblock %}
 {% block content %}
-    {% if taken|length < 1 %}
-        <h2>Nie wybrano żadnych miejsc!</h2>
-    {% elif taken|length > 10 %}
-        <h2>Możesz zarezerwowoać maksymalnie 10 miejesc!</h2>
-    {% else %}
-        <h3>Podsumowanie</h3>
+    {% if taken|length > 0 %}
+        <h3>Wybierz typy biletów</h3>
         <form action="" method="post">
             {% csrf_token %}
             <table>
@@ -38,19 +37,20 @@
             <table>
                 {{ ticket_form.management_form }}
                 {% for form in ticket_form %}
-                    Miejsce: {{ form.seat_id.data }}<br>
-                    {% for i in db_ticket_types %}
-                        {% if i.ticket_id|lower == form.tickettype_id.data|lower %}
-                            Typ biletu: {{ i.type }}{{ form.as_p }}
-                        {% endif %}
-                    {% endfor %}
+                    {% if form.seat_id.initial is None %}
+                        Miejsce: {{ form.seat_id.data }}
+                    {% else %}
+                        Miejsce: {{ form.seat_id.initial }}
+                    {% endif %}
+                    {{ form.as_p }}
                 {% endfor %}
             </table>
-            <b>Do zapłaty: {{ total }} PLN</b>
             {{ client_form }}
             {{ reservation_form }}<br><br>
-            <input type="submit" value="Zarezerwuj"/>
+            <input type="reset" value="Wyczyść"/>
+            <input type="submit" value="Dalej"/>
         </form>
-
+    {% else %}
+        <h2>Nie wybrano żadnych miejsc!</h2>
     {% endif %}
 {% endblock %}
