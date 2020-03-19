@@ -99,7 +99,6 @@ class TicketTypeDeleteView(LoginRequiredMixin, DeleteView):
 
 # rezerwacje
 @login_required
-@transaction.atomic
 def reservation_form(request, **kwargs):  # kwargs przekazywanie z urls
     showtime_id = kwargs['showtime_id']
     # pass initial data to form https://www.geeksforgeeks.org/initial-form-data-django-forms/
@@ -140,7 +139,7 @@ def reservation_form(request, **kwargs):  # kwargs przekazywanie z urls
             request.session['taken'] = taken
             request.session['data'] = request.POST
 
-            return redirect('summary-worker')
+            return redirect('reservation-tickets-worker')
 
     return render(request, 'worker/rezerwacje/dodaj_rezerwacje.html', context={'showtime_id': showtime_id,
                                                                                'client_form': client_form,
@@ -159,10 +158,8 @@ def reservation_form(request, **kwargs):  # kwargs przekazywanie z urls
                                                                                's_form': s_form})
 
 
-# pracownik moze zarezerwowac dowolna ilosc biletow
-@transaction.atomic
 @login_required
-def summary(request, **kwargs):
+def ticket_types_worker(request, **kwargs):
     if 'data' in request.session:
         taken = request.session.get('taken')
         data = request.session.get('data')
@@ -206,6 +203,109 @@ def summary(request, **kwargs):
                                               max_num=60)  # pracownik moze zarezerwowac cala sale
 
         ticket_form = ticket_formset(queryset=models.Ticket.objects.none(), initial=[{'seat_id': z} for z in taken])
+
+        if request.POST:
+            r_form = forms.ReservationModelForm(request.POST)
+            client_form = forms.ClientModelForm(request.POST)
+            ticket_form = ticket_formset(request.POST)
+
+            if ticket_form.is_valid() and (client_form.is_valid() and r_form.is_valid()):
+                request.session['formset_data'] = ticket_form.data
+
+                return redirect('summary-worker')
+
+            client_form.fields['first_name'].widget = client_form.fields['first_name'].hidden_widget()
+            client_form.fields['last_name'].widget = client_form.fields['last_name'].hidden_widget()
+            client_form.fields['email'].widget = client_form.fields['email'].hidden_widget()
+            client_form.fields['phone_number'].widget = client_form.fields['phone_number'].hidden_widget()
+
+            r_form.fields['showtime_id'].widget = r_form.fields['showtime_id'].hidden_widget()
+            r_form.fields['confirmed'].widget = r_form.fields['confirmed'].hidden_widget()
+            r_form.fields['paid'].widget = r_form.fields['paid'].hidden_widget()
+            r_form.fields['confirmation_email'].widget = r_form.fields['confirmation_email'].hidden_widget()
+
+        return render(request, 'worker/rezerwacje/wybierz_typy_biletow.html', context={'taken': taken,
+                                                                                       'ticket_form': ticket_form,
+                                                                                       'reservation_form': r_form,
+                                                                                       'client_form': client_form,
+                                                                                       'client_initial': client_initial,
+                                                                                       'reservation_initial': reservation_initial,
+                                                                                       'showtime': showtime})
+    else:
+        taken = ''
+        ticket_form = ''
+        r_form = ''
+        client_form = ''
+        reservation_initial = ''
+        client_initial = ''
+        showtime = ''
+        return render(request, 'worker/rezerwacje/wybierz_typy_biletow.html', context={'taken': taken,
+                                                                                       'ticket_form': ticket_form,
+                                                                                       'reservation_form': r_form,
+                                                                                       'client_form': client_form,
+                                                                                       'client_initial': client_initial,
+                                                                                       'reservation_initial': reservation_initial,
+                                                                                       'showtime': showtime})
+
+
+# pracownik moze zarezerwowac dowolna ilosc biletow
+@transaction.atomic
+@login_required
+def summary(request, **kwargs):
+    if 'formset_data' in request.session:
+        formset_data = request.session['formset_data']
+
+        # wyliczanie koncowej ceny do wyswietlenia userowi
+        total_price = 0
+        for k, v in formset_data.items():
+            if k.endswith('tickettype_id'):
+                total_price += models.TicketType.objects.get(ticket_id=v).price
+
+        taken = request.session.get('taken')
+        data = request.session.get('data')
+        showtime_id = data['showtime_id']
+
+        paid = data['paid'] if data.get('paid') else ''
+        confirmed = data['confirmed'] if data.get('confirmed') else ''
+        confirmation_email = data['confirmation_email'] if data.get('confirmation_email') else ''
+
+        reservation_initial = {'showtime_id': data['showtime_id'],
+                               'confirmed': confirmed,
+                               'paid': paid,
+                               'confirmation_email': confirmation_email}
+
+        client_initial = {'first_name': data['first_name'],
+                          'last_name': data['last_name'],
+                          'email': data['email'],
+                          'phone_number': data['phone_number']}
+
+        showtime = models.Showtime.objects.get(showtime_id=showtime_id)
+
+        r_form = forms.ReservationModelForm(initial=reservation_initial)
+        r_form.fields['showtime_id'].widget = r_form.fields['showtime_id'].hidden_widget()
+
+        client_form = forms.ClientModelForm(initial=client_initial)
+        client_form.fields['first_name'].widget = client_form.fields['first_name'].hidden_widget()
+        client_form.fields['last_name'].widget = client_form.fields['last_name'].hidden_widget()
+        client_form.fields['email'].widget = client_form.fields['email'].hidden_widget()
+        client_form.fields['phone_number'].widget = client_form.fields['phone_number'].hidden_widget()
+
+        r_form.fields['confirmed'].widget = r_form.fields['confirmed'].hidden_widget()
+        r_form.fields['paid'].widget = r_form.fields['paid'].hidden_widget()
+        r_form.fields['confirmation_email'].widget = r_form.fields['confirmation_email'].hidden_widget()
+
+        ticket_formset = modelformset_factory(models.Ticket,
+                                              fields=('seat_id', 'tickettype_id'),
+                                              labels={'seat_id': '',
+                                                      'tickettype_id': ''},
+                                              extra=len(taken),
+                                              widgets={'seat_id': django.forms.Select(attrs={'hidden': '', }),
+                                                       'tickettype_id': django.forms.Select(attrs={'hidden': '', })},
+                                              max_num=60)  # pracownik moze zarezerwowac cala sale
+
+        ticket_form = ticket_formset(queryset=models.Ticket.objects.none(), data=formset_data)
+
+        db_ticket_types = models.TicketType.objects.all()
 
         if request.POST:
             r_form = forms.ReservationModelForm(request.POST)
@@ -277,6 +377,7 @@ def summary(request, **kwargs):
                                          'lub została zaznaczona opcję wysyłki wiadomości i potwierdzenia rezerwacji.')
                 request.session.pop('taken')
                 request.session.pop('data')
+                request.session.pop('formset_data')
                 return redirect(reverse('showtime-details-worker', kwargs={'pk': showtime_id}))
 
         return render(request, 'worker/rezerwacje/podsumowanie.html', context={'taken': taken,
@@ -285,7 +386,9 @@ def summary(request, **kwargs):
                                                                                'client_form': client_form,
                                                                                'client_initial': client_initial,
                                                                                'reservation_initial': reservation_initial,
-                                                                               'showtime': showtime})
+                                                                               'showtime': showtime,
+                                                                               'total': total_price,
+                                                                               'db_ticket_types': db_ticket_types})
     else:
         taken = ''
         ticket_form = ''
@@ -294,13 +397,15 @@ def summary(request, **kwargs):
         reservation_initial = ''
         client_initial = ''
         showtime = ''
+        total_price = ''
         return render(request, 'worker/rezerwacje/podsumowanie.html', context={'taken': taken,
                                                                                'ticket_form': ticket_form,
                                                                                'reservation_form': r_form,
                                                                                'client_form': client_form,
                                                                                'client_initial': client_initial,
                                                                                'reservation_initial': reservation_initial,
-                                                                               'showtime': showtime})
+                                                                               'showtime': showtime,
+                                                                               'total': total_price})
 
 
 @login_required
@@ -447,7 +552,6 @@ class ShowtimeCreateView(LoginRequiredMixin, CreateView):
     model = models.Showtime
     template_name = 'worker/seanse/dodaj_seans.html'
     form_class = forms.ShowtimeModelForm
-
 
 
 class ShowtimeUpdateView(LoginRequiredMixin, UpdateView):
