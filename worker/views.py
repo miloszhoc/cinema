@@ -35,17 +35,6 @@ def main(request):
         return render(request, 'main.html', context={})
 
 
-@login_required()
-def add_user(request):
-    form = UserCreationForm()
-    if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            form.cleaned_data.get('username')
-
-    return render(request, 'worker/uzytkownicy/dodaj_uzytkownika.html', context={'form': form})
-
-
 # typy biletów
 class TicketTypeListView(LoginRequiredMixin, ListView):
     model = models.TicketType
@@ -60,14 +49,6 @@ class TicketTypeCreateView(LoginRequiredMixin, CreateView):
     template_name = 'worker/typy_biletow/dodaj_typ.html'
     form_class = forms.TicketTypeModelForm
     success_url = reverse_lazy('tickettype-list-worker')
-
-    def form_valid(self, form):
-        print(form.cleaned_data)
-        return super().form_valid(form)
-
-    # def get_form(self, form_class=None):
-    #     form = super(TicketTypeCreateView, self).get_form()
-    #     form.fields['ticket_id'].queryset =
 
 
 class TicketTypeDetailView(LoginRequiredMixin, DetailView):
@@ -85,10 +66,6 @@ class TicketTypeUpdateView(LoginRequiredMixin, UpdateView):
     def get_object(self, queryset=None):
         id_ = self.kwargs.get('pk')
         return get_object_or_404(models.TicketType, ticket_id=id_)
-
-    def form_valid(self, form):
-        print(form.cleaned_data)
-        return super().form_valid(form)
 
 
 class TicketTypeDeleteView(LoginRequiredMixin, DeleteView):

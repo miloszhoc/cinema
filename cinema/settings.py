@@ -78,9 +78,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'cinema_db',
+        # 'NAME': 'cinema_2',
         'USER': 'postgres',
         'PASSWORD': 'licencjat123!',
-        # 'HOST': '',
+        # 'HOST': 'localhost',
         'HOST': '80.211.204.44',
         'PORT': '5432',
     },

@@ -13,25 +13,29 @@
 
 {#https://stackoverflow.com/questions/8678336/django-grouping-querysets-by-a-certain-field-in-template#}
 {% block content %}
-    {% regroup showtime_list by start_date|date:"d.m.Y" as showtime_by_date %}
-    <table>
-        {% for showtime in showtime_by_date %}
-            <tr>
-                <th colspan="3" style="text-align: center">{{ showtime.grouper }}</th>
-            </tr>
-            <tr>
-                <td>Tytuł</td>
-                <td>Godzina rozpoczęcia</td>
-                <td>Godzina zakończenia</td>
-            </tr>
-            {% for i in showtime.list %}
+    {% if showtime_list|length > 0 %}
+        {% regroup showtime_list by start_date|date:"d.m.Y" as showtime_by_date %}
+        <table>
+            {% for showtime in showtime_by_date %}
                 <tr>
-                <td>{{ i.movie_id.title }} </td>
-                <td>{{ i.start_date|date:"H:i" }} </td>
-                <td>{{ i.end_date|date:"H:i" }} </td>
-                <td><a href="{% url 'reservation-form-client' i.showtime_id %}">Zarezerwuj miejsce</a></td>
+                    <th colspan="3" style="text-align: center">{{ showtime.grouper }}</th>
+                </tr>
+                <tr>
+                    <td>Tytuł</td>
+                    <td>Godzina rozpoczęcia</td>
+                    <td>Godzina zakończenia</td>
+                </tr>
+                {% for i in showtime.list %}
+                    <tr>
+                    <td>{{ i.movie_id.title|title }} </td>
+                    <td>{{ i.start_date|date:"H:i" }} </td>
+                    <td>{{ i.end_date|date:"H:i" }} </td>
+                    <td><a href="{% url 'reservation-form-client' i.showtime_id %}">Zarezerwuj miejsce</a></td>
+                {% endfor %}
+            </tr>
             {% endfor %}
-        </tr>
-        {% endfor %}
-    </table>
+        </table>
+    {% else %}
+        <h3>Obecnie nie wyświetlamy żadych filmów.</h3>
+    {% endif %}
 {% endblock %}

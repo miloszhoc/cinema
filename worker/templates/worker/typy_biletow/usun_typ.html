@@ -1,9 +1,12 @@
 {% extends 'worker/base.html' %}
 {% block content %}
-    <form action="." method="post">{% csrf_token %}
-        <h1>Czy chcesz usunąć typ biletu {{ tickettype.type }}?</h1>
-        <p><input type="submit" value="Yes"/> <a
-                href="{% url 'tickettype-details-worker'  tickettype.ticket_id %}">Nie</a></p>
-
-    </form>
+    {% if 'Administratorzy' in  request.user.groups.values.0.name %}
+        <form action="." method="post">{% csrf_token %}
+            <h1>Czy chcesz usunąć typ biletu {{ tickettype.type }}?</h1>
+            <p><input type="submit" value="Yes"/> <a
+                    href="{% url 'tickettype-details-worker'  tickettype.ticket_id %}">Nie</a></p>
+        </form>
+    {% else %}
+        <h3>Musisz posiadać uprawnienia administratora, aby wyświetlić tę stronę.</h3>
+    {% endif %}
 {% endblock %}

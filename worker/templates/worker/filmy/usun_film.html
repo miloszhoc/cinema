@@ -1,9 +1,12 @@
 {% extends 'worker/base.html' %}
 {% block content %}
-    <form action="." method="post">{% csrf_token %}
-        <h1>Czy chcesz usunąć film {{ movie.title }}?</h1>
-        <h2>Usunięcie filmu z bazy spowoduje usunięcie wszsytkich powiązanych z nim seansów.</h2>
-        <p><input type="submit" value="Yes"/> <a href="{% url 'movie-details-worker' movie.movie_id %}">Nie</a></p>
-
-    </form>
+    {% if 'Administratorzy' in  request.user.groups.values.0.name %}
+        <form action="." method="post">{% csrf_token %}
+            <h1>Czy chcesz usunąć film {{ movie.title }}?</h1>
+            <h2>Usunięcie filmu z bazy spowoduje usunięcie wszsytkich powiązanych z nim seansów.</h2>
+            <p><input type="submit" value="Yes"/> <a href="{% url 'movie-details-worker' movie.movie_id %}">Nie</a></p>
+        </form>
+    {% else %}
+        <h3>Musisz posiadać uprawnienia administratora, aby wyświetlić tę stronę.</h3>
+    {% endif %}
 {% endblock %}

@@ -1,10 +1,12 @@
 {% extends 'worker/base.html' %}
 {% block content %}
-    <a href="{% url 'movie-update-worker' movie.movie_id %}">Aktualizuj informacje o filmie</a>
-    <a href="{% url 'movie-delete-worker' movie.movie_id %}">Usuń film</a>
+    {% if 'Administratorzy' in  request.user.groups.values.0.name %}
+        <a href="{% url 'movie-update-worker' movie.movie_id %}">Aktualizuj informacje o filmie</a>
+        <a href="{% url 'movie-delete-worker' movie.movie_id %}">Usuń film</a>
+    {% endif %}
     <br><br>
     <img src="{{ movie.thumbnail }}" alt="{{ object.title }}"/><br>
-    <b>tytuł:</b> {{ object.title }}<br><br>
+    <b>tytuł:</b> {{ object.title|title }}<br><br>
     <b>reżyser:</b> {{ object.director }}<br>
     <b>data premiery:</b> {{ object.release_date }}<br>
     <b>czas trwania:</b> {{ object.duration }}<br><br>

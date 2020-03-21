@@ -1,11 +1,15 @@
 {% extends 'worker/base.html' %}
 {% load static %}
 {% block content %}
-    <form action="." method="post">{% csrf_token %}
-        {{ form.as_p }}
-        <input type="reset" value="Wyczyść"/>
-        <input type="submit" value="Zapisz"/>
-    </form>
-    <script type="text/javascript" src="{% static 'worker/js/date_time_widget.js' %}">
-    </script>
+    {% if 'Administratorzy' in  request.user.groups.values.0.name %}
+        <form action="." method="post">{% csrf_token %}
+            {{ form.as_p }}
+            <input type="reset" value="Wyczyść"/>
+            <input type="submit" value="Zapisz"/>
+        </form>
+        <script type="text/javascript" src="{% static 'worker/js/date_time_widget.js' %}">
+        </script>
+    {% else %}
+        <h3>Musisz posiadać uprawnienia administratora, aby wyświetlić tę stronę.</h3>
+    {% endif %}
 {% endblock %}

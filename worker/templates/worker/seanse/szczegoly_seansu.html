@@ -14,7 +14,7 @@
     <br><br>
 
     <img src="{{ showtime.movie_id.thumbnail }}" alt="{{ showtime.movie_id.title }}"/><br>
-    {{ showtime.movie_id.title }}<br>
+    {{ showtime.movie_id.title|title }}<br>
     <b>data seansu:</b>
     {{ showtime.start_date| time:"H:i" }}
     {{ showtime.start_date| date:"d.m.Y" }} r.-

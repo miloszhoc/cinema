@@ -82,33 +82,6 @@ class TicketModelForm(ModelForm):
         super(TicketModelForm, self).__init__(*args, **kwargs)
 
 
-# do biletow
-# class ReservationTicketModelForm(ModelForm):
-#     class Meta:
-#         model = Reservation
-#
-#         labels = {'client_id': 'Klient', 'ticket_id': 'Bilety'}
-#         fields = ['client_id']
-#
-#     def __init__(self, reservation_id, client_id, *args, **kwargs):
-#         super(ReservationTicketModelForm, self).__init__(*args, **kwargs)
-#
-#         kwargs['seats_row_a'] = Seat.objects.filter(row_number='A')
-#         kwargs['seats_row_b'] = Seat.objects.filter(row_number='B')
-#         kwargs['seats_row_c'] = Seat.objects.filter(row_number='C')
-#         kwargs['seats_row_d'] = Seat.objects.filter(row_number='D')
-#         kwargs['seats_row_e'] = Seat.objects.filter(row_number='E')
-#         kwargs['seats_row_f'] = Seat.objects.filter(row_number='F')
-#         kwargs['seats_row_g'] = Seat.objects.filter(row_number='G')
-#         kwargs['seats_row_h'] = Seat.objects.filter(row_number='H')
-#         kwargs['seats_row_i'] = Seat.objects.filter(row_number='I')
-#         kwargs['seats_row_j'] = Seat.objects.filter(row_number='J')
-#
-#         self.fields['client_id'].initial = client_id
-#         self.fields['client_id'].disabled = True
-#         self.reservation_id = reservation_id
-
-
 class TicketTypeModelForm(ModelForm):
     class Meta:
         model = TicketType

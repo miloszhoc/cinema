@@ -1,9 +1,22 @@
 {% extends 'worker/base_pagination.html' %}
 {% block content_pagination %}
-    <a href="{% url 'tickettype-create-worker' %}">Dodaj typ biletu</a><br><br>
-    {% for ticket in tickettype_list %}
-        <a href="{% url 'tickettype-details-worker' ticket.ticket_id %}">{{ forloop.counter }}. {{ ticket.type }},
-            {{ ticket.price }}</a>
-        <br>
-    {% endfor %}
+    {% if 'Administratorzy' in  request.user.groups.values.0.name %}
+        <a href="{% url 'tickettype-create-worker' %}">Dodaj typ biletu</a><br><br>
+    {% endif %}
+    <table>
+        <th></th>
+        <th>Typ biletu</th>
+        <th>Cena</th>
+        <th></th>
+        {% for ticket in tickettype_list %}
+            <tr>
+                <td>{{ forloop.counter }}.</td>
+                <td>{{ ticket.type }}</td>
+                <td>{{ ticket.price }}</td>
+                <td>
+                    <a href="{% url 'tickettype-details-worker' ticket.ticket_id %}">Przejdź do szczegółów</a>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
 {% endblock %}
