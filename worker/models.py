@@ -51,7 +51,7 @@ class Seat(models.Model):
 
 class Showtime(models.Model):
     showtime_id = models.AutoField(primary_key=True, null=False)
-    movie_id = models.ForeignKey(Movie, on_delete=models.CASCADE)
+    movie_id = models.ForeignKey(Movie, on_delete=models.PROTECT)
     start_date = models.DateTimeField(null=True)
     show_break = models.DurationField(default=0)
     end_date = models.DateTimeField(null=True, editable=False)
