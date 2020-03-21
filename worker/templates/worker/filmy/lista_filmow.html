@@ -4,8 +4,13 @@
         <a href="{% url 'movie-create-worker' %}">Dodaj film</a>
     {% endif %}
     <br>
-    <a href="{% url 'movie-deleted-list-worker' %}">Usunięte filmy</a>
-    <h3>Lista filmów:</h3>
+{#    jesli jest to lista usunietych filmow, to ukrywa link do "usuniete filmy" #}
+    {% if not deleted_list %}
+        <a href="{% url 'movie-deleted-list-worker' %}">Usunięte filmy</a>
+        <h3>Lista filmów:</h3>
+    {% else %}
+        <h3>Lista usuniętych filmów:</h3>
+    {% endif %}
     <table>
         <th></th>
         <th>Tytuł filmu</th>

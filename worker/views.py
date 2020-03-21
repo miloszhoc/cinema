@@ -616,6 +616,11 @@ class MovieDeletedListView(LoginRequiredMixin, ListView):
     # sortowanie asc po id, czyli wg kolejnosci dodania
     ordering = ['-movie_id']
 
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(object_list=object_list, **kwargs)
+        context['deleted_list'] = True  # do oznaczenie, czy lista zawiera usuniete filmy
+        return context
+
 
 class MovieDetailView(LoginRequiredMixin, DetailView):
     model = models.Movie
