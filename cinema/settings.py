@@ -122,11 +122,15 @@ USE_TZ = False
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 # potrzebne, aby działały skrypty js
+# python manage.py collectstatic zbiera statyczne pliki do jednego folderu
+# tutaj wskazujemy sciezki do plikow statycznych w aplikacjach
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),
+    os.path.join(BASE_DIR, 'worker', "static"),
+    os.path.join(BASE_DIR, 'client', "static"),
 ]
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 LOGIN_REDIRECT_URL = 'panel'  # przekieowanie po zalogowaniu
 LOGIN_URL = 'main'  # kiedy chemy sie dostac do sciezki niedostepnej bez logowania to przekierowuje na ten adres url
