@@ -600,11 +600,21 @@ class ShowtimeDeleteView(LoginRequiredMixin, DeleteView):
 
 # filmy
 class MovieListView(LoginRequiredMixin, ListView):
+    queryset = models.Movie.objects.filter(deleted=False)
     model = models.Movie
     template_name = 'worker/filmy/lista_filmow.html'
     paginate_by = 10
     # sortowanie asc po id, czyli wg kolejnosci dodania
-    ordering = ['deleted']
+    ordering = ['-movie_id']
+
+
+class MovieDeletedListView(LoginRequiredMixin, ListView):
+    queryset = models.Movie.objects.filter(deleted=True)
+    model = models.Movie
+    template_name = 'worker/filmy/lista_filmow.html'
+    paginate_by = 10
+    # sortowanie asc po id, czyli wg kolejnosci dodania
+    ordering = ['-movie_id']
 
 
 class MovieDetailView(LoginRequiredMixin, DetailView):
@@ -620,7 +630,6 @@ class MovieDetailView(LoginRequiredMixin, DetailView):
         # jesli film jest powiazany z seansem, to nie mozna go usunac, tylko oznaczyc jako usuniety
         # oznaczyć może tylko administrator, z tak oznaczonego filmu nie można utworzyć seansu
         context['showtime'] = models.Showtime.objects.filter(movie_id=self.object).exists()
-        print(context['showtime'])
         return context
 
 

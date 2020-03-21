@@ -19,11 +19,12 @@ urlpatterns = [
 
     # filmy
     path('filmy/', views.MovieListView.as_view(), name='movie-list-worker'),
+    path('filmy/usuniete/', views.MovieDeletedListView.as_view(), name='movie-deleted-list-worker'),
     path('szczegoly-filmu/<int:pk>', views.MovieDetailView.as_view(), name='movie-details-worker'),
     path('dodaj-film/', views.MovieCreateView.as_view(), name='movie-create-worker'),
     path('<int:pk>/aktualizuj-film/', views.MovieUpdateView.as_view(), name='movie-update-worker'),
     path('<int:pk>/usun-film/', views.MovieDeleteView.as_view(), name='movie-delete-worker'),
-    
+
     # seanse
     path('seanse/', views.ShowtimeListView.as_view(), name='showtime-list-worker'),
     path('seanse/archiwalne/', views.ShowtimeArchiveListView.as_view(), name='showtime-archive-list-worker'),
