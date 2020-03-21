@@ -559,7 +559,12 @@ class ShowtimeArchiveListView(LoginRequiredMixin, ListView):
     model = models.Showtime
     paginate_by = 10
     ordering = ['-showtime_id']
-    template_name = 'worker/seanse/archiwalne_lista.html'
+    template_name = 'worker/seanse/seans_lista.html'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(object_list=object_list, **kwargs)
+        context['deleted_list'] = True  # do oznaczenie, czy lista zawiera usuniete filmy
+        return context
 
 
 class ShowtimeDetailView(LoginRequiredMixin, DetailView):
