@@ -617,6 +617,8 @@ class MovieDetailView(LoginRequiredMixin, DetailView):
         # zwraca true jesli istnieje seans powiazany z filmem
         # potrzebne do usuwania - calkowicie usuwac mozna tylko filmy,
         # ktore nie sa powiazane z zadnym seansem
+        # jesli film jest powiazany z seansem, to nie mozna go usunac, tylko oznaczyc jako usuniety
+        # oznaczyć może tylko administrator, z tak oznaczonego filmu nie można utworzyć seansu
         context['showtime'] = models.Showtime.objects.filter(movie_id=self.object).exists()
         print(context['showtime'])
         return context
