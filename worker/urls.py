@@ -26,6 +26,7 @@ urlpatterns = [
 
     # seanse
     path('seanse/', views.ShowtimeListView.as_view(), name='showtime-list-worker'),
+    path('seanse/archiwalne/', views.ShowtimeArchiveListView.as_view(), name='showtime-archive-list-worker'),
     path('szczegoly-seansu/<int:pk>', views.ShowtimeDetailView.as_view(), name='showtime-details-worker'),
     path('dodaj-seans/', views.ShowtimeCreateView.as_view(), name='showtime-create-worker'),
     path('<int:pk>/aktualizuj-seans/', views.ShowtimeUpdateView.as_view(), name='showtime-update-worker'),

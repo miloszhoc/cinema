@@ -17,6 +17,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.db import transaction
 from cinema.settings import EMAIL_HOST_USER
 from django.template import loader
+from django.utils import timezone
 
 
 # aby dostac się do strony wymagane jest zalogowanie, jeśli user nie jest zalogowany,
@@ -543,11 +544,22 @@ def reservation_delete(request, **kwargs):
 
 
 # seanse
+# lista seansow ktore sie odbeda
 class ShowtimeListView(LoginRequiredMixin, ListView):
+    queryset = models.Showtime.objects.filter(start_date__gte=timezone.now())
     model = models.Showtime
     paginate_by = 10
     ordering = ['-showtime_id']
     template_name = 'worker/seanse/seans_lista.html'
+
+
+# lista archiwalnych seansow
+class ShowtimeArchiveListView(LoginRequiredMixin, ListView):
+    queryset = models.Showtime.objects.filter(start_date__lte=timezone.now())
+    model = models.Showtime
+    paginate_by = 10
+    ordering = ['-showtime_id']
+    template_name = 'worker/seanse/archiwalne_lista.html'
 
 
 class ShowtimeDetailView(LoginRequiredMixin, DetailView):
