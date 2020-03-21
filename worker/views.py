@@ -571,6 +571,7 @@ class ShowtimeDetailView(LoginRequiredMixin, DetailView):
         context = super().get_context_data(**kwargs)
         context['reservations'] = models.Reservation.objects.filter(showtime_id=self.get_object())
         context['tickets'] = models.Ticket.objects.filter(showtime_id=self.get_object())
+        context['time_now'] = timezone.now()
         return context
 
 

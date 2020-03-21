@@ -23,8 +23,10 @@
     <b>czas trwania:</b> {{ showtime.movie_id.duration }}<br>
     <hr>
     <h3>Rezerwacje na seans:</h3>
-
-    <a href="{% url 'reservation-form-worker' showtime.showtime_id %}">Dodaj rezerwację</a>
+    {#    rezerwaja mozliwa tylko, gdy seans sie jeszcze nie odbyl#}
+    {% if showtime.start_date > time_now %}
+        <a href="{% url 'reservation-form-worker' showtime.showtime_id %}">Dodaj rezerwację</a>
+    {% endif %}
     <br>
     <table>
         <tr>
@@ -35,10 +37,8 @@
             <th>Opłacona</th>
             <th>Potwierdzona</th>
             <th>Data rezerwacji</th>
-            {% if user.get_username == 'admin' %}
-                <th>Edycja</th>
-                <th>Usuwanie</th>
-            {% endif %}
+            <th>Edycja</th>
+            <th>Usuwanie</th>
         </tr>
         {% for reservation in reservations %}
             <tr>
