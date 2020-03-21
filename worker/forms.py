@@ -17,12 +17,14 @@ class MovieModelForm(ModelForm):
             'description': 'Opis',
             'link': 'Link do serwisu z opiniami',
             'thumbnail': 'Link do miniatury',
-            'trailer_youtube_id': 'ID trailera z serwisu Youtube'
+            'trailer_youtube_id': 'ID trailera z serwisu Youtube',
+            'deleted': 'Usunięty'
         }
         fields = ['title', 'director',
                   'release_date', 'duration',
                   'description', 'link',
-                  'thumbnail', 'trailer_youtube_id']
+                  'thumbnail', 'trailer_youtube_id',
+                  'deleted']
         widgets = {
             'release_date': NumberInput(attrs={'min': 1800}),
             'duration': TextInput(attrs={'class': 'timepicker', 'autocomplete': 'off'}),
@@ -30,6 +32,8 @@ class MovieModelForm(ModelForm):
 
 
 class ShowtimeModelForm(ModelForm):
+    movie_id = ModelChoiceField(queryset=Movie.objects.filter(deleted=False), label='Film')
+
     class Meta:
         model = Showtime
         labels = {'movie_id': 'Film',

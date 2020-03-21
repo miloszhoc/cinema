@@ -591,10 +591,6 @@ class ShowtimeUpdateView(LoginRequiredMixin, UpdateView):
         id_ = self.kwargs.get('pk')
         return get_object_or_404(models.Showtime, showtime_id=id_)
 
-    def form_valid(self, form):
-        print(form.cleaned_data)
-        return super().form_valid(form)
-
 
 class ShowtimeDeleteView(LoginRequiredMixin, DeleteView):
     model = models.Showtime
@@ -608,7 +604,7 @@ class MovieListView(LoginRequiredMixin, ListView):
     template_name = 'worker/filmy/lista_filmow.html'
     paginate_by = 10
     # sortowanie asc po id, czyli wg kolejnosci dodania
-    ordering = ['movie_id']
+    ordering = ['deleted']
 
 
 class MovieDetailView(LoginRequiredMixin, DetailView):
@@ -617,6 +613,12 @@ class MovieDetailView(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(object_list=object_list, **kwargs)
+
+        # zwraca true jesli istnieje seans powiazany z filmem
+        # potrzebne do usuwania - calkowicie usuwac mozna tylko filmy,
+        # ktore nie sa powiazane z zadnym seansem
+        context['showtime'] = models.Showtime.objects.filter(movie_id=self.object).exists()
+        print(context['showtime'])
         return context
 
 
@@ -624,10 +626,6 @@ class MovieCreateView(LoginRequiredMixin, CreateView):
     model = models.Movie
     template_name = 'worker/filmy/dodaj_film.html'
     form_class = forms.MovieModelForm
-
-    def form_valid(self, form):
-        print(form.cleaned_data)
-        return super().form_valid(form)
 
 
 class MovieUpdateView(LoginRequiredMixin, UpdateView):
@@ -639,10 +637,6 @@ class MovieUpdateView(LoginRequiredMixin, UpdateView):
     def get_object(self, queryset=None):
         id_ = self.kwargs.get('pk')
         return get_object_or_404(models.Movie, movie_id=id_)
-
-    def form_valid(self, form):
-        print(form.cleaned_data)
-        return super().form_valid(form)
 
 
 class MovieDeleteView(LoginRequiredMixin, DeleteView):

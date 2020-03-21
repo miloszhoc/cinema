@@ -30,6 +30,7 @@ class Movie(models.Model):
     link = models.URLField(max_length=255, null=True)
     thumbnail = models.CharField(max_length=255, null=True)
     trailer_youtube_id = models.CharField(max_length=255, null=True)
+    deleted = models.BooleanField(default=False)
 
     # adres pod który zostaniemy przekierowani po dodaniu filmu do bazy (klasa MovieCreateView)
     # w tym przypadku przenosi nas do szczegolow dodanego filmu
@@ -37,7 +38,7 @@ class Movie(models.Model):
         return reverse('movie-details-worker', kwargs={'pk': self.movie_id})
 
     def __str__(self):
-        return str(self.movie_id) + '. ' + self.title
+        return self.title
 
 
 class Seat(models.Model):

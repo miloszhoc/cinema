@@ -2,7 +2,9 @@
 {% block content %}
     {% if 'Administratorzy' in  request.user.groups.values.0.name %}
         <a href="{% url 'movie-update-worker' movie.movie_id %}">Aktualizuj informacje o filmie</a>
-        <a href="{% url 'movie-delete-worker' movie.movie_id %}">Usuń film</a>
+        {% if not showtime %}
+            <a href="{% url 'movie-delete-worker' movie.movie_id %}">Usuń film</a>
+        {% endif %}
     {% endif %}
     <br><br>
     <img src="{{ movie.thumbnail }}" alt="{{ object.title }}"/><br>

@@ -7,11 +7,13 @@
     <table>
         <th></th>
         <th>Tytuł filmu</th>
+        <th>Usunięty</th>
         {% for movie in movie_list %}
             <tr>
                 <td>{{ forloop.counter }}.</td>
                 <td>{{ movie.title|title }}
                 </td>
+                <td>{{ movie.deleted }}</td>
                 <td><a href="{% url 'movie-details-worker' movie.movie_id %}">Przejdź do szczegółów</a></td>
             </tr>
         {% endfor %}
