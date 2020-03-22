@@ -64,7 +64,7 @@
                         {% for ticket in tickets %}
                             {% if reservation.client_id == ticket.client_id %}
                                 Miejsce: {{ ticket.seat_id.seat_number }}{{ ticket.seat_id.row_number }} -
-                                {{ ticket.tickettype_id.type }} {{ ticket.tickettype_id.price }}<br>
+                                {{ ticket.tickettype_id.type }} {{ ticket.price }}<br>
                             {% endif %}
                         {% endfor %}
                     </div>

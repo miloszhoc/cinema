@@ -300,9 +300,12 @@ def summary(request, **kwargs):
                 instances = ticket_form.save(commit=False)
 
                 # get total price
+                # zapisuje cene biletu, aby w przy zmiane cennika ceny juz zakupionych biletow pozostaly takie same
                 total_price = 0
                 for instance in instances:
-                    total_price += models.TicketType.objects.get(ticket_id=instance.tickettype_id_id).price
+                    price = models.TicketType.objects.get(ticket_id=instance.tickettype_id_id).price
+                    total_price += price
+                    instance.price = price
 
                 reservation.cost = total_price
                 reservation.save()
@@ -445,9 +448,12 @@ def reservation_update(request, **kwargs):
                 instances = ticket_form.save(commit=False)
 
                 # get total price
+                # zapisuje cene biletu, aby w przy zmiane cennika ceny juz zakupionych biletow pozostaly takie same
                 total_price = 0
                 for instance in instances:
-                    total_price += models.TicketType.objects.get(ticket_id=instance.tickettype_id_id).price
+                    price = models.TicketType.objects.get(ticket_id=instance.tickettype_id_id).price
+                    total_price += price
+                    instance.price = price
 
                 reservation.cost = total_price
                 reservation.save()
@@ -501,9 +507,8 @@ def reservation_update(request, **kwargs):
                                              + confirm_url + '\nW celu odzucenia rezerwacji prosimy przejść pod adres\n' + reject_url)
                 else:
                     messages.add_message(request, messages.SUCCESS,
-                                         'Nie została zaznaczona opcja wysyłki wiadomości email do klienta (rezerwacja zostanie '
-                                         'usunięta w ciągu 30min), \n Przejdź do edycji rezerwacji, aby wysłać wiadomość, '
-                                         'lub potwierdzić rezerwację za klienta.')
+                                         'Rezerwacja została pomyślnie zakutalizowana! \n'
+                                         'Uwaga! Nie została zaznaczona opcja wysyłki wiadomości email do klienta.')
                 return redirect(reverse('showtime-details-worker', kwargs={'pk': str(showtime.showtime_id)}))
 
     return render(request, 'worker/rezerwacje/edytuj-rezerwacje.html', context={'reservation': reservation,

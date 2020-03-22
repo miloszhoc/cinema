@@ -282,9 +282,12 @@ def summary_client(request, **kwargs):
                 instances = ticket_form.save(commit=False)
 
                 # get total price
+                # zapisuje cene biletu, aby w przy zmiane cennika ceny juz zakupionych biletow pozostaly takie same
                 total_price = 0
                 for instance in instances:
-                    total_price += TicketType.objects.get(ticket_id=instance.tickettype_id_id).price
+                    price = TicketType.objects.get(ticket_id=instance.tickettype_id_id).price
+                    total_price += price
+                    instance.price = price
 
                 # wyslij maila do klienta
                 reservation.confirmation_email = True
