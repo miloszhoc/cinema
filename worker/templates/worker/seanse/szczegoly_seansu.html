@@ -1,5 +1,8 @@
 {% extends 'worker/base.html' %}
 {% load static %}
+{% block head %}
+    <link rel="stylesheet" href="{% static 'worker/style.css' %}">
+{% endblock %}
 {% block content %}
     {% if messages %}
         {% for message in messages %}
