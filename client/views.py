@@ -44,10 +44,13 @@ class IndexMovieListView(ListView):
         tomorrow = tz_now - timezone.timedelta(hours=tz_now.hour,
                                                minutes=tz_now.minute,
                                                seconds=tz_now.second) + timezone.timedelta(days=1)
+        # data "za dwa tygodnie"
+        two_weeks = tz_now + timezone.timedelta(days=14)
 
         context['future'] = Movie.objects.filter(movie_id__in=Showtime.objects.values('movie_id'),
-                                                 showtime__start_date__gt=tomorrow).distinct()
-
+                                                 showtime__start_date__gt=tomorrow, showtime__end_date__lte=two_weeks). \
+            distinct('movie_id')
+        
         return context
 
 
