@@ -58,37 +58,23 @@
 {% block content %}
     <br>
     <br>
+
     <table class="table">
         <tbody>
         <tr>
-            <td><strong>Bilety</strong></td>
-            <td><strong>Normalny*</strong></td>
-            <td><strong>Ulgowy**</strong></td>
+            <th>Typ</th>
+            <th>Cena</th>
         </tr>
-        <tr>
-            <td>Pn, Śr, Czw</td>
-            <td>21 zł</td>
-            <td>17 zł</td>
-        </tr>
-        <tr>
-            <td>Tanie wtorki!</td>
-            <td>15 zł</td>
-            <td>15 zł</td>
-        </tr>
-        <tr>
-            <td>Pt-Nd, Święta</td>
-            <td>24 zł</td>
-            <td>19 zł</td>
-        </tr>
+        {% for ticket in ticket_types %}
+            <tr>
+                <td><strong>{{ ticket.type }}</strong></td>
+                <td><strong>{{ ticket.price }}</strong></td>
+            </tr>
+        {% endfor %}
         </tbody>
     </table>
-    <h3>
-        Normalny* - sprzedawany bez dodatkowych dokumentów kwalifikujących do ceny ulgowej <br>
-        Ulgowy** - sprzedawany wyłącznie za ukazaniem ważnej legitymacji uczniowskiej/studenckiej
-    </h3>
-
-    {% for i in ticket_types %}
-        {{ i.type }} - {{ i.price }}<br>
-        {{ i.conditions }}<br><br>
+    <br><br><br>
+    {% for ticket in ticket_types %}
+        {{ ticket.type }} - {{ ticket.conditions }}<br>
     {% endfor %}
 {% endblock %}
