@@ -669,3 +669,31 @@ class MovieDeleteView(LoginRequiredMixin, DeleteView):
     model = models.Movie
     template_name = 'worker/filmy/usun_film.html'
     success_url = reverse_lazy('movie-list-worker')
+
+
+# usuwa niepotwierdzone rezerwacje, czyli te, ktore nie maja w bazie ustawionej flagi confirmed jako true
+# pobiera wszystkie rezerwacje z ostatnich 10min, sprawdza, czy rezerwacje są potwierdzone, jeśli nie są,
+# to usuwa wszystkie bilety powiązane z rezerwacją, dane klienta, a takze samą rezerwację
+@transaction.atomic
+def delete_unconfirmed_reservation(request):
+    now = timezone.now()
+    reservation_counter = 0
+    ticket_counter = 0
+
+    ten_minutes = now - timezone.timedelta(minutes=10)
+    last_hour_reservations = models.Reservation.objects.filter(reservation_date__gte=ten_minutes)
+
+    for reservation in last_hour_reservations:
+        if reservation.reservation_expire < now and not reservation.confirmed:
+            tickets = models.Ticket.objects.filter(reservation__reservation_id=reservation.reservation_id)
+            # usuwa wszytkie bilety powiązane z rezerwacją
+            for t in tickets.iterator():
+                ticket_counter += 1
+                t.delete()
+            reservation.delete()  # usuwa rezerwacje
+
+            models.Client.objects.get(client_id=reservation.client_id.client_id).delete()  # usuwa dane klienta
+
+            reservation_counter += 1
+    return render(request, 'worker/rezerwacje/auto-usuwanie.html', context={'reservation_counter': reservation_counter,
+                                                                            'ticket_counter': ticket_counter})

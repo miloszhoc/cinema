@@ -118,7 +118,7 @@ class Reservation(models.Model):
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
         self.reservation_date = timezone.now()
-        self.reservation_expire = self.reservation_date + timezone.timedelta(minutes=30)
+        self.reservation_expire = self.reservation_date + timezone.timedelta(minutes=30)  # rezerwacja wygasa po 30min
         return super(Reservation, self).save()
 
     def __str__(self):

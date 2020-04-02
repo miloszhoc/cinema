@@ -39,4 +39,5 @@ urlpatterns = [
     path('edytuj-rezerwacje/<int:reservation_id>', views.reservation_update, name='reservation-update-worker'),
     path('bilety/', views.ticket_types_worker, name='reservation-tickets-worker'),
     path('podsumowanie/', views.summary, name='summary-worker'),
+    path('cron/usun-rezerwacje', views.delete_unconfirmed_reservation, name='delete-reservations-worker'),
 ]
