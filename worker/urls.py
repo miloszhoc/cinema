@@ -12,6 +12,7 @@ urlpatterns = [
 
     # typy biletów
     path('typy-biletow/', views.TicketTypeListView.as_view(), name='tickettype-list-worker'),
+    path('typy-biletow/usuniete/', views.TicketTypeArchiveListView.as_view(), name='tickettype-deleted-list-worker'),
     path('szczegoly-typu/<int:pk>', views.TicketTypeDetailView.as_view(), name='tickettype-details-worker'),
     path('dodaj-typ/', views.TicketTypeCreateView.as_view(), name='tickettype-create-worker'),
     path('<int:pk>/aktualizuj-typ/', views.TicketTypeUpdateView.as_view(), name='tickettype-update-worker'),

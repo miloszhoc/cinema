@@ -50,7 +50,7 @@ class IndexMovieListView(ListView):
         context['future'] = Movie.objects.filter(movie_id__in=Showtime.objects.values('movie_id'),
                                                  showtime__start_date__gt=tomorrow, showtime__end_date__lte=two_weeks). \
             distinct('movie_id')
-        
+
         return context
 
 
@@ -171,12 +171,20 @@ def ticket_types_client(request, **kwargs):
 
         ticket_form = ticket_formset(queryset=Ticket.objects.none(), initial=[{'seat_id': z} for z in taken])
 
+        # pokazuje tylko typy biletów, które nie są usunięte
+        for form in ticket_form:
+            form.fields['tickettype_id'].queryset = TicketType.objects.filter(deleted=False)
+
         if request.POST:
             r_form = forms.ReservationModelForm(request.POST)
             client_form = forms.ClientModelForm(request.POST)
             ticket_form = ticket_formset(request.POST)
-            r_form.fields['showtime_id'].widget = r_form.fields['showtime_id'].hidden_widget()
 
+            # pokazuje tylko typy biletów, które nie są usunięte
+            for form in ticket_form:
+                form.fields['tickettype_id'].queryset = TicketType.objects.filter(deleted=False)
+
+            r_form.fields['showtime_id'].widget = r_form.fields['showtime_id'].hidden_widget()
             client_form.fields['first_name'].widget = client_form.fields['first_name'].hidden_widget()
             client_form.fields['last_name'].widget = client_form.fields['last_name'].hidden_widget()
             client_form.fields['email'].widget = client_form.fields['email'].hidden_widget()

@@ -38,11 +38,26 @@ def main(request):
 
 # typy biletów
 class TicketTypeListView(LoginRequiredMixin, ListView):
+    queryset = models.TicketType.objects.filter(deleted=False)
     model = models.TicketType
     template_name = 'worker/typy_biletow/typy_lista.html'
     paginate_by = 10
     # sortowanie asc po id, czyli wg kolejnosci dodania
     ordering = ['ticket_id']
+
+
+# lista archiwalnych seansow
+class TicketTypeArchiveListView(LoginRequiredMixin, ListView):
+    queryset = models.TicketType.objects.filter(deleted=True)
+    model = models.TicketType
+    paginate_by = 10
+    ordering = ['ticket_id']
+    template_name = 'worker/typy_biletow/typy_lista.html'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(object_list=object_list, **kwargs)
+        context['deleted_list'] = True  # do oznaczenie, czy lista zawiera usuniete typy biletów
+        return context
 
 
 class TicketTypeCreateView(LoginRequiredMixin, CreateView):
@@ -55,6 +70,17 @@ class TicketTypeCreateView(LoginRequiredMixin, CreateView):
 class TicketTypeDetailView(LoginRequiredMixin, DetailView):
     model = models.TicketType
     template_name = 'worker/typy_biletow/szczegoly_typu.html'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(object_list=object_list, **kwargs)
+
+        # zwraca true jesli istnieje typ biletu powiazany z biletem
+        # potrzebne do usuwania - calkowicie usuwac mozna tylko typy biletow,
+        # ktore nie sa powiazane z zadnym biletem
+        # jesli typ biletu jest powiazany z biletem, to nie mozna go usunac, tylko oznaczyc jako usuniety
+        # oznaczyć może tylko administrator, oznaczonego typu biletu klient nie może wyrabrać podczas rezerwacji miejsc
+        context['tickettype_exists'] = models.Ticket.objects.filter(tickettype_id=self.object).exists()
+        return context
 
 
 class TicketTypeUpdateView(LoginRequiredMixin, UpdateView):
@@ -182,10 +208,18 @@ def ticket_types_worker(request, **kwargs):
 
         ticket_form = ticket_formset(queryset=models.Ticket.objects.none(), initial=[{'seat_id': z} for z in taken])
 
+        # pokazuje tylko typy biletów, które nie są usunięte
+        for form in ticket_form:
+            form.fields['tickettype_id'].queryset = models.TicketType.objects.filter(deleted=False)
+
         if request.POST:
             r_form = forms.ReservationModelForm(request.POST)
             client_form = forms.ClientModelForm(request.POST)
             ticket_form = ticket_formset(request.POST)
+
+            # pokazuje tylko typy biletów, które nie są usunięte
+            for form in ticket_form:
+                form.fields['tickettype_id'].queryset = models.TicketType.objects.filter(deleted=False)
 
             if ticket_form.is_valid() and (client_form.is_valid() and r_form.is_valid()):
                 request.session['formset_data'] = ticket_form.data
@@ -418,6 +452,10 @@ def reservation_update(request, **kwargs):
 
     ticket_form = ticket_formset(queryset=models.Ticket.objects.none(), initial=tickets_initial)
 
+    # pokazuje tylko typy biletów, które nie są usunięte
+    for form in ticket_form:
+        form.fields['tickettype_id'].queryset = models.TicketType.objects.filter(deleted=False)
+
     if request.POST:
         if 'ticket_num' in request.POST:
             ticket_formset = modelformset_factory(models.Ticket,
@@ -429,12 +467,17 @@ def reservation_update(request, **kwargs):
 
             ticket_form = ticket_formset(queryset=models.Ticket.objects.none(), initial=tickets_initial)
 
+            # pokazuje tylko typy biletów, które nie są usunięte
+            for form in ticket_form:
+                form.fields['tickettype_id'].queryset = models.TicketType.objects.filter(deleted=False)
         else:
             # current objects
             reservation_object = get_object_or_404(models.Reservation, reservation_id=reservation_id)
             client_object = get_object_or_404(models.Client, client_id=reservation.client_id.client_id)
 
             r_form = forms.ReservationModelForm(request.POST, instance=reservation_object)
+            r_form.fields['showtime_id'].widget = r_form.fields['showtime_id'].hidden_widget()
+
             ticket_form = ticket_formset(request.POST)
             client_form = forms.ClientModelForm(request.POST, instance=client_object)
 
@@ -554,7 +597,7 @@ class ShowtimeListView(LoginRequiredMixin, ListView):
     queryset = models.Showtime.objects.filter(start_date__gte=timezone.now())
     model = models.Showtime
     paginate_by = 10
-    ordering = ['-showtime_id']
+    ordering = ['start_date']
     template_name = 'worker/seanse/seans_lista.html'
 
 

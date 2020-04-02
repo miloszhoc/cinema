@@ -79,6 +79,7 @@ class TicketType(models.Model):
     type = models.CharField(max_length=40)
     price = models.DecimalField(max_digits=10, decimal_places=2, null=True)
     conditions = models.TextField(null=True)
+    deleted = models.BooleanField(default=False)
 
     def __str__(self):
         return self.type
