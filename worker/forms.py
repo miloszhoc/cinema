@@ -49,6 +49,15 @@ class ShowtimeModelForm(ModelForm):
             'show_break': TextInput(attrs={'class': 'timepicker', 'autocomplete': 'off'})}
 
 
+class PayForReservationForm(ModelForm):
+    class Meta:
+        model = Reservation
+        labels = {'paid': 'Opłacona',
+                  'confirmed': 'Potwierdzona'}
+
+        fields = ['paid', 'confirmed']
+
+
 class ReservationModelForm(ModelForm):
     class Meta:
         model = Reservation

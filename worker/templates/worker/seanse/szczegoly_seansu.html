@@ -40,6 +40,7 @@
             <th>Opłacona</th>
             <th>Potwierdzona</th>
             <th>Data rezerwacji</th>
+            <th>Opłacenie/Potwierdzenie</th>
             <th>Edycja</th>
             <th>Usuwanie</th>
         </tr>
@@ -53,10 +54,13 @@
                 <td> {{ reservation.confirmed }}</td>
                 <td> {{ reservation.reservation_date| date:"H:i d.m.Y" }}</td>
                 <td>
-                    <a href="{% url 'reservation-update-worker' reservation.reservation_id %}">Edytuj Rezerwację</a>
+                    <a href="{% url 'reservation-confirm-pay-worker' reservation.reservation_id %}">Opłać/Potwierdź</a>
                 </td>
                 <td>
-                    <a href="{% url 'reservation-delete-worker' reservation.reservation_id %}">Usuń Rezerwację</a>
+                    <a href="{% url 'reservation-update-worker' reservation.reservation_id %}">Edytuj</a>
+                </td>
+                <td>
+                    <a href="{% url 'reservation-delete-worker' reservation.reservation_id %}">Usuń</a>
                 </td>
             </tr>
             <tr>

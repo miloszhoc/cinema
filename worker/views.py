@@ -209,6 +209,7 @@ def ticket_types_worker(request, **kwargs):
         ticket_form = ticket_formset(queryset=models.Ticket.objects.none(), initial=[{'seat_id': z} for z in taken])
 
         # pokazuje tylko typy biletów, które nie są usunięte
+        # https://simpleisbetterthancomplex.com/questions/2017/03/22/how-to-dynamically-filter-modelchoices-queryset-in-a-modelform.html
         for form in ticket_form:
             form.fields['tickettype_id'].queryset = models.TicketType.objects.filter(deleted=False)
 
@@ -560,6 +561,21 @@ def reservation_update(request, **kwargs):
                                                                                 'ticket_form': ticket_form,
                                                                                 'ticket_number': [x for x in
                                                                                                   range(1, 61)], })
+
+
+class ReservationConfirmPay(LoginRequiredMixin, UpdateView):
+    model = models.Reservation
+    template_name = 'worker/rezerwacje/potwierdz_oplac_rezerwacje.html'
+    form_class = forms.PayForReservationForm
+
+    # dane obecnego obiektu przeniesione do formularza
+    def get_object(self, queryset=None):
+        id_ = self.kwargs.get('pk')
+        return get_object_or_404(models.Reservation, reservation_id=id_)
+
+    def get_success_url(self):
+        showtime = self.get_object().showtime_id.showtime_id
+        return reverse('showtime-details-worker', kwargs={'pk': showtime})
 
 
 @login_required

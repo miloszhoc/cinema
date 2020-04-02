@@ -1,0 +1,9 @@
+{% extends 'worker/base.html' %}
+{% block content %}
+    Do zapłaty: {{ reservation.cost }} PLN
+    <form action="" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Zatwierdź">
+    </form>
+{% endblock %}

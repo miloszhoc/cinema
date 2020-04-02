@@ -38,6 +38,7 @@ urlpatterns = [
     path('usun-rezerwacje/<int:reservation_id>', views.reservation_delete, name='reservation-delete-worker'),
     path('dodaj-rezerwacje/<int:showtime_id>', views.reservation_form, name='reservation-form-worker'),
     path('edytuj-rezerwacje/<int:reservation_id>', views.reservation_update, name='reservation-update-worker'),
+    path('potwierdz/<int:pk>', views.ReservationConfirmPay.as_view(), name='reservation-confirm-pay-worker'),
     path('bilety/', views.ticket_types_worker, name='reservation-tickets-worker'),
     path('podsumowanie/', views.summary, name='summary-worker'),
     path('cron/usun-rezerwacje', views.delete_unconfirmed_reservation, name='delete-reservations-worker'),
