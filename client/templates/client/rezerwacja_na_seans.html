@@ -21,7 +21,7 @@
 
         <script type="text/javascript" src="{% static 'client/js/scripts.js' %}">
         </script>
-        <img src="{{ showtime.movie_id.thumbnail }}" alt="{{ showtime.movie_id.title }}"/><br>
+        <img src="{{ showtime.movie_id.thumbnail.url }}" alt="{{ showtime.movie_id.title }}"/><br>
         <b>tytuł:</b> {{ showtime.movie_id.title }}<br><br>
         <b>reżyser:</b> {{ showtime.movie_id.director }}<br>
         <b>data i godzina rozpoczęcia seansu:</b>

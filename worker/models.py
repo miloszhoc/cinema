@@ -3,6 +3,7 @@ from django.db import models
 from django.urls import reverse
 import datetime
 from django.utils import timezone
+from PIL import Image
 
 
 class Client(models.Model):
@@ -28,7 +29,8 @@ class Movie(models.Model):
     duration = models.DurationField(null=False)
     description = models.TextField(null=True)
     link = models.URLField(max_length=255, null=True)
-    thumbnail = models.CharField(max_length=255, null=True)
+    # thumbnail = models.CharField(max_length=255, null=True)
+    thumbnail = models.ImageField(default='', upload_to='images')
     trailer_youtube_id = models.CharField(max_length=255, null=True)
     deleted = models.BooleanField(default=False)
 
@@ -39,6 +41,17 @@ class Movie(models.Model):
 
     def __str__(self):
         return self.title
+
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        super().save(force_insert, force_update, using, update_fields)
+
+        thumbnail = Image.open(self.thumbnail.path)
+
+        # zmienia rozmiar zdjecia #https://www.youtube.com/watch?v=CQ90L5jfldw
+        if thumbnail.height > 285 or thumbnail.width > 200:
+            size = (200, 285)
+            thumbnail.thumbnail(size)
+            thumbnail.save(self.thumbnail.path)
 
 
 class Seat(models.Model):

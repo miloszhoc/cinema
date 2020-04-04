@@ -27,7 +27,7 @@
                         <div class="row">
                             <div class="col-6"><a href="{% url 'movie-details-client' d.movie_id %}"
                                                   title="Zobacz szczególy filmu oraz zwiastun!"> <img
-                                    src={{ d.thumbnail }}
+                                    src={{ d.thumbnail.url }}
                                             width="120"
                                     height="120"></a>
                             </div>
@@ -45,7 +45,7 @@
                         <div class="row">
                             <div class="col-6"><a href="{% url 'movie-details-client' i.movie_id %}"
                                                   title="Zobacz szczególy filmu oraz zwiastun!"> <img
-                                    src={{ i.thumbnail }}
+                                    src={{ i.thumbnail.url }}
                                             width="120"
                                     height="120"></a>
                             </div>

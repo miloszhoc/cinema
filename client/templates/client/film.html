@@ -10,7 +10,7 @@
             {{ message }}
         {% endfor %}
     {% endif %}
-    <img src="{{ object.thumbnail }}" alt="{{ object.title }}"/><br>
+    <img src="{{ object.thumbnail.url }}" alt="{{ object.title }}"/><br>
     <b>tytuł:</b> {{ object.title }}<br><br>
     <b>reżyser:</b> {{ object.director }}<br>
     <b>data premiery:</b> {{ object.release_date }}<br>

@@ -134,6 +134,9 @@ STATICFILES_DIRS = [
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 LOGIN_REDIRECT_URL = 'panel'  # przekieowanie po zalogowaniu
 LOGIN_URL = 'main'  # kiedy chemy sie dostac do sciezki niedostepnej bez logowania to przekierowuje na ten adres url
 LOGOUT_REDIRECT_URL = 'main'  # przekierowanie po wykogowaniu
