@@ -18,6 +18,7 @@ from django.db import transaction
 from cinema.settings import EMAIL_HOST_USER
 from django.template import loader
 from django.utils import timezone
+from django.http import JsonResponse
 
 
 # aby dostac się do strony wymagane jest zalogowanie, jeśli user nie jest zalogowany,
@@ -752,7 +753,7 @@ def delete_unconfirmed_reservation(request):
             reservation.delete()  # usuwa rezerwacje
 
             models.Client.objects.get(client_id=reservation.client_id.client_id).delete()  # usuwa dane klienta
-
             reservation_counter += 1
-    return render(request, 'worker/rezerwacje/auto-usuwanie.html', context={'reservation_counter': reservation_counter,
-                                                                            'ticket_counter': ticket_counter})
+
+    return JsonResponse(data={'rezerwacje': reservation_counter,
+                              'bilety': ticket_counter})
