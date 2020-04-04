@@ -379,7 +379,7 @@ def summary_client(request, **kwargs):
 
 
 def cennik(request):
-    ticket_types = TicketType.objects.all()
+    ticket_types = TicketType.objects.filter(deleted=False)
     return render(request, 'client/cennik.html', context={'ticket_types': ticket_types})
 
 
