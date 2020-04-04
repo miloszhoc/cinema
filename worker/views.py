@@ -741,9 +741,9 @@ def delete_unconfirmed_reservation(request):
     ticket_counter = 0
 
     ten_minutes = now - timezone.timedelta(minutes=10)
-    last_hour_reservations = models.Reservation.objects.filter(reservation_date__gte=ten_minutes)
+    expired_reservations = models.Reservation.objects.filter(reservation_expire__gte=ten_minutes)
 
-    for reservation in last_hour_reservations:
+    for reservation in expired_reservations:
         if reservation.reservation_expire < now and not reservation.confirmed:
             tickets = models.Ticket.objects.filter(reservation__reservation_id=reservation.reservation_id)
             # usuwa wszytkie bilety powiązane z rezerwacją
@@ -755,5 +755,5 @@ def delete_unconfirmed_reservation(request):
             models.Client.objects.get(client_id=reservation.client_id.client_id).delete()  # usuwa dane klienta
             reservation_counter += 1
 
-    return JsonResponse(data={'rezerwacje': reservation_counter,
-                              'bilety': ticket_counter})
+    return JsonResponse(data={'deleted_reservations': reservation_counter,
+                              'deleted_tickets': ticket_counter})
