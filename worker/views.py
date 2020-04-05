@@ -757,7 +757,7 @@ def delete_unconfirmed_reservation(request):
 
             client = models.Client.objects.get(client_id=reservation.client_id.client_id)
 
-            clients.append(client)
+            clients.append(client.email)
 
             reservation_counter += 1
 
@@ -768,7 +768,7 @@ def delete_unconfirmed_reservation(request):
         mail = send_mail(subject='Usunięta rezerwacja',
                          message='',
                          from_email=EMAIL_HOST_USER,
-                         recipient_list=[client.email for client in clients],
+                         recipient_list=clients,
                          fail_silently=True,
                          html_message=html_mail)
         if not mail:
