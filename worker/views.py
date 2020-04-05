@@ -762,17 +762,17 @@ def delete_unconfirmed_reservation(request):
             reservation_counter += 1
 
             client.delete()  # usuwa dane klienta
+    if clients:
+        html_mail = loader.render_to_string(template_name='worker/maile/auto_usuwanie_rezerwacji.html')
 
-    html_mail = loader.render_to_string(template_name='worker/maile/auto_usuwanie_rezerwacji.html')
-
-    mail = send_mail(subject='Usunięta rezerwacja',
-                     message='',
-                     from_email=EMAIL_HOST_USER,
-                     recipient_list=[client.email for client in clients],
-                     fail_silently=True,
-                     html_message=html_mail)
-    if not mail:
-        errors.append("can't send email")
+        mail = send_mail(subject='Usunięta rezerwacja',
+                         message='',
+                         from_email=EMAIL_HOST_USER,
+                         recipient_list=[client.email for client in clients],
+                         fail_silently=True,
+                         html_message=html_mail)
+        if not mail:
+            errors.append("can't send email")
 
     return JsonResponse(data={'deleted_reservations': reservation_counter,
                               'deleted_tickets': ticket_counter,
