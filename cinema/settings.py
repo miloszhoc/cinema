@@ -19,7 +19,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'ly@(o2*t7io4$mj8v440%sg&#y9g0oui8@d44*s#9)k10j9!y%'
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'crispy_forms',
-    # 'django_celery_beat',  # https://djangopy.org/how-to/handle-asynchronous-tasks-with-celery-and-django
+    'storages',  # https://pypi.org/project/django-storages-azure/#description'
 ]
 
 MIDDLEWARE = [
@@ -79,13 +79,11 @@ WSGI_APPLICATION = 'cinema.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'cinema_db',
-        # 'NAME': 'cinema_2',
-        'USER': 'postgres',
-        'PASSWORD': 'licencjat123!',
-        # 'HOST': 'localhost',
-        'HOST': '80.211.204.44',
-        'PORT': '5432',
+        'NAME': os.environ.get('NAME'),
+        'USER': os.environ.get('USER'),
+        'PASSWORD': os.environ.get('PASSWORD'),
+        'HOST': os.environ.get('HOST'),
+        'PORT': os.environ.get('PORT'),
     },
 }
 
@@ -120,37 +118,34 @@ USE_L10N = True
 
 USE_TZ = False
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/2.1/howto/static-files/
-
-# potrzebne, aby działały skrypty js
-# python manage.py collectstatic zbiera statyczne pliki do jednego folderu
-# tutaj wskazujemy sciezki do plikow statycznych w aplikacjach
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'worker', "static"),
-    os.path.join(BASE_DIR, 'client', "static"),
-]
-
-STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
 LOGIN_REDIRECT_URL = 'panel'  # przekieowanie po zalogowaniu
 LOGIN_URL = 'main'  # kiedy chemy sie dostac do sciezki niedostepnej bez logowania to przekierowuje na ten adres url
 LOGOUT_REDIRECT_URL = 'main'  # przekierowanie po wykogowaniu
 
-# mail data
+# mail config
 # https://support.google.com/mail/answer/7126229?hl=pl
+EMAIL_HOST = os.environ.get('EMAIL_HOST')
+EMAIL_PORT = os.environ.get('EMAIL_PORT')
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+EMAIL_USE_TLS = bool(os.environ.get('EMAIL_USE_TLS'))
 
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_HOST_USER = 'moviecitycinema@gmail.com'
-EMAIL_HOST_PASSWORD = 'Licencjat123!'
-EMAIL_USE_TLS = True
-# EMAIL_HOST = 'localhost'
-# EMAIL_PORT = 465
-# EMAIL_HOST_USER = 'sender@localhost'
-# EMAIL_HOST_PASSWORD = ''
-# EMAIL_USE_TLS = False
+# https://stackoverflow.com/questions/54729137/django-azure-upload-file-to-blob-storage
+# azure storage config
+AZURE_ACCOUNT_NAME = os.environ.get('AZURE_ACCOUNT_NAME')
+AZURE_ACCOUNT_KEY = os.environ.get('AZURE_ACCOUNT_KEY')
+AZURE_CUSTOM_DOMAIN = os.environ.get('AZURE_CUSTOM_DOMAIN')
+AZURE_LOCATION = os.environ.get('AZURE_LOCATION')
+AZURE_CONTAINER = os.environ.get('AZURE_CONTAINER')
+
+DEFAULT_FILE_STORAGE = 'cinema.custom_azure.AzureMediaStorage'
+MEDIA_URL = 'https://{}/media/'.format(AZURE_CUSTOM_DOMAIN)
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/2.1/howto/static-files/
+# python manage.py collectstatic zbiera statyczne pliki do jednego folderu
+STATICFILES_STORAGE = 'storages.backends.azure_storage.AzureStorage'
+# STATIC_URL = '/static/'
+STATIC_URL = 'https://{}/static/'.format(AZURE_CUSTOM_DOMAIN)
+# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
