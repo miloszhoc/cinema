@@ -16,7 +16,7 @@
     <a href="{% url 'movie-details-worker' showtime.movie_id.movie_id %}">Przejdź do szczegółów filmu</a>
     <br><br>
 
-    <img src="{{ showtime.movie_id.thumbnail.url }}" alt="{{ showtime.movie_id.title }}"/><br>
+    <img src="{{ showtime.movie_id.thumbnail.url }}" alt="{{ showtime.movie_id.title }}" width="200" height="285"/><br>
     {{ showtime.movie_id.title|title }}<br>
     <b>data seansu:</b>
     {{ showtime.start_date| time:"H:i" }}

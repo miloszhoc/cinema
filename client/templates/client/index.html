@@ -10,6 +10,7 @@
 {% endblock %}
 
 {% block content %}
+    {{ MEDIA_URL }}
     {% if messages %}
         {% for message in messages %}
             {{ message }}
@@ -59,5 +60,4 @@
     {% else %}
         <h3>Obecnie nie wyświetlamy żadych filmów.</h3>
     {% endif %}
-
 {% endblock %}
