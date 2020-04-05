@@ -733,9 +733,12 @@ class MovieDeleteView(LoginRequiredMixin, DeleteView):
 
 # usuwa niepotwierdzone rezerwacje, czyli te, ktore nie maja w bazie ustawionej flagi confirmed jako true
 # pobiera wszystkie rezerwacje z ostatnich 10min, sprawdza, czy rezerwacje są potwierdzone, jeśli nie są,
-# to usuwa wszystkie bilety powiązane z rezerwacją, dane klienta, a takze samą rezerwację
+# to usuwa wszystkie bilety powiązane z rezerwacją, dane klienta, a takze samą rezerwację,
+# wysyła maila z informacją o usunięciu rezerwacji
 @transaction.atomic
 def delete_unconfirmed_reservation(request):
+    errors = []
+    clients = []
     now = timezone.now()
     reservation_counter = 0
     ticket_counter = 0
@@ -752,8 +755,25 @@ def delete_unconfirmed_reservation(request):
                 t.delete()
             reservation.delete()  # usuwa rezerwacje
 
-            models.Client.objects.get(client_id=reservation.client_id.client_id).delete()  # usuwa dane klienta
+            client = models.Client.objects.get(client_id=reservation.client_id.client_id)
+
+            clients.append(client)
+
             reservation_counter += 1
 
+            client.delete()  # usuwa dane klienta
+
+    html_mail = loader.render_to_string(template_name='worker/maile/auto_usuwanie_rezerwacji.html')
+
+    mail = send_mail(subject='Usunięta rezerwacja',
+                     message='',
+                     from_email=EMAIL_HOST_USER,
+                     recipient_list=[client.email for client in clients],
+                     fail_silently=True,
+                     html_message=html_mail)
+    if not mail:
+        errors.append("can't send email")
+
     return JsonResponse(data={'deleted_reservations': reservation_counter,
-                              'deleted_tickets': ticket_counter})
+                              'deleted_tickets': ticket_counter,
+                              'errors': errors})
