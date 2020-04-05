@@ -9,7 +9,7 @@ urlpatterns = [
     path('repertuar/', views.RepertuarShowtimeListView.as_view(), name='repertoire-list-client'),
 
     # film
-    path('movie/<int:pk>', views.FilmMovieDetailView.as_view(), name='movie-details-client'),
+    path('film/<int:pk>', views.FilmMovieDetailView.as_view(), name='movie-details-client'),
 
     # rezerwacja
     path('rezerwuj-miejsce/<int:showtime_id>', views.reservation_form, name='reservation-form-client'),
