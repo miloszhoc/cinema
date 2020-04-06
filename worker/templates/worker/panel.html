@@ -1,7 +1,7 @@
 {% extends 'worker/base.html' %}
 {% block content %}
     <br><br>
-    {% if user.get_username == 'admin' %}
+    {% if 'Administratorzy' in  request.user.groups.values.0.name %}
         <a href="{% url 'admin:index' %}">Zarządzanie grupami i użytkownikami</a><br>
     {% endif %}<br>
     <a href="{% url 'showtime-list-worker' %}">Seanse</a><br>
