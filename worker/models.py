@@ -78,8 +78,8 @@ class Showtime(models.Model):
 class TicketType(models.Model):
     ticket_id = models.AutoField(primary_key=True, null=False)
     type = models.CharField(max_length=40)
-    price = models.DecimalField(max_digits=10, decimal_places=2, null=True)
-    conditions = models.TextField(null=True)
+    price = models.DecimalField(max_digits=10, decimal_places=2, null=False)
+    conditions = models.TextField(null=False)
     deleted = models.BooleanField(default=False)
 
     def __str__(self):
@@ -92,7 +92,7 @@ class Ticket(models.Model):
     tickettype_id = models.ForeignKey(TicketType, on_delete=models.PROTECT)
     seat_id = models.ForeignKey(Seat, on_delete=models.PROTECT)
     showtime_id = models.ForeignKey(Showtime, on_delete=models.CASCADE)
-    price = models.DecimalField(max_digits=10, decimal_places=2, null=True)
+    price = models.DecimalField(max_digits=10, decimal_places=2, null=False)
 
     def __str__(self):
         return str(self.ticket_id) + '. ' + self.client_id.first_name + \
@@ -104,11 +104,11 @@ class Reservation(models.Model):
     reservation_id = models.AutoField(primary_key=True, null=False)
     client_id = models.ForeignKey(Client, on_delete=models.CASCADE)
     showtime_id = models.ForeignKey(Showtime, on_delete=models.CASCADE)
-    cost = models.DecimalField(max_digits=10, decimal_places=2, null=True)
+    cost = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     paid = models.BooleanField(default=False)
     ticket_id = models.ManyToManyField(Ticket)
-    reservation_date = models.DateTimeField(null=True)
-    reservation_expire = models.DateTimeField(null=True)
+    reservation_date = models.DateTimeField(null=False, editable=False)
+    reservation_expire = models.DateTimeField(null=False, editable=False)
     confirmed = models.BooleanField(default=False)
     # https://stackoverflow.com/questions/16925129/generate-unique-id-in-django-from-a-model-field
     reservation_confirmation_code = models.UUIDField(primary_key=False, default=uuid.uuid4, editable=False)
