@@ -1,5 +1,5 @@
 from django.contrib import messages
-from django.core.mail import send_mail
+from django.core.mail import send_mail, EmailMultiAlternatives
 from django.shortcuts import render
 from django.shortcuts import redirect
 import django.forms
@@ -765,13 +765,13 @@ def delete_unconfirmed_reservation(request):
     if clients:
         html_mail = loader.render_to_string(template_name='worker/maile/auto_usuwanie_rezerwacji.html')
 
-        mail = send_mail(subject='Usunięta rezerwacja',
-                         message='',
-                         from_email=EMAIL_HOST_USER,
-                         recipient_list=clients,
-                         fail_silently=True,
-                         html_message=html_mail)
-        if not mail:
+        mail = EmailMultiAlternatives(subject='Usunięta rezerwacja',
+                                      from_email=EMAIL_HOST_USER,
+                                      bcc=clients)
+        mail.attach_alternative(html_mail, 'text/html')
+        mail_send = mail.send(fail_silently=True)
+
+        if not mail_send:
             errors.append("can't send email")
 
     return JsonResponse(data={'deleted_reservations': reservation_counter,
