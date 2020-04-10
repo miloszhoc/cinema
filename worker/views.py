@@ -345,12 +345,27 @@ def summary(request, **kwargs):
 
                 reservation.cost = total_price
                 reservation.save()
-
+                taken_seats = models.Ticket.objects.filter(showtime_id=showtime_id).values_list('seat_id', flat=True)
                 for instance in instances:
-                    instance.client_id = client
-                    instance.showtime_id = showtime
-                    instance.save()
-                    reservation.ticket_id.add(instance)
+                    if instance.seat_id.seat_id not in taken_seats:
+                        instance.client_id = client
+                        instance.showtime_id = showtime
+                        instance.save()
+                        reservation.ticket_id.add(instance)
+                    else:
+                        try:
+                            raise ValueError('seats taken')
+                        except Exception:
+                            messages.add_message(request, messages.ERROR, 'Wybrane miejsca zostały zarezerwowane przez '
+                                                                          'innego klienta. Spróbuj ponownie. Miejsce ' +
+                                                 str(instance.seat_id.seat_number) +
+                                                 ' Rząd: ' + str(instance.seat_id.row_number))
+                            return redirect(
+                                reverse('movie-details-client', kwargs={'pk': str(showtime.movie_id.movie_id)}))
+                        finally:
+                            request.session.pop('taken')
+                            request.session.pop('data')
+                            request.session.pop('formset_data')
 
                 r_form.save_m2m()
                 # https://simpleisbetterthancomplex.com/tutorial/2016/06/13/how-to-send-email.html
@@ -454,9 +469,13 @@ def reservation_update(request, **kwargs):
 
     ticket_form = ticket_formset(queryset=models.Ticket.objects.none(), initial=tickets_initial)
 
-    # pokazuje tylko typy biletów, które nie są usunięte
+    taken_seats = models.Ticket.objects.filter(showtime_id=showtime_id).values('seat_id')
+    free_seats = models.Seat.objects.exclude(seat_id__in=taken_seats)
+
+    # pokazuje tylko typy biletów, które nie są usunięte, oraz wolne miejsca
     for form in ticket_form:
         form.fields['tickettype_id'].queryset = models.TicketType.objects.filter(deleted=False)
+        form.fields['seat_id'].queryset = free_seats
 
     if request.POST:
         if 'ticket_num' in request.POST:
@@ -469,9 +488,10 @@ def reservation_update(request, **kwargs):
 
             ticket_form = ticket_formset(queryset=models.Ticket.objects.none(), initial=tickets_initial)
 
-            # pokazuje tylko typy biletów, które nie są usunięte
+            # pokazuje tylko typy biletów, które nie są usunięte, oraz wolne miejsca
             for form in ticket_form:
                 form.fields['tickettype_id'].queryset = models.TicketType.objects.filter(deleted=False)
+                form.fields['seat_id'].queryset = free_seats
         else:
             # current objects
             reservation_object = get_object_or_404(models.Reservation, reservation_id=reservation_id)
@@ -482,6 +502,11 @@ def reservation_update(request, **kwargs):
 
             ticket_form = ticket_formset(request.POST)
             client_form = forms.ClientModelForm(request.POST, instance=client_object)
+
+            # pokazuje tylko typy biletów, które nie są usunięte, oraz wolne miejsca
+            for form in ticket_form:
+                form.fields['tickettype_id'].queryset = models.TicketType.objects.filter(deleted=False)
+                form.fields['seat_id'].queryset = free_seats
 
             if ticket_form.is_valid() and (client_form.is_valid() and r_form.is_valid()):
                 showtime = models.Showtime.objects.get(showtime_id=showtime_id)  # obiekt seansu
@@ -509,12 +534,23 @@ def reservation_update(request, **kwargs):
                 for t in tickets.iterator():
                     t.delete()
 
+                taken_seats = models.Ticket.objects.filter(showtime_id=showtime_id).values_list('seat_id', flat=True)
                 for instance in instances:
-                    instance.client_id = client
-                    instance.showtime_id = showtime
-                    instance.save()
-                    reservation.ticket_id.add(instance)
-
+                    if instance.seat_id.seat_id not in taken_seats:
+                        instance.client_id = client
+                        instance.showtime_id = showtime
+                        instance.save()
+                        reservation.ticket_id.add(instance)
+                    else:
+                        try:
+                            raise ValueError('seats taken')
+                        except Exception:
+                            messages.add_message(request, messages.ERROR, 'Wybrane miejsca zostały zarezerwowane przez '
+                                                                          'innego klienta. Spróbuj ponownie. Miejsce ' +
+                                                 str(instance.seat_id.seat_number) +
+                                                 ' Rząd: ' + str(instance.seat_id.row_number))
+                            return redirect(
+                                reverse('movie-details-client', kwargs={'pk': str(showtime.movie_id.movie_id)}))
                 r_form.save_m2m()
 
                 # https://simpleisbetterthancomplex.com/tutorial/2016/06/13/how-to-send-email.html

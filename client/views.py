@@ -109,7 +109,9 @@ def reservation_form(request, **kwargs):  # kwargs przekazywanie z urls
             request.session['data'] = request.POST
 
             if len(taken) > 10:
-                messages.add_message(request, messages.ERROR, 'Możesz zarezerwować maksymalnie 10 miejsc!')
+                messages.add_message(request, messages.ERROR, 'Możesz zarezerwować maksymalnie 10 miejsc! '
+                                                              'W celu rezerwacji większej ilości miejsc skontaktuj się '
+                                                              'z pracownikiem kina.')
             else:
                 return redirect('reservation-tickets-client')
 
@@ -305,13 +307,25 @@ def summary_client(request, **kwargs):
 
                 reservation.cost = total_price
                 reservation.save()
-
+                taken_seats = Ticket.objects.filter(showtime_id=showtime_id).values_list('seat_id', flat=True)
                 for instance in instances:
-                    instance.client_id = client
-                    instance.showtime_id = showtime
-                    instance.save()
-                    reservation.ticket_id.add(instance)
-
+                    if instance.seat_id.seat_id not in taken_seats:
+                        instance.client_id = client
+                        instance.showtime_id = showtime
+                        instance.save()
+                        reservation.ticket_id.add(instance)
+                    else:
+                        try:
+                            raise ValueError('seats taken')
+                        except Exception:
+                            messages.add_message(request, messages.ERROR, 'Wybrane miejsca zostały zarezerwowane przez '
+                                                                          'innego klienta. Spróbuj ponownie. Miejsce ' +
+                                                 str(instance.seat_id.seat_number) +
+                                                 ' Rząd: ' + str(instance.seat_id.row_number))
+                            return redirect(
+                                reverse('movie-details-client', kwargs={'pk': str(showtime.movie_id.movie_id)}))
+                        finally:
+                            request.session.flush()
                 r_form.save_m2m()
 
                 if reservation.confirmation_email:
