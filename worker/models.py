@@ -54,9 +54,9 @@ class Seat(models.Model):
 class Showtime(models.Model):
     showtime_id = models.AutoField(primary_key=True, null=False)
     movie_id = models.ForeignKey(Movie, on_delete=models.PROTECT)
-    start_date = models.DateTimeField(null=True)
+    start_date = models.DateTimeField(default=timezone.now)
     show_break = models.DurationField(default=0)
-    end_date = models.DateTimeField(null=True, editable=False)
+    end_date = models.DateTimeField(default=timezone.now, editable=False)
 
     # nadpisana metoda zapisu, ktora na podstawie trwania filmu okresla czas jego zakonczenia + przerwa po seansie
     def save(self, force_insert=False, force_update=False, using=None,
