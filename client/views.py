@@ -14,6 +14,7 @@ from cinema.settings import EMAIL_HOST_USER
 from django.template import loader
 from django.contrib import messages
 from django.shortcuts import get_object_or_404
+from cinema.settings import MEDIA_URL
 
 
 class IndexMovieListView(ListView):
@@ -402,7 +403,8 @@ def kontakt(request):
 
 
 def okinie(request):
-    return render(request, 'client/okinie.html', context={})
+    media_url = MEDIA_URL
+    return render(request, 'client/okinie.html', context={'media': media_url})
 
 
 # w zakładce seanse na 14 dni od dnia dzisiejszego
