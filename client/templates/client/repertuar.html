@@ -2,8 +2,8 @@
 {% block head %}
     <style>
         table, th, td {
-            border: 1px solid black;
-            background-color: #a89f87;
+            border: 1px solid;
+
         }
     </style>
 {% endblock %}
@@ -15,25 +15,31 @@
 {% block content %}
     {% if showtime_list|length > 0 %}
         {% regroup showtime_list by start_date|date:"d.m.Y" as showtime_by_date %}
-        <table>
+        <table class="table table-striped table-dark">
+            <thead>
+            <tr>
+                <th scope="col">Tytuł</th>
+                <th scope="col">Godzina rozpoczęcia</th>
+                <th scope="col">Godzina zakończenia</th>
+            </tr>
+            </thead>
             {% for showtime in showtime_by_date %}
                 <tr>
                     <th colspan="3" style="text-align: center">{{ showtime.grouper }}</th>
                 </tr>
-                <tr>
-                    <td>Tytuł</td>
-                    <td>Godzina rozpoczęcia</td>
-                    <td>Godzina zakończenia</td>
-                </tr>
+                <tbody>
                 {% for i in showtime.list %}
                     <tr>
-                    <td>{{ i.movie_id.title|title }} </td>
-                    <td>{{ i.start_date|date:"H:i" }} </td>
-                    <td>{{ i.end_date|date:"H:i" }} </td>
-                    <td><a href="{% url 'reservation-form-client' i.showtime_id %}">Zarezerwuj miejsce</a></td>
+                        <td>{{ i.movie_id.title|title }} </td>
+                        <td>{{ i.start_date|date:"H:i" }} </td>
+                        <td>{{ i.end_date|date:"H:i" }} </td>
+                        <td><a class="btn btn-info" href="{% url 'reservation-form-client' i.showtime_id %}"
+                               role="button">Zarezerwuj miejsce</a></td>
+                    </tr>
                 {% endfor %}
-            </tr>
+
             {% endfor %}
+            </tbody>
         </table>
     {% else %}
         <h3>Obecnie nie wyświetlamy żadych filmów.</h3>

@@ -2,23 +2,29 @@
 {% block content_pagination %}
     {% if 'Administratorzy' in  request.user.groups.values.0.name %}
         <a href="{% url 'movie-create-worker' %}">Dodaj film</a>
+        <p></p>
     {% endif %}
     <br>
-{#    jesli jest to lista usunietych filmow, to ukrywa link do "usuniete filmy" #}
+    {#    jesli jest to lista usunietych filmow, to ukrywa link do "usuniete filmy" #}
     {% if not deleted_list %}
         <a href="{% url 'movie-deleted-list-worker' %}">Usunięte filmy</a>
+        <p></p>
         <h3>Lista filmów:</h3>
     {% else %}
         <h3>Lista usuniętych filmów:</h3>
     {% endif %}
-    <table>
+    <table class="table-striped">
         <th></th>
-        <th>Tytuł filmu</th>
-        <th>Usunięty</th>
+        <thead style="color:darkblue">
+        <th> #</th>
+        <th>Tytuł filmu &nbsp</th>
+        <th>Usunięty &nbsp</th>
+        </thead>
         {% for movie in movie_list %}
             <tr>
                 <td>{{ forloop.counter }}.</td>
-                <td>{{ movie.title|title }}
+                <td>{{ movie.title|title }} &nbsp
+
                 </td>
                 <td>{{ movie.deleted }}</td>
                 <td><a href="{% url 'movie-details-worker' movie.movie_id %}">Przejdź do szczegółów</a></td>

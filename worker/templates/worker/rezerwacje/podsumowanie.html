@@ -1,17 +1,16 @@
 {% extends 'worker/base.html' %}
+{% load crispy_forms_tags %}
 {% block content %}
     {% if taken|length > 0 %}
         <h3>Podsumowanie</h3>
         <form action="" method="post">
             {% csrf_token %}
-            <table>
+            <table class="table-striped">
                 <tr>
                     <td>Seans</td>
                     <td>{{ showtime }}</td>
                 </tr>
-                <tr>
-                    <td></td>
-                </tr>
+
                 <tr>
                     <td>Imię</td>
                     <td>{{ client_initial.first_name }}</td>
@@ -25,7 +24,7 @@
                     <td> {{ client_initial.email }}</td>
                 </tr>
                 <tr>
-                    <td>Numer telefonu</td>
+                    <td>Numer telefonu &nbsp</td>
                     <td> {{ client_initial.phone_number }}</td>
                 </tr>
             </table>
@@ -36,7 +35,7 @@
                     Miejsce: {{ form.seat_id.data }}<br>
                     {% for i in db_ticket_types %}
                         {% if i.ticket_id|lower == form.tickettype_id.data|lower %}
-                            Typ biletu: {{ i.type }}{{ form.as_p }}
+                            Typ biletu: {{ i.type }}{{ form|crispy }}
                         {% endif %}
                     {% endfor %}
                 {% endfor %}
@@ -44,7 +43,7 @@
             <b>Do zapłaty: {{ total }} PLN</b>
             {{ client_form }}
             {{ reservation_form }}<br><br>
-            <input type="submit" value="Zarezerwuj"/>
+            <button class="btn btn-primary" type="submit" value="Zarezerwuj">Rezerwuj</button>
         </form>
     {% else %}
         <h2>Nie wybrano typów biletów!</h2>

@@ -2,6 +2,7 @@
 {% block content %}
     {% if 'Administratorzy' in  request.user.groups.values.0.name %}
         <a href="{% url 'tickettype-update-worker' tickettype.ticket_id %}">Aktualizuj informacje o typie biletu</a>
+        <p></p>
         {% if not tickettype_exists %}
             <a href="{% url 'tickettype-delete-worker' tickettype.ticket_id %}">Usuń typ biletu</a>
         {% endif %}

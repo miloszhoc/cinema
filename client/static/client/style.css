@@ -1,3 +1,5 @@
+
+
 * {
     margin: 0;
     padding: 0;
@@ -8,16 +10,20 @@ body, html {
 }
 
 body {
-    /*background-image: url(images/background.jpg);*/
-    background-position: center;
+    background: url('images/back1.jpg') no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
     background-size: cover;
-    background-repeat: no-repeat;
+    -o-background-size: cover;
+
 }
 
+
 .logo {
-    width: 80px;
+    width: 100px;
     margin-top: auto;
-    margin-left: none;
+    margin-left: 20px;
+    margin-right: 20px;
 }
 
 h1.logo-text {
@@ -28,6 +34,14 @@ h1.logo-text {
     letter-spacing: 5px;
 }
 
+b {
+    font-size: 20px;
+}
+
+h2 {
+    font-size: 20px;
+    color: #dddd;
+}
 .series {
     color: white;
 }

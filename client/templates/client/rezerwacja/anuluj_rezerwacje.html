@@ -1,14 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Anulowanie rezerwacji</title>
-    <style>
-        td, th {
-            text-align: center;
-        }
-    </style>
-</head>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <link rel="stylesheet" href="{% static 'client/style.css' %}">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+
+        <link rel="stylesheet"
+              href="https://fonts.googleapis.com/css2?family=Nova+Round&display=swap">
+
+        <style>
+            body {
+                background: url({% static 'client/images/back1.jpg' %}) no-repeat center center fixed;
+                -webkit-background-size: cover;
+                -moz-background-size: cover;
+                background-size: cover;
+                -o-background-size: cover;
+            }
+
+            .container {
+                font-family: 'Nova Round', cursive;
+                font-size: 25px;
+            }
+        </style>
+        <title>Anulowanie rezerwacji</title>
+
+    </head>
 <body>
 <center>
     {% if messages %}
@@ -21,7 +40,7 @@
         {% csrf_token %}
         {{ form.as_p }}
         <br>
-        <input type="submit" value="Zrezygnuj">
+        <button class="btn btn-primary" type="submit">Zrezygnuj</button>
     </form>
     <br><br>
     <h3>Dane rezerwacji:</h3>

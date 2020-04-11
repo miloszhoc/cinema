@@ -1,13 +1,14 @@
 {% extends 'worker/base.html' %}
+{% load crispy_forms_tags %}
 {% block content %}
     <form action="" method="post" id="ticket_no">
         {% csrf_token %}
-        <table>
-            {{ client_form }}
-            {{ r_form }}
-            {{ ticket_form }}
+        <table class="table-striped">
+            {{ client_form|crispy }}
+            {{ r_form|crispy }}
+            {{ ticket_form|crispy }}
         </table>
-        <input type="submit" value="Zatwierdź">
+        <button class="btn btn-primary" type="submit" value="Zatwierdź">Zatwierdź</button>
     </form>
     <br><br>
 
@@ -21,7 +22,7 @@
             </select>
         </label>
         <input type="hidden" name="ticket_num">
-        <input type="submit" value="Dodaj">
+        <button class="btn btn-primary" type="submit" value="Dodaj">Dodaj</button>
     </form>
 
 {% endblock %}

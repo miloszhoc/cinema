@@ -2,9 +2,9 @@
 {% block content %}
     <br><br>
     {% if request.user.is_superuser %}
-        <a href="{% url 'admin:index' %}">Zarządzanie użytkownikami</a><br>
+        <a class="card-title" href="{% url 'admin:index' %}">Zarządzanie użytkownikami</a><br>
     {% endif %}<br>
-    <a href="{% url 'showtime-list-worker' %}">Seanse</a><br>
-    <a href="{% url 'movie-list-worker' %}">Filmy</a><br>
-    <a href="{% url 'tickettype-list-worker' %}">Typy biletów</a><br>
+    <a class="card-title" href="{% url 'showtime-list-worker' %}">Seanse</a><br>
+    <a class="card-title" href="{% url 'movie-list-worker' %}">Filmy</a><br>
+    <a class="card-title" href="{% url 'tickettype-list-worker' %}">Typy biletów</a><br>
 {% endblock %}

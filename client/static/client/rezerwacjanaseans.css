@@ -15,6 +15,11 @@ h1 {
     width: 100%;
     margin: 100px auto 25px auto;
     alignment: center;
+    font-family: "Nova Round";
+}
+
+button{
+
 }
 
 .exit {

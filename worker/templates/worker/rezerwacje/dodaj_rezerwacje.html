@@ -1,5 +1,6 @@
 {% extends 'worker/base.html' %}
 {% load static %}
+{% load crispy_forms_tags %}
 {% block head %}
     <link rel="stylesheet" href="{% static 'client/rezerwacjanaseans.css' %}">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"
@@ -10,10 +11,10 @@
 {% block content %}
     <form action="" method="post" id="ticket_no">
         {% csrf_token %}
-        <table>
-            {{ client_form }}
-            {{ reservation_form }}
-            {{ ticket_form }}
+        <table class="table-striped">
+            {{ client_form|crispy }}
+            {{ reservation_form|crispy }}
+            {{ ticket_form|crispy }}
         </table>
         <div class="screen">
             <center><h1>Mapa miejsc</h1></center>
@@ -162,6 +163,8 @@
                 </li>
             </ol>
         </div>
-        <center><input type="submit" value="Dalej"></center>
+        <center>
+            <button class="btn btn-primary" type="submit" value="Dalej">Dalej</button>
+        </center>
     </form>
 {% endblock %}

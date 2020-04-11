@@ -1,23 +1,26 @@
 {% extends 'worker/base.html' %}
 {% block content %}
-    {% if 'Administratorzy' in  request.user.groups.values.0.name %}
-        <a href="{% url 'movie-update-worker' movie.movie_id %}">Aktualizuj informacje o filmie</a>
-        {#        jesli film nie jest powiazany z seansem, to mozna go usunac#}
-        {% if not showtime %}
-            <a href="{% url 'movie-delete-worker' movie.movie_id %}">Usuń film</a>
+    <div class="container" style="padding: 30px; width:900px">
+        {% if 'Administratorzy' in  request.user.groups.values.0.name %}
+            <a href="{% url 'movie-update-worker' movie.movie_id %}">Aktualizuj informacje o filmie</a>
+            {#        jesli film nie jest powiazany z seansem, to mozna go usunac#}
+            {% if not showtime %}
+                <a href="{% url 'movie-delete-worker' movie.movie_id %}">Usuń film</a>
+            {% endif %}
         {% endif %}
-    {% endif %}
-    <br><br>
-    <img src="{{ object.thumbnail.url }}" alt="{{ object.title }}" width="200" height="285"/><br>
-    <b>tytuł:</b> {{ object.title|title }}<br><br>
-    <b>reżyser:</b> {{ object.director }}<br>
-    <b>data premiery:</b> {{ object.release_date }}<br>
-    <b>czas trwania:</b> {{ object.duration }}<br><br>
-    {{ object.description }}<br><br>
-    {% if object.trailer_youtube_id %}
-        <iframe width="560" height="315" src="https://www.youtube.com/embed/{{ object.trailer_youtube_id }}"
-                frameborder="0"
-                allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-                allowfullscreen></iframe>
-    {% endif %}
+        <br><br>
+        <img src="{{ object.thumbnail.url }}" alt="{{ object.title }}" width="200" height="285"/><br>
+        <b>tytuł:</b> {{ object.title|title }}<br><br>
+        <b>reżyser:</b> {{ object.director }}<br>
+        <b>data premiery:</b> {{ object.release_date }}<br>
+        <b>czas trwania:</b> {{ object.duration }}<br><br>
+        <b></b>{{ object.description }}<br><br>
+
+        {% if object.trailer_youtube_id %}
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/{{ object.trailer_youtube_id }}"
+                    frameborder="0"
+                    allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen></iframe>
+        {% endif %}
+    </div>
 {% endblock %}

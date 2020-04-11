@@ -6,51 +6,54 @@
     {% elif taken|length > 10 %}
         <h2>Możesz zarezerwowoać maksymalnie 10 miejesc!</h2>
     {% else %}
-        <h3>Podsumowanie</h3>
-        <form action="" method="post">
-            {% csrf_token %}
-            <table>
-                <tr>
-                    <td>Seans</td>
-                    <td>{{ showtime }}</td>
-                </tr>
-                <tr>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>Imię</td>
-                    <td>{{ client_initial.first_name }}</td>
-                </tr>
-                <tr>
-                    <td>Nazwisko</td>
-                    <td> {{ client_initial.last_name }}</td>
-                </tr>
-                <tr>
-                    <td>Email</td>
-                    <td> {{ client_initial.email }}</td>
-                </tr>
-                <tr>
-                    <td>Numer telefonu</td>
-                    <td> {{ client_initial.phone_number }}</td>
-                </tr>
-            </table>
-            <br>
-            <table>
-                {{ ticket_form.management_form }}
-                {% for form in ticket_form %}
-                    Miejsce: {{ form.seat_id.data }}<br>
-                    {% for i in db_ticket_types %}
-                        {% if i.ticket_id|lower == form.tickettype_id.data|lower %}
-                            Typ biletu: {{ i.type }}{{ form.as_p }}
-                        {% endif %}
-                    {% endfor %}
-                {% endfor %}
-            </table>
-            <b>Do zapłaty: {{ total }} PLN</b>
-            {{ client_form }}
-            {{ reservation_form }}<br><br>
-            <input type="submit" value="Zarezerwuj"/>
-        </form>
-
+        <div class="jumbotron jumbotron-fluid" style="opacity: 85%">
+            <div class="container"
+                 style="font-family: 'Lucida Grande', 'Lucida Sans Unicode', 'Geneva', 'Verdana', sans-serif">
+                <h3 class="display-4">Podsumowanie</h3>
+                <form action="" method="post">
+                    {% csrf_token %}
+                    <table>
+                        <tr class="table-secondary">
+                            <td>Seans :</td>
+                            <td>{{ showtime }}</td>
+                        </tr>
+                        <tr class="table-secondary">
+                            <td>Imię :</td>
+                            <td>{{ client_initial.first_name }}</td>
+                        </tr>
+                        <tr class="table-secondary">
+                            <td>Nazwisko :</td>
+                            <td> {{ client_initial.last_name }}</td>
+                        </tr>
+                        <tr class="table-secondary">
+                            <td>Email :</td>
+                            <td> {{ client_initial.email }}</td>
+                        </tr>
+                        <tr class="table-secondary">
+                            <td>Numer telefonu :</td>
+                            <td> {{ client_initial.phone_number }}</td>
+                        </tr>
+                    </table>
+                    <br>
+                    <table class="table table-striped">
+                        <tbody>
+                        {{ ticket_form.management_form }}
+                        {% for form in ticket_form %}
+                            Miejsce: {{ form.seat_id.data }}<br>
+                            {% for i in db_ticket_types %}
+                                {% if i.ticket_id|lower == form.tickettype_id.data|lower %}
+                                    Typ biletu: {{ i.type }}{{ form.as_p }}
+                                {% endif %}
+                            {% endfor %}
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    <b>Do zapłaty: {{ total }} PLN</b>
+                    {{ client_form }}
+                    {{ reservation_form }}<br><br>
+                    <input class="btn-lg btn-info" type="submit" value="Zarezerwuj"/>
+                </form>
+            </div>
+        </div>
     {% endif %}
 {% endblock %}

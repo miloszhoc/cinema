@@ -1,5 +1,6 @@
 {% extends 'worker/base.html' %}
 {% load static %}
+{% load crispy_forms_tags %}
 {% block head %}
     {#    https://simpleisbetterthancomplex.com/tutorial/2019/01/03/how-to-use-date-picker-with-django.html#}
     {#    https://xdsoft.net/jqplugins/datetimepicker/#}
@@ -13,9 +14,9 @@
 {% block content %}
     <a href="{% url 'movie-create-worker' %}">Dodaj film</a>
     <form action="." method="post">{% csrf_token %}
-        {{ form.as_p }}
-        <input type="reset" value="Wyczyść"/>
-        <input type="submit" value="Zapisz"/>
+        {{ form|crispy }}
+        <button type="reset" class="btn btn-danger">Wyczyść</button>
+        <button type="submit" class="btn btn-primary">Zapisz</button>
     </form>
     <script type="text/javascript" src="{% static 'worker/js/date_time_widget.js' %}">
     </script>

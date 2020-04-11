@@ -2,17 +2,21 @@
 {% block content_pagination %}
     {% if 'Administratorzy' in  request.user.groups.values.0.name %}
         <a href="{% url 'tickettype-create-worker' %}">Dodaj typ biletu</a><br><br>
+        <p></p>
+        {% if not deleted_list %}
+            <a href="{% url 'tickettype-deleted-list-worker' %}">Usunięte typy biletów</a>
+            <p></p>
+            <h3>Lista typów biletów:</h3>
+            <p></p>
+        {% else %}
+            <h3>Lista usuniętych typów biletów:</h3>
+            <p></p>
+        {% endif %}
     {% endif %}
-    {% if not deleted_list %}
-        <a href="{% url 'tickettype-deleted-list-worker' %}">Usunięte typy biletów</a>
-        <h3>Lista typów biletów:</h3>
-    {% else %}
-        <h3>Lista usuniętych typów biletów:</h3>
-    {% endif %}
-    <table>
+    <table class="table-striped">
         <th></th>
-        <th>Typ biletu</th>
-        <th>Cena</th>
+        <th>Typ biletu &nbsp &nbsp</th>
+        <th>Cena &nbsp &nbsp</th>
         <th></th>
         {% for ticket in tickettype_list %}
             <tr>

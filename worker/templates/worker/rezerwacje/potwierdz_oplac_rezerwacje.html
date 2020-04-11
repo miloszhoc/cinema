@@ -1,9 +1,10 @@
 {% extends 'worker/base.html' %}
+{% load crispy_forms_tags %}
 {% block content %}
     Do zapłaty: {{ reservation.cost }} PLN
     <form action="" method="post">
         {% csrf_token %}
-        {{ form.as_p }}
+        {{ form|crispy }}
         <input type="submit" value="Zatwierdź">
     </form>
 {% endblock %}

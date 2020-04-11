@@ -3,20 +3,25 @@
     <title>Kontakt</title>
     <style>
         body {
-            width: 100%;
+
             min-height: 100%;
         }
 
+        .container-card {
+            margin-top: 100px;
+            margin-bottom: 200px;
+            padding-bottom: 10px;
+            margin-left: 300px;
+            margin-right: 300px;
+            opacity: 90%;
+        }
+
         h2.formularz {
-            color: #fff;
+            color: darkslategrey;
             font-size: x-large;
             text-align: center;
             margin-top: 6%;
             letter-spacing: 10px;
-        }
-
-        h2.glowna {
-            margin-top: 10%;
         }
 
         a {
@@ -32,6 +37,7 @@
             text-align: center;
             color: white;
             letter-spacing: 5px;
+            font-family: "Nova Round";
         }
     </style>
 {% endblock %}
@@ -39,17 +45,24 @@
     <h1 class="logo-text">Kontakt</h1>
 {% endblock %}
 {% block content %}
-    <h2 class="formularz">
-        <span style='background-color:grey'>
+    <div class="container-card">
+        <div class="card" style="height:700px ;background: darkgray;box-shadow:0 10px 6px -6px black ">
+            <div class="card-body">
+                <h2 class="formularz">
+        <span>
             Adres: <br>
-            Wyższa Szkoła Bankowa <br>
+            <h1 class="font-weight-light"> Wyższa Szkoła Bankowa </h1> <br>
             Fabryczna 29/31, 53-609 Wrocław <br> <br>
             Telefon: <br>
-            123456789 <br> <br>
+            <h1 class="font-weight-light">  123456789 <br> <br> </h1>
             E-mail: <br>
-            kino@gmail.com <br> <br>
+              <h1 class="font-weight-light">  kino@gmail.com <br> <br> </h1>
             Strona WWW: <br>
-            www.link.pl
+              <h1 class="font-weight-light"> www.link.pl </h1>
+            <div style="height:600px"></div>
         </span>
-    </h2>
+                </h2>
+            </div>
+        </div>
+    </div>
 {% endblock %}

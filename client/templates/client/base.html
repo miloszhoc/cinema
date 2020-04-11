@@ -9,27 +9,63 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
     {% block head %}
     {% endblock %}
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Nova+Round&display=swap">
+    <style>
+        body {
+            background: url({% static 'client/images/back1.jpg' %}) no-repeat center center fixed;
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            background-size: cover;
+            -o-background-size: cover;
+        }
+
+        .container {
+            font-family: 'Nova Round', cursive;
+            font-size: 25px;
+            letter-spacing: 0.5px;
+        }
+
+    </style>
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+            integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+            integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+            integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+            crossorigin="anonymous"></script>
+
 </head>
 <body>
-<div class="container">
-    <img src="{% static 'client/images/logo.png' %}" class="logo">
-</div>
-<header>
-    {% block logo-text %}
-    {% endblock %}
-    <nav>
-        <ul class="menu">
-            <li><a href="{% url 'index-client' %}">Strona główna</a></li>
-            <li><a href="{% url 'repertoire-list-client' %}">Repertuar</a></li>
-            <li><a href="{% url 'price-list-client' %}">Cennik</a></li>
-            <li><a href="{% url 'about-client' %}">O kinie</a></li>
-            <li><a href="{% url 'contact-client' %}">Kontakt</a></li>
-        </ul>
-    </nav>
-</header>
-<br>
+<nav class="navbar navbar-expand-lg py-3 navbar-dark bg-dark">
+    <div class="container">
+        <a href="#" class="navbar-brand">
+            <img src="{% static 'client/images/logo.png' %}" class="logo">
+        </a>
 
-{% block content %}
-{% endblock %}
+
+        {% block logo-text %}
+        {% endblock %}
+        <div id="navbarMenu" class="collapse navbar-collapse">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item-active"><a href="{% url 'index-client' %}" class="nav-link">Strona główna &nbsp</a>
+                </li>
+                <li class="nav-item"><a href="{% url 'repertoire-list-client' %}" class="nav-link">Repertuar &nbsp</a>
+                </li>
+                <li class="nav-item"><a href="{% url 'price-list-client' %}" class="nav-link">Cennik &nbsp</a></li>
+                <li class="nav-item"><a href="{% url 'about-client' %}" class="nav-link">O kinie &nbsp</a></li>
+                <li class="nav-item"><a href="{% url 'contact-client' %}" class="nav-link">Kontakt &nbsp</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<br>
+<div class="container-bg">
+
+    {% block content %}
+    {% endblock %}
+</div>
 </body>
 </html>

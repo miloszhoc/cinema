@@ -29,8 +29,8 @@
                             <div class="col-6"><a href="{% url 'movie-details-client' d.movie_id %}"
                                                   title="Zobacz szczególy filmu oraz zwiastun!"> <img
                                     src={{ d.thumbnail.url }}
-                                            width="120"
-                                    height="120"></a>
+                                            width="240"
+                                    height="240"></a>
                             </div>
                             <br>
                         </div>
@@ -47,15 +47,17 @@
                             <div class="col-6"><a href="{% url 'movie-details-client' i.movie_id %}"
                                                   title="Zobacz szczególy filmu oraz zwiastun!"> <img
                                     src={{ i.thumbnail.url }}
-                                            width="120"
-                                    height="120"></a>
+                                            width="240"
+                                    height="240"></a>
                             </div>
                             <br>
+
                         </div>
                     {% endfor %}
                 </div>
             </div>
             </div>
+
         </div>
     {% else %}
         <h3>Obecnie nie wyświetlamy żadych filmów.</h3>

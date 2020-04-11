@@ -1,4 +1,5 @@
 {% extends 'worker/base.html' %}
+{% load crispy_forms_tags %}
 {% block content %}
     {% if 'Administratorzy' in  request.user.groups.values.0.name %}
         <center>
@@ -10,20 +11,20 @@
             <h1>Rezerwacja wraz ze wszystkimi danymi klienta zostanie usunięta.</h1>
             <form action="" method="post">
                 {% csrf_token %}
-                {{ form }}
-                <input type="submit" value="Usuń">
+                {{ form|crispy }}
+                <button class="btn btn-danger" type="submit" value="Usuń">Usuń</button>
             </form>
             <br><br>
             <h3>Dane rezerwacji:</h3>
-            <table>
+            <table class="table-striped">
                 <tr>
-                    <th>Seans</th>
+                    <th style="color:darkblue">Seans</th>
                     <td>{{ reservation.showtime_id }}</td>
                 </tr>
 
                 <tr>
-                    <th>
-                        Imię i nazwisko
+                    <th style="color:darkblue">
+                        Imię i nazwisko &nbsp
                     </th>
                     <td>
                         {{ reservation.client_id.first_name }}
@@ -31,7 +32,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <th>
+                    <th style="color:darkblue">
                         Adres Email
                     </th>
                     <td>
@@ -39,7 +40,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <th>
+                    <th style="color:darkblue">
                         Do zapłaty
                     </th>
                     <td>
@@ -49,11 +50,11 @@
             </table>
             <br><br>
             <h3>Miejsca:</h3>
-            <table>
-                <tr>
-                    <th>Rząd</th>
-                    <th>Miejsce</th>
-                </tr>
+            <table class="table-striped">
+                <thead style="color: darkblue">
+                <th>Rząd &nbsp</th>
+                <th>&nbsp Miejsce</th>
+                </thead>
                 {% for i in  reservation.ticket_id.iterator %}
                     <tr>
                         <td>{{ i.seat_id.row_number }}</td>
