@@ -1,71 +1,67 @@
 {% extends 'worker/base.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
-    {% if 'Administratorzy' in  request.user.groups.values.0.name %}
-        <center>
-            {% if messages %}
-                {% for message in messages %}
-                    {{ message }}
-                {% endfor %}
-            {% endif %}
-            <h1>Rezerwacja wraz ze wszystkimi danymi klienta zostanie usunięta.</h1>
-            <form action="" method="post">
-                {% csrf_token %}
-                {{ form|crispy }}
-                <button class="btn btn-danger" type="submit" value="Usuń">Usuń</button>
-            </form>
-            <br><br>
-            <h3>Dane rezerwacji:</h3>
-            <table class="table-striped">
-                <tr>
-                    <th style="color:darkblue">Seans</th>
-                    <td>{{ reservation.showtime_id }}</td>
-                </tr>
+    <center>
+        {% if messages %}
+            {% for message in messages %}
+                {{ message }}
+            {% endfor %}
+        {% endif %}
+        <h1>Rezerwacja wraz ze wszystkimi danymi klienta zostanie usunięta.</h1>
+        <form action="" method="post">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <button class="btn btn-danger" type="submit" value="Usuń">Usuń</button>
+        </form>
+        <br><br>
+        <h3>Dane rezerwacji:</h3>
+        <table class="table-striped">
+            <tr>
+                <th style="color:darkblue">Seans</th>
+                <td>{{ reservation.showtime_id }}</td>
+            </tr>
 
+            <tr>
+                <th style="color:darkblue">
+                    Imię i nazwisko &nbsp
+                </th>
+                <td>
+                    {{ reservation.client_id.first_name }}
+                    {{ reservation.client_id.last_name }}
+                </td>
+            </tr>
+            <tr>
+                <th style="color:darkblue">
+                    Adres Email
+                </th>
+                <td>
+                    {{ reservation.client_id.email }}
+                </td>
+            </tr>
+            <tr>
+                <th style="color:darkblue">
+                    Do zapłaty
+                </th>
+                <td>
+                    {{ reservation.cost }} PLN
+                </td>
+            </tr>
+        </table>
+        <br><br>
+        <h3>Miejsca:</h3>
+        <table class="table-striped">
+            <thead style="color: darkblue">
+            <th>Rząd &nbsp</th>
+            <th>&nbsp Miejsce</th>
+            </thead>
+            {% for i in  reservation.ticket_id.iterator %}
                 <tr>
-                    <th style="color:darkblue">
-                        Imię i nazwisko &nbsp
-                    </th>
-                    <td>
-                        {{ reservation.client_id.first_name }}
-                        {{ reservation.client_id.last_name }}
-                    </td>
+                    <td>{{ i.seat_id.row_number }}</td>
+                    <td>{{ i.seat_id.seat_number }}</td>
                 </tr>
-                <tr>
-                    <th style="color:darkblue">
-                        Adres Email
-                    </th>
-                    <td>
-                        {{ reservation.client_id.email }}
-                    </td>
-                </tr>
-                <tr>
-                    <th style="color:darkblue">
-                        Do zapłaty
-                    </th>
-                    <td>
-                        {{ reservation.cost }} PLN
-                    </td>
-                </tr>
-            </table>
-            <br><br>
-            <h3>Miejsca:</h3>
-            <table class="table-striped">
-                <thead style="color: darkblue">
-                <th>Rząd &nbsp</th>
-                <th>&nbsp Miejsce</th>
-                </thead>
-                {% for i in  reservation.ticket_id.iterator %}
-                    <tr>
-                        <td>{{ i.seat_id.row_number }}</td>
-                        <td>{{ i.seat_id.seat_number }}</td>
-                    </tr>
-                {% endfor %}
-            </table>
-        </center>
-    {% else %}
-        <h2>Musisz być administratorem, aby usuwać rezerwacje.</h2>
-    {% endif %}
+            {% endfor %}
+        </table>
+    </center>
 
 
 {% endblock %}
