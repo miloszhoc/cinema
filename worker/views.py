@@ -697,6 +697,23 @@ class ShowtimeUpdateView(LoginRequiredMixin, UpdateView):
         id_ = self.kwargs.get('pk')
         return get_object_or_404(models.Showtime, showtime_id=id_)
 
+    def form_valid(self, form):
+        self.object = form.save()
+
+        emails = models.Client.objects.filter(reservation__showtime_id=self.object.showtime_id).values_list('email',
+                                                                                                            flat=True)
+        if emails:
+            html_mail = loader.render_to_string(template_name='worker/maile/aktualizacja_seansu.html',
+                                                context={'showtime': self.object})
+
+            mail = EmailMultiAlternatives(subject='Aktualizacja seansu',
+                                          from_email=EMAIL_HOST_USER,
+                                          bcc=emails)
+            mail.attach_alternative(html_mail, 'text/html')
+            mail.send(fail_silently=True)
+
+        return super().form_valid(form)
+
 
 class ShowtimeDeleteView(LoginRequiredMixin, DeleteView):
     model = models.Showtime
