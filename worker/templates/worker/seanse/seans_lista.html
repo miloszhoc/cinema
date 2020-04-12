@@ -1,9 +1,9 @@
 {% extends 'worker/base_pagination.html' %}
 {% block content_pagination %}
-    <a href="{% url 'showtime-create-worker' %}">Dodaj seans</a><br>
-    <p></p>
     {#    jesli jest to lista usunietych seansow, to ukrywa link do "Archiwalne seanse" #}
     {% if not deleted_list %}
+        <a href="{% url 'showtime-create-worker' %}">Dodaj seans</a><br>
+        <p></p>
         <a href="{% url 'showtime-archive-list-worker' %}">Archiwalne Seanse</a><br>
         <p></p>
         <h3>Lista seansów: </h3>

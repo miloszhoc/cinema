@@ -1,12 +1,12 @@
 {% extends 'worker/base_pagination.html' %}
 {% block content_pagination %}
-    {% if 'Administratorzy' in  request.user.groups.values.0.name %}
-        <a href="{% url 'movie-create-worker' %}">Dodaj film</a>
-        <p></p>
-    {% endif %}
     <br>
     {#    jesli jest to lista usunietych filmow, to ukrywa link do "usuniete filmy" #}
     {% if not deleted_list %}
+        {% if 'Administratorzy' in  request.user.groups.values.0.name %}
+            <a href="{% url 'movie-create-worker' %}">Dodaj film</a>
+            <p></p>
+        {% endif %}
         <a href="{% url 'movie-deleted-list-worker' %}">Usunięte filmy</a>
         <p></p>
         <h3>Lista filmów:</h3>
