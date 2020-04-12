@@ -12,7 +12,9 @@
     {% endif %}
 
     <a href="{% url 'showtime-update-worker' showtime.showtime_id %}">Aktualizuj informacje o seansie</a>
-    <a href="{% url 'showtime-delete-worker' showtime.showtime_id %}">Usuń seans</a>
+    {% if 'Administratorzy' in  request.user.groups.values.0.name %}
+        <a href="{% url 'showtime-delete-worker' showtime.showtime_id %}">Usuń seans</a>
+    {% endif %}
     <br><br>
     <a href="{% url 'movie-details-worker' showtime.movie_id.movie_id %}">Przejdź do szczegółów filmu</a>
     <br><br>
