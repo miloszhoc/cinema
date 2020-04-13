@@ -10,8 +10,9 @@
             {{ message }}
         {% endfor %}
     {% endif %}
-
-    <a href="{% url 'showtime-update-worker' showtime.showtime_id %}">Aktualizuj informacje o seansie</a>
+    {% if showtime.start_date > time_now %}
+        <a href="{% url 'showtime-update-worker' showtime.showtime_id %}">Aktualizuj informacje o seansie</a>
+    {% endif %}
     {% if 'Administratorzy' in  request.user.groups.values.0.name %}
         <a href="{% url 'showtime-delete-worker' showtime.showtime_id %}">Usuń seans</a>
     {% endif %}
