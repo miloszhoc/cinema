@@ -41,9 +41,9 @@
         <th>Opłacona &nbsp</th>
         <th>Potwierdzona &nbsp</th>
         <th>Data rezerwacji &nbsp</th>
-        <th>Opłacenie/Potwierdzenie &nbsp</th>
-        <th>Edycja &nbsp</th>
-        <th>Usuwanie &nbsp</th>
+        <th>{% if showtime.start_date > time_now %}Opłacenie/Potwierdzenie &nbsp{% endif %}</th>
+        <th>{% if showtime.start_date > time_now %}Edycja &nbsp{% endif %}</th>
+        <th>{% if showtime.start_date > time_now %}Usuwanie &nbsp{% endif %}</th>
         </thead>
         {% for reservation in reservations %}
             <tr>
@@ -54,14 +54,19 @@
                 <td>{{ reservation.paid }}</td>
                 <td> {{ reservation.confirmed }}</td>
                 <td> {{ reservation.reservation_date| date:"H:i d.m.Y" }} &nbsp</td>
-                <td>
+                <td>{% if showtime.start_date > time_now %}
                     <a href="{% url 'reservation-confirm-pay-worker' reservation.reservation_id %}">Opłać/Potwierdź</a>
+                {% endif %}
                 </td>
                 <td>
-                    <a href="{% url 'reservation-update-worker' reservation.reservation_id %}">Edytuj</a>
+                    {% if showtime.start_date > time_now %}
+                        <a href="{% url 'reservation-update-worker' reservation.reservation_id %}">Edytuj</a>
+                    {% endif %}
                 </td>
                 <td>
-                    <a href="{% url 'reservation-delete-worker' reservation.reservation_id %}">Usuń</a>
+                    {% if showtime.start_date > time_now %}
+                        <a href="{% url 'reservation-delete-worker' reservation.reservation_id %}">Usuń</a>
+                    {% endif %}
                 </td>
             </tr>
             <tr>
