@@ -16,8 +16,7 @@
             {{ message }}
         {% endfor %}
     {% endif %}
-
-    {% if object_list|length > 0 %}
+    {% if movies %}
         <div class="container series">
             {% if today|length > 0 %}
                 <h2>Dzisiaj gramy:</h2>
@@ -37,25 +36,26 @@
                     {% endfor %}
                 </div>
             {% endif %}
+            {% if future %}
+                <h2>W najbliższe dni gramy:</h2>
+                <br>
+                <div class="row">
+                    <div class="col-md-4">
+                        {% for i in future %}
+                            <div class="row">
+                                <div class="col-6"><a href="{% url 'movie-details-client' i.movie_id %}"
+                                                      title="Zobacz szczególy filmu oraz zwiastun!"> <img
+                                        src={{ i.thumbnail.url }}
+                                                width="240"
+                                        height="240"></a>
+                                </div>
+                                <br>
 
-            <h2>W najbliższe dni gramy:</h2>
-            <br>
-            <div class="row">
-                <div class="col-md-4">
-                    {% for i in future %}
-                        <div class="row">
-                            <div class="col-6"><a href="{% url 'movie-details-client' i.movie_id %}"
-                                                  title="Zobacz szczególy filmu oraz zwiastun!"> <img
-                                    src={{ i.thumbnail.url }}
-                                            width="240"
-                                    height="240"></a>
                             </div>
-                            <br>
-
-                        </div>
-                    {% endfor %}
+                        {% endfor %}
+                    </div>
                 </div>
-            </div>
+            {% endif %}
             </div>
 
         </div>

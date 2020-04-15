@@ -400,7 +400,7 @@ def summary(request, **kwargs):
                         messages.add_message(request,
                                              messages.ERROR,
                                              'Wystąpił problem z wysłaniem wiadomości. Prosimy o ręczne potwierdzenie rezerwacji pod linkiem: \n'
-                                             + confirm_url + '\nW celu odzucenia rezerwacji prosimy przejść pod adres\n' + reject_url)
+                                             + confirm_url + '\nW celu odrzucenia rezerwacji prosimy przejść pod adres\n' + reject_url)
                 else:
                     messages.add_message(request, messages.SUCCESS,
                                          'Rezerwacja została pomyślnie zakutalizowana! \n'

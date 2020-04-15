@@ -51,7 +51,7 @@ class IndexMovieListView(ListView):
         context['future'] = Movie.objects.filter(movie_id__in=Showtime.objects.values('movie_id'),
                                                  showtime__start_date__gt=tomorrow, showtime__end_date__lte=two_weeks). \
             distinct('movie_id')
-
+        context['movies'] = True if len(context['future']) > 0 or len(context['today']) > 0 else False
         return context
 
 
