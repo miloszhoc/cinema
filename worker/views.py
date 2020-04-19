@@ -685,7 +685,8 @@ class ShowtimeDetailView(LoginRequiredMixin, DetailView):
     # w templatce polazuje tylko rezerwacje na konkretny seans + bilety, ktore byly zakupione w ramach rezerwacji
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['reservations'] = models.Reservation.objects.filter(showtime_id=self.get_object())
+        context['reservations'] = models.Reservation.objects.filter(showtime_id=self.get_object()).order_by(
+            '-reservation_id')
         context['tickets'] = models.Ticket.objects.filter(showtime_id=self.get_object())
         context['time_now'] = timezone.now()
         return context
