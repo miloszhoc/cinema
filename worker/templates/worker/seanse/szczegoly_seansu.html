@@ -37,6 +37,7 @@
     <br>
     <table class="table-striped">
         <thead style="color: darkblue">
+        <th>ID &nbsp</th>
         <th>Imię i Nazwisko &nbsp</th>
         <th>Do zapłaty</th>
         <th>Opłacona &nbsp</th>
@@ -48,7 +49,8 @@
         </thead>
         {% for reservation in reservations %}
             <tr>
-                <td>{{ forloop.counter }}. {{ reservation.client_id.first_name }} {{ reservation.client_id.last_name }}
+                <td>{{ forloop.counter }}. {{ reservation.reservation_id }} &nbsp</td>
+                <td>{{ reservation.client_id.first_name }} {{ reservation.client_id.last_name }}
                     &nbsp &nbsp
                 </td>
                 <td>{{ reservation.cost }} PLN</td>
