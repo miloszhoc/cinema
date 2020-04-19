@@ -117,6 +117,11 @@ def reservation_form(request, **kwargs):  # kwargs przekazywanie z urls
 
     s_form = forms.SeatForm(taken_seats=taken_seats)
 
+    # ukrycie opcji potwierdzenia/oplacenia
+    r_form.fields['confirmed'].widget = r_form.fields['confirmed'].hidden_widget()
+    r_form.fields['paid'].widget = r_form.fields['paid'].hidden_widget()
+    r_form.fields['confirmation_email'].widget = r_form.fields['confirmation_email'].hidden_widget()
+
     # siedzenia wolne
     seats = models.Seat.objects
 
@@ -139,6 +144,11 @@ def reservation_form(request, **kwargs):  # kwargs przekazywanie z urls
 
         r_form = forms.ReservationModelForm(request.POST)
         client_form = forms.ClientModelForm(request.POST)
+
+        # ukrycie opcji potwierdzenia/oplacenia
+        r_form.fields['confirmed'].widget = r_form.fields['confirmed'].hidden_widget()
+        r_form.fields['paid'].widget = r_form.fields['paid'].hidden_widget()
+        r_form.fields['confirmation_email'].widget = r_form.fields['confirmation_email'].hidden_widget()
 
         if client_form.is_valid() and r_form.is_valid():
             request.session['taken'] = taken
@@ -279,14 +289,14 @@ def summary(request, **kwargs):
         data = request.session.get('data')
         showtime_id = data['showtime_id']
 
-        paid = data['paid'] if data.get('paid') else ''
-        confirmed = data['confirmed'] if data.get('confirmed') else ''
-        confirmation_email = data['confirmation_email'] if data.get('confirmation_email') else ''
+        # paid = data['paid'] if data.get('paid') else ''
+        # confirmed = data['confirmed'] if data.get('confirmed') else ''
+        # confirmation_email = data['confirmation_email'] if data.get('confirmation_email') else ''
 
         reservation_initial = {'showtime_id': data['showtime_id'],
-                               'confirmed': confirmed,
-                               'paid': paid,
-                               'confirmation_email': confirmation_email}
+                               'confirmed': False,
+                               'paid': False,
+                               'confirmation_email': False}
 
         client_initial = {'first_name': data['first_name'],
                           'last_name': data['last_name'],
@@ -304,9 +314,9 @@ def summary(request, **kwargs):
         client_form.fields['email'].widget = client_form.fields['email'].hidden_widget()
         client_form.fields['phone_number'].widget = client_form.fields['phone_number'].hidden_widget()
 
-        r_form.fields['confirmed'].widget = r_form.fields['confirmed'].hidden_widget()
-        r_form.fields['paid'].widget = r_form.fields['paid'].hidden_widget()
-        r_form.fields['confirmation_email'].widget = r_form.fields['confirmation_email'].hidden_widget()
+        # r_form.fields['confirmed'].widget = r_form.fields['confirmed'].hidden_widget()
+        # r_form.fields['paid'].widget = r_form.fields['paid'].hidden_widget()
+        # r_form.fields['confirmation_email'].widget = r_form.fields['confirmation_email'].hidden_widget()
 
         ticket_formset = modelformset_factory(models.Ticket,
                                               fields=('seat_id', 'tickettype_id'),

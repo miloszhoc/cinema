@@ -42,7 +42,7 @@
             </table>
             <b>Do zapłaty: {{ total }} PLN</b>
             {{ client_form }}
-            {{ reservation_form }}<br><br>
+            {{ reservation_form|crispy }}<br><br>
             <button class="btn btn-primary" type="submit" value="Zarezerwuj">Rezerwuj</button>
         </form>
     {% else %}
