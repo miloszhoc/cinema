@@ -714,17 +714,24 @@ class ShowtimeUpdateView(LoginRequiredMixin, UpdateView):
     def form_valid(self, form):
         self.object = form.save()
 
-        emails = models.Client.objects.filter(reservation__showtime_id=self.object.showtime_id).values_list('email',
-                                                                                                            flat=True)
+        emails = set(models.Client.objects.filter(reservation__showtime_id=self.object.showtime_id).values_list('email',
+                                                                                                                flat=True))
         if emails:
             html_mail = loader.render_to_string(template_name='worker/maile/aktualizacja_seansu.html',
                                                 context={'showtime': self.object})
+            conn = get_connection()
             mail = EmailMultiAlternatives(subject='Aktualizacja seansu',
                                           from_email=EMAIL_HOST_USER,
-                                          to=emails, )
+                                          to=emails,
+                                          connection=conn)
             mail.attach_alternative(html_mail, 'text/html')
-            mail.send(fail_silently=True)
-
+            mail_send = mail.send(fail_silently=True)
+            if not mail_send:
+                messages.add_message(self.request, messages.ERROR,
+                                     'Błąd, nie można wysłać wiadomości ')
+            else:
+                messages.add_message(self.request, messages.SUCCESS, 'Seans został pomyślnie zaktualizowany.\n'
+                                                                     'Wysłano wiadomiści z informacją do klientów.')
         return super().form_valid(form)
 
 
@@ -828,6 +835,7 @@ def delete_unconfirmed_reservation(request):
             reservation_counter += 1
 
             client.delete()  # usuwa dane klienta
+    clients = set(clients)
     if clients:
         html_mail = loader.render_to_string(template_name='worker/maile/auto_usuwanie_rezerwacji.html')
 
