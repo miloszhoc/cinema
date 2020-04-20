@@ -12,6 +12,9 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 
 import os
 
+# sendgrid backend
+EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -122,13 +125,10 @@ LOGIN_REDIRECT_URL = 'panel'  # przekieowanie po zalogowaniu
 LOGIN_URL = 'main'  # kiedy chemy sie dostac do sciezki niedostepnej bez logowania to przekierowuje na ten adres url
 LOGOUT_REDIRECT_URL = 'main'  # przekierowanie po wykogowaniu
 
-# mail config
-# https://support.google.com/mail/answer/7126229?hl=pl
-EMAIL_HOST = os.environ.get('EMAIL_HOST')
-EMAIL_PORT = os.environ.get('EMAIL_PORT')
+# sendgrid
+SENDGRID_API_KEY = os.environ.get('SENDGRID_API_KEY')
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
-EMAIL_USE_TLS = bool(os.environ.get('EMAIL_USE_TLS'))
+SENDGRID_SANDBOX_MODE_IN_DEBUG = False
 
 # https://stackoverflow.com/questions/54729137/django-azure-upload-file-to-blob-storage
 # azure storage config
