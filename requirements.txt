@@ -7,12 +7,16 @@ cffi==1.14.0
 chardet==3.0.4
 cryptography==2.9
 DateTime==4.3
+dj-database-url==0.5.0
 Django==3.0.4
 django-crispy-forms==1.9.0
+django-heroku==0.3.1
 django-multiselectfield==0.1.12
+django-sendgrid-v5==0.8.1
 django-static-jquery==2.1.4
 django-storages-azure==1.6.8
 django-timezone-field==4.0
+future==0.18.2
 gunicorn==20.0.4
 idna==2.9
 Pillow==7.1.1
@@ -22,8 +26,10 @@ pycparser==2.20
 PyMySQL==0.9.3
 python-crontab==2.4.0
 python-dateutil==2.8.1
+python-http-client==3.2.7
 pytz==2019.3
 requests==2.23.0
+sendgrid==6.2.2
 six==1.14.0
 sqlparse==0.3.1
 urllib3==1.25.8
