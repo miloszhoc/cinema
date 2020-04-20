@@ -12,9 +12,6 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 
 import os
 
-# sendgrid backend
-EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"
-
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -149,3 +146,6 @@ STATICFILES_STORAGE = 'storages.backends.azure_storage.AzureStorage'
 # STATIC_URL = '/static/'
 STATIC_URL = 'https://{}/static/'.format(AZURE_CUSTOM_DOMAIN)
 # STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+# sendgrid backend
+EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"

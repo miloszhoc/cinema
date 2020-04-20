@@ -1,8 +1,11 @@
+import sendgrid_backend
 from django.contrib import messages
-from django.core.mail import send_mail, EmailMultiAlternatives
+from django.core.mail import send_mail, EmailMultiAlternatives, get_connection
 from django.shortcuts import render
 from django.shortcuts import redirect
 import django.forms
+from sendgrid_backend import SendgridBackend
+
 from . import models
 from . import forms
 from django.forms import modelformset_factory
@@ -15,7 +18,7 @@ from django.urls import reverse, reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.forms import UserCreationForm
 from django.db import transaction
-from cinema.settings import EMAIL_HOST_USER
+from cinema.settings import EMAIL_HOST_USER, EMAIL_BACKEND, SENDGRID_API_KEY
 from django.template import loader
 from django.utils import timezone
 from django.http import JsonResponse
@@ -716,12 +719,14 @@ class ShowtimeUpdateView(LoginRequiredMixin, UpdateView):
         if emails:
             html_mail = loader.render_to_string(template_name='worker/maile/aktualizacja_seansu.html',
                                                 context={'showtime': self.object})
-
+            conn = get_connection()
             mail = EmailMultiAlternatives(subject='Aktualizacja seansu',
                                           from_email=EMAIL_HOST_USER,
-                                          bcc=emails)
+                                          # bcc=emails,
+                                          to=emails,
+                                          connection=conn)
             mail.attach_alternative(html_mail, 'text/html')
-            mail.send(fail_silently=True)
+            mail.send(fail_silently=False)
 
         return super().form_valid(form)
 
@@ -831,7 +836,8 @@ def delete_unconfirmed_reservation(request):
 
         mail = EmailMultiAlternatives(subject='Usunięta rezerwacja',
                                       from_email=EMAIL_HOST_USER,
-                                      bcc=clients)
+                                      # bcc=clients, )
+                                      bcc=clients, )
         mail.attach_alternative(html_mail, 'text/html')
         mail_send = mail.send(fail_silently=True)
 
