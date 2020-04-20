@@ -719,14 +719,11 @@ class ShowtimeUpdateView(LoginRequiredMixin, UpdateView):
         if emails:
             html_mail = loader.render_to_string(template_name='worker/maile/aktualizacja_seansu.html',
                                                 context={'showtime': self.object})
-            conn = get_connection()
             mail = EmailMultiAlternatives(subject='Aktualizacja seansu',
                                           from_email=EMAIL_HOST_USER,
-                                          # bcc=emails,
-                                          to=emails,
-                                          connection=conn)
+                                          to=emails, )
             mail.attach_alternative(html_mail, 'text/html')
-            mail.send(fail_silently=False)
+            mail.send(fail_silently=True)
 
         return super().form_valid(form)
 
@@ -836,8 +833,7 @@ def delete_unconfirmed_reservation(request):
 
         mail = EmailMultiAlternatives(subject='Usunięta rezerwacja',
                                       from_email=EMAIL_HOST_USER,
-                                      # bcc=clients, )
-                                      bcc=clients, )
+                                      to=clients, )
         mail.attach_alternative(html_mail, 'text/html')
         mail_send = mail.send(fail_silently=True)
 
