@@ -21,7 +21,7 @@ from django.db import transaction
 from cinema.settings import EMAIL_HOST_USER, EMAIL_BACKEND, SENDGRID_API_KEY
 from django.template import loader
 from django.utils import timezone
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseRedirect
 
 
 # aby dostac się do strony wymagane jest zalogowanie, jeśli user nie jest zalogowany,
@@ -745,6 +745,23 @@ class ShowtimeDeleteView(LoginRequiredMixin, DeleteView):
     model = models.Showtime
     template_name = 'worker/seanse/usun_seans.html'
     success_url = reverse_lazy('showtime-list-worker')
+
+    @transaction.atomic
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        success_url = self.get_success_url()
+
+        reservations = models.Reservation.objects.filter(showtime_id=self.object.showtime_id)
+        if reservations:
+            for reservation in reservations:
+                tickets = models.Ticket.objects.filter(reservation__reservation_id=reservation.reservation_id)
+                for ticket in tickets:
+                    ticket.delete()
+                reservation.delete()
+                models.Client.objects.get(client_id=reservation.client_id.client_id).delete()
+        self.object.delete()
+
+        return HttpResponseRedirect(success_url)
 
 
 # filmy
