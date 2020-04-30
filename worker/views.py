@@ -124,6 +124,7 @@ def reservation_form(request, **kwargs):  # kwargs przekazywanie z urls
     r_form.fields['confirmed'].widget = r_form.fields['confirmed'].hidden_widget()
     r_form.fields['paid'].widget = r_form.fields['paid'].hidden_widget()
     r_form.fields['confirmation_email'].widget = r_form.fields['confirmation_email'].hidden_widget()
+    r_form.fields['showtime_id'].widget = r_form.fields['showtime_id'].hidden_widget()
 
     # siedzenia wolne
     seats = models.Seat.objects
@@ -152,12 +153,17 @@ def reservation_form(request, **kwargs):  # kwargs przekazywanie z urls
         r_form.fields['confirmed'].widget = r_form.fields['confirmed'].hidden_widget()
         r_form.fields['paid'].widget = r_form.fields['paid'].hidden_widget()
         r_form.fields['confirmation_email'].widget = r_form.fields['confirmation_email'].hidden_widget()
+        r_form.fields['showtime_id'].widget = r_form.fields['showtime_id'].hidden_widget()
 
         if client_form.is_valid() and r_form.is_valid():
             request.session['taken'] = taken
             request.session['data'] = request.POST
 
-            return redirect('reservation-tickets-worker')
+            # jesli nie wybrano miejsc
+            if len(taken) == 0:
+                messages.add_message(request, messages.ERROR, 'Nie wybrano żadnych miejsc!')
+            else:
+                return redirect('reservation-tickets-worker')
 
     return render(request, 'worker/rezerwacje/dodaj_rezerwacje.html', context={'showtime_id': showtime_id,
                                                                                'client_form': client_form,
