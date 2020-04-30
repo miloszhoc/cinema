@@ -113,6 +113,8 @@ def reservation_form(request, **kwargs):  # kwargs przekazywanie z urls
                 messages.add_message(request, messages.ERROR, 'Możesz zarezerwować maksymalnie 10 miejsc! '
                                                               'W celu rezerwacji większej ilości miejsc skontaktuj się '
                                                               'z pracownikiem kina.')
+            elif len(taken) == 0:
+                messages.add_message(request, messages.ERROR, 'Nie wybrano żadnych miejsc!')
             else:
                 return redirect('reservation-tickets-client')
 
