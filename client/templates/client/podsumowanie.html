@@ -39,7 +39,11 @@
                         <tbody>
                         {{ ticket_form.management_form }}
                         {% for form in ticket_form %}
-                            Miejsce: {{ form.seat_id.data }}<br>
+                            {% for i in seats %}
+                                {% if i.seat_id|title == form.seat_id.data|title %}
+                                    Miejsce: {{ i }}<br>
+                                {% endif %}
+                            {% endfor %}
                             {% for i in db_ticket_types %}
                                 {% if i.ticket_id|lower == form.tickettype_id.data|lower %}
                                     Typ biletu: {{ i.type }}{{ form.as_p }}

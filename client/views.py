@@ -176,9 +176,12 @@ def ticket_types_client(request, **kwargs):
 
         ticket_form = ticket_formset(queryset=Ticket.objects.none(), initial=[{'seat_id': z} for z in taken])
 
+        seats = []
+
         # pokazuje tylko typy biletów, które nie są usunięte
         for form in ticket_form:
             form.fields['tickettype_id'].queryset = TicketType.objects.filter(deleted=False)
+            seats.append(Seat.objects.get(seat_id=form.initial['seat_id']))
 
         if request.POST:
             r_form = forms.ReservationModelForm(request.POST)
@@ -206,7 +209,8 @@ def ticket_types_client(request, **kwargs):
                                                                             'client_form': client_form,
                                                                             'client_initial': client_initial,
                                                                             'reservation_initial': reservation_initial,
-                                                                            'showtime': showtime})
+                                                                            'showtime': showtime,
+                                                                            'seats': seats})
     else:
         taken = ''
         ticket_form = ''
@@ -215,13 +219,15 @@ def ticket_types_client(request, **kwargs):
         reservation_initial = ''
         client_initial = ''
         showtime = ''
+        seats = ''
         return render(request, 'client/wybierz_typy_biletow.html', context={'taken': taken,
                                                                             'ticket_form': ticket_form,
                                                                             'reservation_form': r_form,
                                                                             'client_form': client_form,
                                                                             'client_initial': client_initial,
                                                                             'reservation_initial': reservation_initial,
-                                                                            'showtime': showtime})
+                                                                            'showtime': showtime,
+                                                                            'seats': seats})
 
 
 @transaction.atomic
@@ -275,6 +281,10 @@ def summary_client(request, **kwargs):
         ticket_form = ticket_formset(queryset=Ticket.objects.none(), data=formset_data)
 
         db_ticket_types = TicketType.objects.all()
+
+        seats = []
+        for form in ticket_form:
+            seats.append(Seat.objects.get(seat_id=form['seat_id'].value()))
 
         if request.POST:
             r_form = forms.ReservationModelForm(request.POST)
@@ -375,7 +385,8 @@ def summary_client(request, **kwargs):
                                                                     'reservation_initial': reservation_initial,
                                                                     'showtime': showtime,
                                                                     'total': total_price,
-                                                                    'db_ticket_types': db_ticket_types})
+                                                                    'db_ticket_types': db_ticket_types,
+                                                                    'seats': seats})
     else:
         taken = ''
         ticket_form = ''

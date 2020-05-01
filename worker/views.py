@@ -228,10 +228,13 @@ def ticket_types_worker(request, **kwargs):
 
         ticket_form = ticket_formset(queryset=models.Ticket.objects.none(), initial=[{'seat_id': z} for z in taken])
 
+        seats = []
+
         # pokazuje tylko typy biletów, które nie są usunięte
         # https://simpleisbetterthancomplex.com/questions/2017/03/22/how-to-dynamically-filter-modelchoices-queryset-in-a-modelform.html
         for form in ticket_form:
             form.fields['tickettype_id'].queryset = models.TicketType.objects.filter(deleted=False)
+            seats.append(models.Seat.objects.get(seat_id=form.initial['seat_id']))
 
         if request.POST:
             r_form = forms.ReservationModelForm(request.POST)
@@ -263,7 +266,8 @@ def ticket_types_worker(request, **kwargs):
                                                                                        'client_form': client_form,
                                                                                        'client_initial': client_initial,
                                                                                        'reservation_initial': reservation_initial,
-                                                                                       'showtime': showtime})
+                                                                                       'showtime': showtime,
+                                                                                       'seats': seats})
     else:
         taken = ''
         ticket_form = ''
@@ -272,13 +276,15 @@ def ticket_types_worker(request, **kwargs):
         reservation_initial = ''
         client_initial = ''
         showtime = ''
+        seats = ''
         return render(request, 'worker/rezerwacje/wybierz_typy_biletow.html', context={'taken': taken,
                                                                                        'ticket_form': ticket_form,
                                                                                        'reservation_form': r_form,
                                                                                        'client_form': client_form,
                                                                                        'client_initial': client_initial,
                                                                                        'reservation_initial': reservation_initial,
-                                                                                       'showtime': showtime})
+                                                                                       'showtime': showtime,
+                                                                                       'seats': seats})
 
 
 # pracownik moze zarezerwowac dowolna ilosc biletow
@@ -339,6 +345,10 @@ def summary(request, **kwargs):
         ticket_form = ticket_formset(queryset=models.Ticket.objects.none(), data=formset_data)
 
         db_ticket_types = models.TicketType.objects.all()
+
+        seats = []
+        for form in ticket_form:
+            seats.append(models.Seat.objects.get(seat_id=form['seat_id'].value()))
 
         if request.POST:
             r_form = forms.ReservationModelForm(request.POST)
@@ -404,26 +414,20 @@ def summary(request, **kwargs):
                                      html_message=html_mail)
                     if mail:
                         messages.add_message(request, messages.SUCCESS,
-                                             'Rezerwacja została pomyślnie utworzona, na adres'
-                                             'mailowy klienta została wysłana wiadomość z potwierdzeniem.'
+                                             'Rezerwacja została pomyślnie utworzona, na adres '
+                                             'mailowy klienta została wysłana wiadomość z potwierdzeniem. '
                                              'Jeśli klient nie potwierdzi rezerwacji w ciągu 30 minut, '
                                              'to zostanie ona usunięta z systemu')
                     else:
-                        confirm_url = request.META['HTTP_HOST'] + reverse('reservation-accept-client',
-                                                                          kwargs={'id': str(
-                                                                              reservation.reservation_confirmation_code)})
-                        reject_url = request.META['HTTP_HOST'] + reverse('reservation-deny-client',
-                                                                         kwargs={'id': str(
-                                                                             reservation.reservation_confirmation_code)})
 
                         messages.add_message(request,
                                              messages.ERROR,
-                                             'Wystąpił problem z wysłaniem wiadomości. Prosimy o ręczne potwierdzenie rezerwacji pod linkiem: \n'
-                                             + confirm_url + '\nW celu odrzucenia rezerwacji prosimy przejść pod adres\n' + reject_url)
+                                             'Wystąpił problem z wysłaniem wiadomości. Skontaktuj się z klientem w celu '
+                                             'potwierdzenia lub odrzucenia rezerwacji.')
                 else:
                     messages.add_message(request, messages.SUCCESS,
-                                         'Rezerwacja została pomyślnie zakutalizowana! \n'
-                                         'Uwaga! Nie została zaznaczona opcja wysyłki wiadomości email do klienta.')
+                                         'Rezerwacja została pomyślnie utworzona.\n '
+                                         'Nie została zaznaczona opcja wysyłki wiadomości email do klienta.')
                 request.session.pop('taken')
                 request.session.pop('data')
                 request.session.pop('formset_data')
@@ -437,7 +441,8 @@ def summary(request, **kwargs):
                                                                                'reservation_initial': reservation_initial,
                                                                                'showtime': showtime,
                                                                                'total': total_price,
-                                                                               'db_ticket_types': db_ticket_types})
+                                                                               'db_ticket_types': db_ticket_types,
+                                                                               'seats': seats})
     else:
         taken = ''
         ticket_form = ''
@@ -447,6 +452,7 @@ def summary(request, **kwargs):
         client_initial = ''
         showtime = ''
         total_price = ''
+        seats = ''
         return render(request, 'worker/rezerwacje/podsumowanie.html', context={'taken': taken,
                                                                                'ticket_form': ticket_form,
                                                                                'reservation_form': r_form,
@@ -454,7 +460,8 @@ def summary(request, **kwargs):
                                                                                'client_initial': client_initial,
                                                                                'reservation_initial': reservation_initial,
                                                                                'showtime': showtime,
-                                                                               'total': total_price})
+                                                                               'total': total_price,
+                                                                               'seats': seats})
 
 
 @login_required
@@ -589,26 +596,20 @@ def reservation_update(request, **kwargs):
                                      html_message=html_mail)
                     if mail:
                         messages.add_message(request, messages.SUCCESS,
-                                             'Rezerwacja została pomyślnie utworzona, na adres'
+                                             'Rezerwacja została pomyślnie zaktualizowana, na adres'
                                              'mailowy klienta została wysłana wiadomość z potwierdzeniem.'
                                              'Jeśli klient nie potwierdzi rezerwacji w ciągu 30 minut, '
                                              'to zostanie ona usunięta z systemu')
                     else:
-                        confirm_url = request.META['HTTP_HOST'] + reverse('reservation-accept-client',
-                                                                          kwargs={'id': str(
-                                                                              reservation.reservation_confirmation_code)})
-                        reject_url = request.META['HTTP_HOST'] + reverse('reservation-deny-client',
-                                                                         kwargs={'id': str(
-                                                                             reservation.reservation_confirmation_code)})
-
                         messages.add_message(request,
                                              messages.ERROR,
-                                             'Wystąpił problem z wysłaniem wiadomości. Prosimy o ręczne potwierdzenie rezerwacji pod linkiem: \n'
-                                             + confirm_url + '\nW celu odzucenia rezerwacji prosimy przejść pod adres\n' + reject_url)
+                                             'Wystąpił problem z wysłaniem wiadomości. Skontaktuj się z klientem w celu '
+                                             'potwierdzenia lub odrzucenia rezerwacji.')
                 else:
                     messages.add_message(request, messages.SUCCESS,
-                                         'Rezerwacja została pomyślnie zakutalizowana! \n'
-                                         'Uwaga! Nie została zaznaczona opcja wysyłki wiadomości email do klienta.')
+                                         'Rezerwacja została pomyślnie zaktualizowana.\n '
+                                         'Nie została zaznaczona opcja wysyłki wiadomości email do klienta.')
+
                 return redirect(reverse('showtime-details-worker', kwargs={'pk': str(showtime.showtime_id)}))
 
     return render(request, 'worker/rezerwacje/edytuj-rezerwacje.html', context={'reservation': reservation,

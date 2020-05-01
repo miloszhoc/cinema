@@ -40,9 +40,17 @@
                 {{ ticket_form.management_form }}
                 {% for form in ticket_form %}
                     {% if form.seat_id.initial is None %}
-                        Miejsce: {{ form.seat_id.data }}
+                        {% for i in seats %}
+                            {% if i.seat_id|title == form.seat_id.data|title %}
+                                Miejsce: {{ i }}
+                            {% endif %}
+                        {% endfor %}
                     {% else %}
-                        Miejsce: {{ form.seat_id.initial }}
+                        {% for i in seats %}
+                            {% if i.seat_id|title == form.seat_id.initial|title %}
+                                Miejsce: {{ i }}
+                            {% endif %}
+                        {% endfor %}
                     {% endif %}
                     {{ form|crispy }}
                 {% endfor %}
