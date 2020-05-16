@@ -361,7 +361,9 @@ def summary_client(request, **kwargs):
                                              'Rezerwacja została pomyślnie utworzona, na twój adres '
                                              'mailowy została wysłana wiadomość z potwierdzeniem. '
                                              'Jeśli nie potwierdzisz rezerwacji w ciągu 30 minut, '
-                                             'to zostanie ona automatycznie usunięta z systemu.')
+                                             'to zostanie ona automatycznie usunięta z systemu. '
+                                             'W przypadku braku otrzymania wiadomości email '
+                                             'prosimy o pilny kontakt telefoniczny.')
                     else:
                         confirm_url = request.META['HTTP_HOST'] + reverse('reservation-accept-client',
                                                                           kwargs={'id': str(
