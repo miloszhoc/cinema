@@ -422,17 +422,15 @@ def okinie(request):
     return render(request, 'client/okinie.html', context={'media': media_url})
 
 
-# w zakładce seanse na 14 dni od dnia dzisiejszego
-# lista dat od dnia dzisiejszego, które w templatce sa porownywane z datami seansow, jesli data seansu jest rowna dacie
-# na liscie dat, to seans jest wypisywany na ekranie
 class RepertuarShowtimeListView(ListView):
     template_name = 'client/repertuar.html'
 
-    queryset = Showtime.objects.filter(start_date__gte=timezone.now()).order_by('start_date')
+    # queryset = Showtime.objects.filter(start_date__gte=timezone.now()).order_by('start_date')
     model = Showtime
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(object_list=object_list, **kwargs)
+        context['showtimes'] = Showtime.objects.filter(start_date__gte=timezone.now()).order_by('start_date')
         return context
 
 

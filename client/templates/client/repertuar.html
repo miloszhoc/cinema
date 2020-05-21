@@ -13,8 +13,8 @@
 
 {#https://stackoverflow.com/questions/8678336/django-grouping-querysets-by-a-certain-field-in-template#}
 {% block content %}
-    {% if showtime_list|length > 0 %}
-        {% regroup showtime_list by start_date|date:"d.m.Y" as showtime_by_date %}
+    {% if showtimes|length > 0 %}
+        {% regroup showtimes by start_date|date:"d.m.Y" as showtime_by_date %}
         <table class="table table-striped table-dark">
             <thead>
             <tr>
