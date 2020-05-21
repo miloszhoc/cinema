@@ -54,8 +54,16 @@
                     &nbsp &nbsp
                 </td>
                 <td>{{ reservation.cost }} PLN</td>
-                <td>{{ reservation.paid }}</td>
-                <td> {{ reservation.confirmed }}</td>
+                {% if not reservation.paid %}
+                    <td> Nie</td>
+                {% else %}
+                    <td>Tak</td>
+                {% endif %}
+                {% if not reservation.confirmed %}
+                    <td> Nie</td>
+                {% else %}
+                    <td>Tak</td>
+                {% endif %}
                 <td> {{ reservation.reservation_date| date:"H:i d.m.Y" }} &nbsp</td>
                 <td>{% if showtime.start_date > time_now %}
                     <a href="{% url 'reservation-confirm-pay-worker' reservation.reservation_id %}">Opłać/Potwierdź</a>

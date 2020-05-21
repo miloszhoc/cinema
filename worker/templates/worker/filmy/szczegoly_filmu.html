@@ -5,6 +5,7 @@
             <a href="{% url 'movie-update-worker' movie.movie_id %}">Aktualizuj informacje o filmie</a>
             {#        jesli film nie jest powiazany z seansem, to mozna go usunac#}
             {% if not showtime %}
+                <br>
                 <a href="{% url 'movie-delete-worker' movie.movie_id %}">Usuń film</a>
             {% endif %}
         {% endif %}
