@@ -5,6 +5,10 @@
     {% if 'Administratorzy' in  request.user.groups.values.0.name %}
         <form action="." method="post" enctype="multipart/form-data">{% csrf_token %}
             {{ form|crispy }}
+            <p style="font-size: 0.5em;">W polu "Trailer youtube id" należy wpisać ID filmu z YouTube<br>
+            np. dla linku https://www.youtube.com/watch?v=PfBUuXtXceA<br>
+            ID filmu będzie PfBUuXtXceA.</p>
+            <p></p>
             <button type="reset" class="btn btn-danger">Wyczyść</button>
             <button type="submit" class="btn btn-primary">Zapisz</button>
         </form>
