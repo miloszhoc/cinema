@@ -78,6 +78,12 @@ Dev environment:
 
 ---------
 
+## Tests
+
+E2E and manual tests are in separated repository ([here](https://github.com/miloszhoc/cinema-tests)).
+
+---------
+
 ## Users
 
 Application contains simplified accounts and permission system which has two predefined groups - workers and
@@ -194,11 +200,6 @@ Client can make reservation in 3 ways:
 * AZURE_CONTAINER - container name which is used for store files.
 
 ----------
-
-## Tests
-
-Test cases for manual testing:   
-https://docs.google.com/spreadsheets/d/1waFV-8ZkhgdNZUMMdUEsn7iaLLuMzJ9fWcIrPRdYdkg/edit#gid=0
 
 ## CI/CD
 
