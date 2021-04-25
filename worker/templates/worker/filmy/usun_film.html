@@ -5,7 +5,7 @@
             <h1>Czy chcesz usunąć film {{ movie.title }}?</h1>
             <h2>Usunąć można tylko film, który nie ma powiązanych seansów</h2>
             <p>
-                <button class="btn btn-danger" type="submit" value="Yes">yes</button>
+                <button class="btn btn-danger" type="submit" value="Yes">Tak</button>
                 <a href="{% url 'movie-details-worker' movie.movie_id %}">Nie</a></p>
         </form>
     {% else %}
