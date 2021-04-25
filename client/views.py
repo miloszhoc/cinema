@@ -438,7 +438,8 @@ class RepertuarShowtimeListView(ListView):
 @transaction.atomic
 def rezerwacja_potwierdz(request, **kwargs):
     reservation_uuid = kwargs['id']
-    reservation = Reservation.objects.get(reservation_confirmation_code=reservation_uuid)
+    reservation = get_object_or_404(Reservation,
+                                    reservation_confirmation_code=reservation_uuid)
     form = forms.ConfirmReservationForm(initial={'text_field': reservation_uuid})
     if request.POST:
         form = forms.ConfirmReservationForm(request.POST, initial={'text_field': reservation_uuid})
@@ -460,7 +461,8 @@ def rezerwacja_potwierdz(request, **kwargs):
 @transaction.atomic
 def rezerwacja_anuluj(request, **kwargs):
     reservation_uuid = kwargs['id']
-    reservation = Reservation.objects.get(reservation_confirmation_code=reservation_uuid)
+    reservation = get_object_or_404(Reservation,
+                                    reservation_confirmation_code=reservation_uuid)
     form = forms.ConfirmReservationForm(initial={'text_field': reservation_uuid})
 
     if request.POST:
