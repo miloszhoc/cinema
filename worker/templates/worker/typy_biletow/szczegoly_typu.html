@@ -8,8 +8,19 @@
         {% endif %}
     {% endif %}
     <br><br>
-    <b>Typ:</b> {{ object.type }}<br>
-    <b>Cena:</b> {{ object.price }}<br>
-    <b>Dodatkowe informacje:</b> {{ object.conditions }}<br>
-
+    <div class="section">
+        <div class="name"><b>Typ:</b></div>
+        <div class="value">{{ object.type }}</div>
+        <br>
+    </div>
+    <div class="section">
+        <div class="name"><b>Cena:</b></div>
+        <div class="value">{{ object.price }}</div>
+        <br>
+    </div>
+    <div class="section">
+        <div class="name"><b>Dodatkowe informacje:</b></div>
+        <div class="value">{{ object.conditions }}</div>
+        <br>
+    </div>
 {% endblock %}
