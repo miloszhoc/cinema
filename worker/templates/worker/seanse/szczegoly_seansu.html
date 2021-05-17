@@ -21,13 +21,33 @@
     <br><br>
 
     <img src="{{ showtime.movie_id.thumbnail.url }}" alt="{{ showtime.movie_id.title }}" width="200" height="285"/><br>
-    {{ showtime.movie_id.title|title }}<br>
-    <b>data seansu:</b>
-    {{ showtime.start_date| time:"H:i" }}
-    {{ showtime.start_date| date:"d.m.Y" }} r.-
-    {{ showtime.end_date| time:"H:i" }}
-    {{ showtime.end_date| date:"d.m.Y" }} r.<br>
-    <b>czas trwania:</b> {{ showtime.movie_id.duration }}<br>
+    <div class="section">
+        <div class="name">
+            <b>Tytuł filmu:</b>
+        </div>
+        <div class="value">
+            {{ showtime.movie_id.title|title }}<br>
+        </div>
+    </div>
+    <div class="section">
+        <div class="name">
+            <b>Data seansu:</b>
+        </div>
+        <div class="value">
+            {{ showtime.start_date| date:"d.m.Y" }}r.
+            {{ showtime.start_date| time:"H:i" }} -
+            {{ showtime.end_date| date:"d.m.Y" }}r.
+            {{ showtime.end_date| time:"H:i" }}<br>
+        </div>
+    </div>
+    <div class="section">
+        <div class="name">
+            <b>Czas trwania:</b>
+        </div>
+        <div class="value">
+            {{ showtime.movie_id.duration }}<br>
+        </div>
+    </div>
     <hr>
     <h3>Rezerwacje na seans:</h3>
     {#    rezerwaja mozliwa tylko, gdy seans sie jeszcze nie odbyl#}
