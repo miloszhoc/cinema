@@ -47,7 +47,7 @@ class TicketTypeListView(LoginRequiredMixin, ListView):
     template_name = 'worker/typy_biletow/typy_lista.html'
     paginate_by = 10
     # sortowanie asc po id, czyli wg kolejnosci dodania
-    ordering = ['ticket_id']
+    ordering = ['-ticket_id']
 
 
 # lista archiwalnych seansow
@@ -55,7 +55,7 @@ class TicketTypeArchiveListView(LoginRequiredMixin, ListView):
     queryset = models.TicketType.objects.filter(deleted=True)
     model = models.TicketType
     paginate_by = 10
-    ordering = ['ticket_id']
+    ordering = ['-ticket_id']
     template_name = 'worker/typy_biletow/typy_lista.html'
 
     def get_context_data(self, *, object_list=None, **kwargs):
