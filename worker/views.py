@@ -670,7 +670,7 @@ class ShowtimeListView(LoginRequiredMixin, ListView):
     queryset = models.Showtime.objects.filter(start_date__gte=timezone.now())
     model = models.Showtime
     paginate_by = 10
-    ordering = ['start_date']
+    ordering = ['-showtime_id']
     template_name = 'worker/seanse/seans_lista.html'
 
 
