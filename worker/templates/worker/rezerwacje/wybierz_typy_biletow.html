@@ -33,13 +33,17 @@
                 {% if form.seat_id.initial is None %}
                     {% for i in seats %}
                         {% if i.seat_id|title == form.seat_id.data|title %}
-                            Miejsce: {{ i }}
+                            <div class="label">
+                                Miejsce: {{ i }}
+                            </div>
                         {% endif %}
                     {% endfor %}
                 {% else %}
                     {% for i in seats %}
                         {% if i.seat_id|title == form.seat_id.initial|title %}
-                            Miejsce: {{ i }}
+                            <div class="value">
+                                Miejsce: {{ i }}
+                            </div>
                         {% endif %}
                     {% endfor %}
                 {% endif %}
