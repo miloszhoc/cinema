@@ -18,7 +18,7 @@ from django.urls import reverse, reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.forms import UserCreationForm
 from django.db import transaction
-from cinema.settings import EMAIL_HOST_USER, EMAIL_BACKEND, SENDGRID_API_KEY
+from cinema.settings import EMAIL_HOST_USER
 from django.template import loader
 from django.utils import timezone
 from django.http import JsonResponse, HttpResponseRedirect
@@ -406,7 +406,7 @@ def summary(request, **kwargs):
                                                                  'reservation': reservation,
                                                                  'domain': request.META['HTTP_HOST']})
 
-                    mail = send_mail(subject='Potwierdzenie rezerwacji',
+                    mail = send_mail(subject='Potwierdzenie rezerwacji nr ' + str(reservation.reservation_id),
                                      message='',
                                      from_email=EMAIL_HOST_USER,
                                      recipient_list=[client.email, ],
@@ -588,7 +588,7 @@ def reservation_update(request, **kwargs):
                                                                  'reservation': reservation,
                                                                  'domain': request.META['HTTP_HOST']})
 
-                    mail = send_mail(subject='Potwierdzenie rezerwacji',
+                    mail = send_mail(subject='Potwierdzenie rezerwacji nr ' + str(reservation.reservation_id),
                                      message='',
                                      from_email=EMAIL_HOST_USER,
                                      recipient_list=[client.email, ],

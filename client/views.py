@@ -350,7 +350,7 @@ def summary_client(request, **kwargs):
                                                                  'reservation': reservation,
                                                                  'domain': request.META['HTTP_HOST']})
 
-                    mail = send_mail(subject='Potwierdzenie rezerwacji',
+                    mail = send_mail(subject='Potwierdzenie rezerwacji nr ' + str(reservation.reservation_id),
                                      message='',
                                      from_email=EMAIL_HOST_USER,
                                      recipient_list=[client.email, ],
