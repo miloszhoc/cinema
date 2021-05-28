@@ -106,12 +106,20 @@
                     <div id="tickets{{ forloop.counter }}" style="display: none">
                         {% for ticket in tickets %}
                             {% if reservation.client_id == ticket.client_id %}
-                                Miejsce: {{ ticket.seat_id.seat_number }}{{ ticket.seat_id.row_number }} -
-                                {{ ticket.tickettype_id.type }} {{ ticket.price }}<br>
+                                <div class="field">
+                                    <div class="name">Miejsce:</div>
+                                    <div class="value">{{ ticket.seat_id.seat_number }}{{ ticket.seat_id.row_number }} - {{ ticket.tickettype_id.type }} {{ ticket.price }}</div>
+                                </div>
                             {% endif %}
                         {% endfor %}
-                        <b>Email</b> {{ reservation.client_id.email }} <br>
-                        <b>Telefon</b> {{ reservation.client_id.phone_number }}
+                        <div class="field">
+                            <div class="name">Email</div>
+                            <div class="value">{{ reservation.client_id.email }}</div>
+                        </div>
+                        <div class="field">
+                            <div class="name">Telefon</div>
+                            <div class="value">{{ reservation.client_id.phone_number }}</div>
+                        </div>
                     </div>
                 </td>
             </tr>
