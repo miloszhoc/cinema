@@ -82,6 +82,9 @@ class TicketType(models.Model):
     conditions = models.TextField(null=False)
     deleted = models.BooleanField(default=False)
 
+    def get_absolute_url(self):
+        return reverse('tickettype-details-worker', kwargs={'pk': self.ticket_id})
+
     def __str__(self):
         return self.type
 

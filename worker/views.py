@@ -68,7 +68,6 @@ class TicketTypeCreateView(LoginRequiredMixin, CreateView):
     model = models.TicketType
     template_name = 'worker/typy_biletow/dodaj_typ.html'
     form_class = forms.TicketTypeModelForm
-    success_url = reverse_lazy('tickettype-list-worker')
 
 
 class TicketTypeDetailView(LoginRequiredMixin, DetailView):
