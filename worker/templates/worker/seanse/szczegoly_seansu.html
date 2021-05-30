@@ -73,27 +73,31 @@
                     &nbsp &nbsp
                 </td>
                 <td>{{ reservation.cost }} PLN</td>
-                {% if not reservation.paid %}
-                    <td> Nie</td>
-                {% else %}
-                    <td>Tak</td>
-                {% endif %}
-                {% if not reservation.confirmed %}
-                    <td> Nie</td>
-                {% else %}
-                    <td>Tak</td>
-                {% endif %}
-                <td> {{ reservation.reservation_date| date:"H:i d.m.Y" }} &nbsp</td>
-                <td>{% if showtime.start_date > time_now %}
+                <td class="is_paid">
+                    {% if not reservation.paid %}
+                        Nie
+                    {% else %}
+                        Tak
+                    {% endif %}
+                </td>
+                <td class="is_confirmed">
+                    {% if not reservation.confirmed %}
+                        Nie
+                    {% else %}
+                        Tak
+                    {% endif %}
+                </td>
+                <td class="reservation_date"> {{ reservation.reservation_date| date:"H:i d.m.Y" }} &nbsp</td>
+                <td class="pay_confirm">{% if showtime.start_date > time_now %}
                     <a href="{% url 'reservation-confirm-pay-worker' reservation.reservation_id %}">Opłać/Potwierdź</a>
                 {% endif %}
                 </td>
-                <td>
+                <td class="edit">
                     {% if showtime.start_date > time_now %}
                         <a href="{% url 'reservation-update-worker' reservation.reservation_id %}">Edytuj</a>
                     {% endif %}
                 </td>
-                <td>
+                <td class="delete_res">
                     {% if showtime.start_date > time_now %}
                         <a href="{% url 'reservation-delete-worker' reservation.reservation_id %}">Usuń</a>
                     {% endif %}
@@ -108,7 +112,8 @@
                             {% if reservation.client_id == ticket.client_id %}
                                 <div class="field">
                                     <div class="name">Miejsce:</div>
-                                    <div class="value">{{ ticket.seat_id.seat_number }}{{ ticket.seat_id.row_number }} - {{ ticket.tickettype_id.type }} {{ ticket.price }}</div>
+                                    <div class="value">{{ ticket.seat_id.seat_number }}{{ ticket.seat_id.row_number }}
+                                        - {{ ticket.tickettype_id.type }} {{ ticket.price }}</div>
                                 </div>
                             {% endif %}
                         {% endfor %}
