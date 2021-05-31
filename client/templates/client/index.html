@@ -43,11 +43,12 @@
                     <div class="col-md-4">
                         {% for i in future %}
                             <div class="row">
-                                <div class="col-6"><a href="{% url 'movie-details-client' i.movie_id %}"
-                                                      title="Zobacz szczególy filmu oraz zwiastun!"> <img
-                                        src={{ i.thumbnail.url }}
-                                                width="240"
-                                        height="240"></a>
+                                <div class="col-6">
+                                    <a href="{% url 'movie-details-client' i.movie_id %}"
+                                       title="Zobacz szczególy filmu oraz zwiastun!">
+                                        <img src={{ i.thumbnail.url }} width="240" height="240" alt="{{ i.title }}">
+                                        <div class="movie_title">{{ i.title }}</div>
+                                    </a>
                                 </div>
                                 <br>
 
