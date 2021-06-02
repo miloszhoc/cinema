@@ -32,11 +32,15 @@
         </div>
         Najbliższe seanse:<br>
         {% if showtime %}
-            {% for x in showtime %}
-                {{ x.start_date| date:"d.m.Y H:i" }}
-                <a class="btn btn-info" style="width:10rem;margin-left: 300px "
-                   href="{% url 'reservation-form-client' x.showtime_id %}">Zarezerwuj miejsce</a><br>
-            {% endfor %}
+            <table>
+                {% for x in showtime %}
+                    <tr>
+                        <td>{{ x.start_date| date:"d.m.Y H:i" }}</td>
+                        <td><a class="btn btn-info"
+                               href="{% url 'reservation-form-client' x.showtime_id %}">Zarezerwuj miejsce</a></td>
+                    </tr>
+                {% endfor %}
+            </table>
         {% else %}
             <b>Przepraszamy, wybrany film nie jest obecnie wyświetlany.</b>
         {% endif %}
