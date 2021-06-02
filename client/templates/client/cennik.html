@@ -65,10 +65,11 @@
 
     {% if ticket_types|length %}
         <div class="card text-center"
-             style="15 padding: 10px; border:20px;margin-left: 100px; margin-top:30px; background: darkgray; opacity: 90%; margin-bottom: 200px; width:50rem;">
+             style="padding: 10px; border:20px;margin-left: 100px; margin-top:30px; background: darkgray; opacity: 90%; margin-bottom: 200px; width:50rem;">
             <div class="card-body" style="font-size:18px">
                 {% for ticket in ticket_types %}
-                    {{ ticket.type }} - {{ ticket.conditions }}<br>
+                    <div class="ticket">{{ ticket.type }} - {{ ticket.conditions }}</div>
+                    <br>
                 {% endfor %}
             </div>
         </div>
