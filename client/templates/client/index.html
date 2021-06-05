@@ -11,11 +11,13 @@
 
 {% block content %}
     {{ MEDIA_URL }}
-    {% if messages %}
-        {% for message in messages %}
-            {{ message }}
-        {% endfor %}
-    {% endif %}
+    <div class="message">
+        {% if messages %}
+            {% for message in messages %}
+                {{ message }}
+            {% endfor %}
+        {% endif %}
+    </div>
     {% if movies %}
         <div class="container series">
             {% if today|length > 0 %}
@@ -25,13 +27,13 @@
                     <br>
                     {% for d in today %}
                         <div class="row">
-                                <div class="col-6">
-                                    <a href="{% url 'movie-details-client' d.movie_id %}"
-                                       title="Zobacz szczególy filmu oraz zwiastun!">
-                                        <img src={{ d.thumbnail.url }} width="240" height="240" alt="{{ d.title }}">
-                                        <div class="movie_title">{{ d.title }}</div>
-                                    </a>
-                                </div>
+                            <div class="col-6">
+                                <a href="{% url 'movie-details-client' d.movie_id %}"
+                                   title="Zobacz szczególy filmu oraz zwiastun!">
+                                    <img src={{ d.thumbnail.url }} width="240" height="240" alt="{{ d.title }}">
+                                    <div class="movie_title">{{ d.title }}</div>
+                                </a>
+                            </div>
                             <br>
                         </div>
                     {% endfor %}
