@@ -90,7 +90,6 @@ class TicketTypeUpdateView(LoginRequiredMixin, UpdateView):
     model = models.TicketType
     template_name = 'worker/typy_biletow/dodaj_typ.html'
     form_class = forms.TicketTypeModelForm
-    success_url = reverse_lazy('tickettype-list-worker')
 
     # dane obecnego obiektu przeniesione do formularza
     def get_object(self, queryset=None):
