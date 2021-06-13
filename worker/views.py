@@ -45,7 +45,7 @@ class TicketTypeListView(LoginRequiredMixin, ListView):
     queryset = models.TicketType.objects.filter(deleted=False)
     model = models.TicketType
     template_name = 'worker/typy_biletow/typy_lista.html'
-    paginate_by = 10
+    paginate_by = 20
     # sortowanie asc po id, czyli wg kolejnosci dodania
     ordering = ['-ticket_id']
 
@@ -54,7 +54,7 @@ class TicketTypeListView(LoginRequiredMixin, ListView):
 class TicketTypeArchiveListView(LoginRequiredMixin, ListView):
     queryset = models.TicketType.objects.filter(deleted=True)
     model = models.TicketType
-    paginate_by = 10
+    paginate_by = 20
     ordering = ['-ticket_id']
     template_name = 'worker/typy_biletow/typy_lista.html'
 
@@ -667,7 +667,7 @@ def reservation_delete(request, **kwargs):
 class ShowtimeListView(LoginRequiredMixin, ListView):
     queryset = models.Showtime.objects.filter(start_date__gte=timezone.now())
     model = models.Showtime
-    paginate_by = 10
+    paginate_by = 20
     ordering = ['-showtime_id']
     template_name = 'worker/seanse/seans_lista.html'
 
@@ -676,7 +676,7 @@ class ShowtimeListView(LoginRequiredMixin, ListView):
 class ShowtimeArchiveListView(LoginRequiredMixin, ListView):
     queryset = models.Showtime.objects.filter(start_date__lte=timezone.now())
     model = models.Showtime
-    paginate_by = 10
+    paginate_by = 20
     ordering = ['-showtime_id']
     template_name = 'worker/seanse/seans_lista.html'
 
@@ -768,7 +768,7 @@ class MovieListView(LoginRequiredMixin, ListView):
     queryset = models.Movie.objects.filter(deleted=False)
     model = models.Movie
     template_name = 'worker/filmy/lista_filmow.html'
-    paginate_by = 10
+    paginate_by = 20
     # sortowanie asc po id, czyli wg kolejnosci dodania
     ordering = ['-movie_id']
 
@@ -777,7 +777,7 @@ class MovieDeletedListView(LoginRequiredMixin, ListView):
     queryset = models.Movie.objects.filter(deleted=True)
     model = models.Movie
     template_name = 'worker/filmy/lista_filmow.html'
-    paginate_by = 10
+    paginate_by = 20
     # sortowanie asc po id, czyli wg kolejnosci dodania
     ordering = ['-movie_id']
 
