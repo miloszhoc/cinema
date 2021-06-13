@@ -665,20 +665,30 @@ def reservation_delete(request, **kwargs):
 # seanse
 # lista seansow ktore sie odbeda
 class ShowtimeListView(LoginRequiredMixin, ListView):
-    queryset = models.Showtime.objects.filter(start_date__gte=timezone.now())
     model = models.Showtime
     paginate_by = 20
     ordering = ['-showtime_id']
     template_name = 'worker/seanse/seans_lista.html'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(object_list=object_list, **kwargs)
+        return context
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        return qs.filter(end_date__gte=timezone.now())
 
 
 # lista archiwalnych seansow
 class ShowtimeArchiveListView(LoginRequiredMixin, ListView):
-    queryset = models.Showtime.objects.filter(start_date__lte=timezone.now())
     model = models.Showtime
     paginate_by = 20
     ordering = ['-showtime_id']
     template_name = 'worker/seanse/seans_lista.html'
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        return qs.filter(end_date__lt=timezone.now())
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(object_list=object_list, **kwargs)
