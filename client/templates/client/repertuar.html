@@ -31,8 +31,8 @@
                 {% for i in showtime.list %}
                     <tr>
                         <td>{{ i.movie_id.title|title }} </td>
-                        <td>{{ i.start_date|date:"H:i" }} </td>
-                        <td>{{ i.end_date|date:"H:i" }} </td>
+                        <td class="start_time">{{ i.start_date|date:"H:i" }} </td>
+                        <td class="end_time">{{ i.end_date|date:"H:i" }} </td>
                         <td><a class="btn btn-info" href="{% url 'reservation-form-client' i.showtime_id %}"
                                role="button">Zarezerwuj miejsce</a></td>
                     </tr>
