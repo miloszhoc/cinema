@@ -4,12 +4,13 @@
     <link rel="stylesheet" href="{% static 'worker/style.css' %}">
 {% endblock %}
 {% block content %}
-
-    {% if messages %}
-        {% for message in messages %}
-            {{ message }}
-        {% endfor %}
-    {% endif %}
+    <div class="message">
+        {% if messages %}
+            {% for message in messages %}
+                {{ message }}
+            {% endfor %}
+        {% endif %}
+    </div>
     {% if showtime.start_date > time_now %}
         <a href="{% url 'showtime-update-worker' showtime.showtime_id %}">Aktualizuj informacje o seansie</a>
     {% endif %}
@@ -21,13 +22,31 @@
     <br><br>
 
     <img src="{{ showtime.movie_id.thumbnail.url }}" alt="{{ showtime.movie_id.title }}" width="200" height="285"/><br>
-    {{ showtime.movie_id.title|title }}<br>
-    <b>data seansu:</b>
-    {{ showtime.start_date| time:"H:i" }}
-    {{ showtime.start_date| date:"d.m.Y" }} r.-
-    {{ showtime.end_date| time:"H:i" }}
-    {{ showtime.end_date| date:"d.m.Y" }} r.<br>
-    <b>czas trwania:</b> {{ showtime.movie_id.duration }}<br>
+    <div class="section">
+        <div class="name">
+            <b>Tytuł filmu:</b>
+        </div>
+        <div class="value">
+            {{ showtime.movie_id.title|title }}<br>
+        </div>
+    </div>
+    <div class="section">
+        <div class="name">
+            <b>Data seansu:</b>
+        </div>
+        <div class="value">
+            {{ showtime.start_date| date:"d.m.Y" }}r. {{ showtime.start_date| time:"H:i" }}
+            - {{ showtime.end_date| date:"d.m.Y" }}r. {{ showtime.end_date| time:"H:i" }}<br>
+        </div>
+    </div>
+    <div class="section">
+        <div class="name">
+            <b>Czas trwania:</b>
+        </div>
+        <div class="value">
+            {{ showtime.movie_id.duration }}<br>
+        </div>
+    </div>
     <hr>
     <h3>Rezerwacje na seans:</h3>
     {#    rezerwaja mozliwa tylko, gdy seans sie jeszcze nie odbyl#}
@@ -54,19 +73,31 @@
                     &nbsp &nbsp
                 </td>
                 <td>{{ reservation.cost }} PLN</td>
-                <td>{{ reservation.paid }}</td>
-                <td> {{ reservation.confirmed }}</td>
-                <td> {{ reservation.reservation_date| date:"H:i d.m.Y" }} &nbsp</td>
-                <td>{% if showtime.start_date > time_now %}
+                <td class="is_paid">
+                    {% if not reservation.paid %}
+                        Nie
+                    {% else %}
+                        Tak
+                    {% endif %}
+                </td>
+                <td class="is_confirmed">
+                    {% if not reservation.confirmed %}
+                        Nie
+                    {% else %}
+                        Tak
+                    {% endif %}
+                </td>
+                <td class="reservation_date"> {{ reservation.reservation_date| date:"H:i d.m.Y" }} &nbsp</td>
+                <td class="pay_confirm">{% if showtime.start_date > time_now %}
                     <a href="{% url 'reservation-confirm-pay-worker' reservation.reservation_id %}">Opłać/Potwierdź</a>
                 {% endif %}
                 </td>
-                <td>
+                <td class="edit">
                     {% if showtime.start_date > time_now %}
                         <a href="{% url 'reservation-update-worker' reservation.reservation_id %}">Edytuj</a>
                     {% endif %}
                 </td>
-                <td>
+                <td class="delete_res">
                     {% if showtime.start_date > time_now %}
                         <a href="{% url 'reservation-delete-worker' reservation.reservation_id %}">Usuń</a>
                     {% endif %}
@@ -79,12 +110,21 @@
                     <div id="tickets{{ forloop.counter }}" style="display: none">
                         {% for ticket in tickets %}
                             {% if reservation.client_id == ticket.client_id %}
-                                Miejsce: {{ ticket.seat_id.seat_number }}{{ ticket.seat_id.row_number }} -
-                                {{ ticket.tickettype_id.type }} {{ ticket.price }}<br>
+                                <div class="field">
+                                    <div class="name">Miejsce:</div>
+                                    <div class="value">{{ ticket.seat_id.seat_number }}{{ ticket.seat_id.row_number }}
+                                        - {{ ticket.tickettype_id.type }} {{ ticket.price }}</div>
+                                </div>
                             {% endif %}
                         {% endfor %}
-                        <b>Email</b> {{ reservation.client_id.email }} <br>
-                        <b>Telefon</b> {{ reservation.client_id.phone_number }}
+                        <div class="field">
+                            <div class="name">Email</div>
+                            <div class="value">{{ reservation.client_id.email }}</div>
+                        </div>
+                        <div class="field">
+                            <div class="name">Telefon</div>
+                            <div class="value">{{ reservation.client_id.phone_number }}</div>
+                        </div>
                     </div>
                 </td>
             </tr>

@@ -1,8 +1,11 @@
+import sendgrid_backend
 from django.contrib import messages
-from django.core.mail import send_mail, EmailMultiAlternatives
+from django.core.mail import send_mail, EmailMultiAlternatives, get_connection
 from django.shortcuts import render
 from django.shortcuts import redirect
 import django.forms
+from sendgrid_backend import SendgridBackend
+
 from . import models
 from . import forms
 from django.forms import modelformset_factory
@@ -18,7 +21,7 @@ from django.db import transaction
 from cinema.settings import EMAIL_HOST_USER
 from django.template import loader
 from django.utils import timezone
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseRedirect
 
 
 # aby dostac się do strony wymagane jest zalogowanie, jeśli user nie jest zalogowany,
@@ -42,17 +45,17 @@ class TicketTypeListView(LoginRequiredMixin, ListView):
     queryset = models.TicketType.objects.filter(deleted=False)
     model = models.TicketType
     template_name = 'worker/typy_biletow/typy_lista.html'
-    paginate_by = 10
+    paginate_by = 20
     # sortowanie asc po id, czyli wg kolejnosci dodania
-    ordering = ['ticket_id']
+    ordering = ['-ticket_id']
 
 
 # lista archiwalnych seansow
 class TicketTypeArchiveListView(LoginRequiredMixin, ListView):
     queryset = models.TicketType.objects.filter(deleted=True)
     model = models.TicketType
-    paginate_by = 10
-    ordering = ['ticket_id']
+    paginate_by = 20
+    ordering = ['-ticket_id']
     template_name = 'worker/typy_biletow/typy_lista.html'
 
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -65,7 +68,6 @@ class TicketTypeCreateView(LoginRequiredMixin, CreateView):
     model = models.TicketType
     template_name = 'worker/typy_biletow/dodaj_typ.html'
     form_class = forms.TicketTypeModelForm
-    success_url = reverse_lazy('tickettype-list-worker')
 
 
 class TicketTypeDetailView(LoginRequiredMixin, DetailView):
@@ -88,7 +90,6 @@ class TicketTypeUpdateView(LoginRequiredMixin, UpdateView):
     model = models.TicketType
     template_name = 'worker/typy_biletow/dodaj_typ.html'
     form_class = forms.TicketTypeModelForm
-    success_url = reverse_lazy('tickettype-list-worker')
 
     # dane obecnego obiektu przeniesione do formularza
     def get_object(self, queryset=None):
@@ -121,6 +122,7 @@ def reservation_form(request, **kwargs):  # kwargs przekazywanie z urls
     r_form.fields['confirmed'].widget = r_form.fields['confirmed'].hidden_widget()
     r_form.fields['paid'].widget = r_form.fields['paid'].hidden_widget()
     r_form.fields['confirmation_email'].widget = r_form.fields['confirmation_email'].hidden_widget()
+    r_form.fields['showtime_id'].widget = r_form.fields['showtime_id'].hidden_widget()
 
     # siedzenia wolne
     seats = models.Seat.objects
@@ -149,12 +151,17 @@ def reservation_form(request, **kwargs):  # kwargs przekazywanie z urls
         r_form.fields['confirmed'].widget = r_form.fields['confirmed'].hidden_widget()
         r_form.fields['paid'].widget = r_form.fields['paid'].hidden_widget()
         r_form.fields['confirmation_email'].widget = r_form.fields['confirmation_email'].hidden_widget()
+        r_form.fields['showtime_id'].widget = r_form.fields['showtime_id'].hidden_widget()
 
         if client_form.is_valid() and r_form.is_valid():
             request.session['taken'] = taken
             request.session['data'] = request.POST
 
-            return redirect('reservation-tickets-worker')
+            # jesli nie wybrano miejsc
+            if len(taken) == 0:
+                messages.add_message(request, messages.ERROR, 'Nie wybrano żadnych miejsc!')
+            else:
+                return redirect('reservation-tickets-worker')
 
     return render(request, 'worker/rezerwacje/dodaj_rezerwacje.html', context={'showtime_id': showtime_id,
                                                                                'client_form': client_form,
@@ -219,10 +226,13 @@ def ticket_types_worker(request, **kwargs):
 
         ticket_form = ticket_formset(queryset=models.Ticket.objects.none(), initial=[{'seat_id': z} for z in taken])
 
+        seats = []
+
         # pokazuje tylko typy biletów, które nie są usunięte
         # https://simpleisbetterthancomplex.com/questions/2017/03/22/how-to-dynamically-filter-modelchoices-queryset-in-a-modelform.html
         for form in ticket_form:
             form.fields['tickettype_id'].queryset = models.TicketType.objects.filter(deleted=False)
+            seats.append(models.Seat.objects.get(seat_id=form.initial['seat_id']))
 
         if request.POST:
             r_form = forms.ReservationModelForm(request.POST)
@@ -254,7 +264,8 @@ def ticket_types_worker(request, **kwargs):
                                                                                        'client_form': client_form,
                                                                                        'client_initial': client_initial,
                                                                                        'reservation_initial': reservation_initial,
-                                                                                       'showtime': showtime})
+                                                                                       'showtime': showtime,
+                                                                                       'seats': seats})
     else:
         taken = ''
         ticket_form = ''
@@ -263,13 +274,15 @@ def ticket_types_worker(request, **kwargs):
         reservation_initial = ''
         client_initial = ''
         showtime = ''
+        seats = ''
         return render(request, 'worker/rezerwacje/wybierz_typy_biletow.html', context={'taken': taken,
                                                                                        'ticket_form': ticket_form,
                                                                                        'reservation_form': r_form,
                                                                                        'client_form': client_form,
                                                                                        'client_initial': client_initial,
                                                                                        'reservation_initial': reservation_initial,
-                                                                                       'showtime': showtime})
+                                                                                       'showtime': showtime,
+                                                                                       'seats': seats})
 
 
 # pracownik moze zarezerwowac dowolna ilosc biletow
@@ -331,6 +344,10 @@ def summary(request, **kwargs):
 
         db_ticket_types = models.TicketType.objects.all()
 
+        seats = []
+        for form in ticket_form:
+            seats.append(models.Seat.objects.get(seat_id=form['seat_id'].value()))
+
         if request.POST:
             r_form = forms.ReservationModelForm(request.POST)
             client_form = forms.ClientModelForm(request.POST)
@@ -387,7 +404,7 @@ def summary(request, **kwargs):
                                                                  'reservation': reservation,
                                                                  'domain': request.META['HTTP_HOST']})
 
-                    mail = send_mail(subject='Potwierdzenie rezerwacji',
+                    mail = send_mail(subject='Potwierdzenie rezerwacji na seans ' + showtime.movie_id.title,
                                      message='',
                                      from_email=EMAIL_HOST_USER,
                                      recipient_list=[client.email, ],
@@ -395,26 +412,20 @@ def summary(request, **kwargs):
                                      html_message=html_mail)
                     if mail:
                         messages.add_message(request, messages.SUCCESS,
-                                             'Rezerwacja została pomyślnie utworzona, na adres'
-                                             'mailowy klienta została wysłana wiadomość z potwierdzeniem.'
+                                             'Rezerwacja została pomyślnie utworzona, na adres '
+                                             'mailowy klienta została wysłana wiadomość z potwierdzeniem. '
                                              'Jeśli klient nie potwierdzi rezerwacji w ciągu 30 minut, '
                                              'to zostanie ona usunięta z systemu')
                     else:
-                        confirm_url = request.META['HTTP_HOST'] + reverse('reservation-accept-client',
-                                                                          kwargs={'id': str(
-                                                                              reservation.reservation_confirmation_code)})
-                        reject_url = request.META['HTTP_HOST'] + reverse('reservation-deny-client',
-                                                                         kwargs={'id': str(
-                                                                             reservation.reservation_confirmation_code)})
 
                         messages.add_message(request,
                                              messages.ERROR,
-                                             'Wystąpił problem z wysłaniem wiadomości. Prosimy o ręczne potwierdzenie rezerwacji pod linkiem: \n'
-                                             + confirm_url + '\nW celu odrzucenia rezerwacji prosimy przejść pod adres\n' + reject_url)
+                                             'Wystąpił problem z wysłaniem wiadomości. Skontaktuj się z klientem w celu '
+                                             'potwierdzenia lub odrzucenia rezerwacji.')
                 else:
                     messages.add_message(request, messages.SUCCESS,
-                                         'Rezerwacja została pomyślnie zakutalizowana! \n'
-                                         'Uwaga! Nie została zaznaczona opcja wysyłki wiadomości email do klienta.')
+                                         'Rezerwacja została pomyślnie utworzona.\n '
+                                         'Nie została zaznaczona opcja wysyłki wiadomości email do klienta.')
                 request.session.pop('taken')
                 request.session.pop('data')
                 request.session.pop('formset_data')
@@ -428,7 +439,8 @@ def summary(request, **kwargs):
                                                                                'reservation_initial': reservation_initial,
                                                                                'showtime': showtime,
                                                                                'total': total_price,
-                                                                               'db_ticket_types': db_ticket_types})
+                                                                               'db_ticket_types': db_ticket_types,
+                                                                               'seats': seats})
     else:
         taken = ''
         ticket_form = ''
@@ -438,6 +450,7 @@ def summary(request, **kwargs):
         client_initial = ''
         showtime = ''
         total_price = ''
+        seats = ''
         return render(request, 'worker/rezerwacje/podsumowanie.html', context={'taken': taken,
                                                                                'ticket_form': ticket_form,
                                                                                'reservation_form': r_form,
@@ -445,7 +458,8 @@ def summary(request, **kwargs):
                                                                                'client_initial': client_initial,
                                                                                'reservation_initial': reservation_initial,
                                                                                'showtime': showtime,
-                                                                               'total': total_price})
+                                                                               'total': total_price,
+                                                                               'seats': seats})
 
 
 @login_required
@@ -572,7 +586,7 @@ def reservation_update(request, **kwargs):
                                                                  'reservation': reservation,
                                                                  'domain': request.META['HTTP_HOST']})
 
-                    mail = send_mail(subject='Potwierdzenie rezerwacji',
+                    mail = send_mail(subject='Potwierdzenie rezerwacji na seans ' + showtime.movie_id.title,
                                      message='',
                                      from_email=EMAIL_HOST_USER,
                                      recipient_list=[client.email, ],
@@ -580,26 +594,20 @@ def reservation_update(request, **kwargs):
                                      html_message=html_mail)
                     if mail:
                         messages.add_message(request, messages.SUCCESS,
-                                             'Rezerwacja została pomyślnie utworzona, na adres'
+                                             'Rezerwacja została pomyślnie zaktualizowana, na adres'
                                              'mailowy klienta została wysłana wiadomość z potwierdzeniem.'
                                              'Jeśli klient nie potwierdzi rezerwacji w ciągu 30 minut, '
                                              'to zostanie ona usunięta z systemu')
                     else:
-                        confirm_url = request.META['HTTP_HOST'] + reverse('reservation-accept-client',
-                                                                          kwargs={'id': str(
-                                                                              reservation.reservation_confirmation_code)})
-                        reject_url = request.META['HTTP_HOST'] + reverse('reservation-deny-client',
-                                                                         kwargs={'id': str(
-                                                                             reservation.reservation_confirmation_code)})
-
                         messages.add_message(request,
                                              messages.ERROR,
-                                             'Wystąpił problem z wysłaniem wiadomości. Prosimy o ręczne potwierdzenie rezerwacji pod linkiem: \n'
-                                             + confirm_url + '\nW celu odzucenia rezerwacji prosimy przejść pod adres\n' + reject_url)
+                                             'Wystąpił problem z wysłaniem wiadomości. Skontaktuj się z klientem w celu '
+                                             'potwierdzenia lub odrzucenia rezerwacji.')
                 else:
                     messages.add_message(request, messages.SUCCESS,
-                                         'Rezerwacja została pomyślnie zakutalizowana! \n'
-                                         'Uwaga! Nie została zaznaczona opcja wysyłki wiadomości email do klienta.')
+                                         'Rezerwacja została pomyślnie zaktualizowana.\n '
+                                         'Nie została zaznaczona opcja wysyłki wiadomości email do klienta.')
+
                 return redirect(reverse('showtime-details-worker', kwargs={'pk': str(showtime.showtime_id)}))
 
     return render(request, 'worker/rezerwacje/edytuj-rezerwacje.html', context={'reservation': reservation,
@@ -657,20 +665,30 @@ def reservation_delete(request, **kwargs):
 # seanse
 # lista seansow ktore sie odbeda
 class ShowtimeListView(LoginRequiredMixin, ListView):
-    queryset = models.Showtime.objects.filter(start_date__gte=timezone.now())
     model = models.Showtime
-    paginate_by = 10
-    ordering = ['start_date']
+    paginate_by = 20
+    ordering = ['-showtime_id']
     template_name = 'worker/seanse/seans_lista.html'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(object_list=object_list, **kwargs)
+        return context
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        return qs.filter(end_date__gte=timezone.now())
 
 
 # lista archiwalnych seansow
 class ShowtimeArchiveListView(LoginRequiredMixin, ListView):
-    queryset = models.Showtime.objects.filter(start_date__lte=timezone.now())
     model = models.Showtime
-    paginate_by = 10
+    paginate_by = 20
     ordering = ['-showtime_id']
     template_name = 'worker/seanse/seans_lista.html'
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        return qs.filter(end_date__lt=timezone.now())
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(object_list=object_list, **kwargs)
@@ -711,18 +729,24 @@ class ShowtimeUpdateView(LoginRequiredMixin, UpdateView):
     def form_valid(self, form):
         self.object = form.save()
 
-        emails = models.Client.objects.filter(reservation__showtime_id=self.object.showtime_id).values_list('email',
-                                                                                                            flat=True)
+        emails = set(models.Client.objects.filter(reservation__showtime_id=self.object.showtime_id).values_list('email',
+                                                                                                                flat=True))
         if emails:
             html_mail = loader.render_to_string(template_name='worker/maile/aktualizacja_seansu.html',
                                                 context={'showtime': self.object})
-
+            conn = get_connection()
             mail = EmailMultiAlternatives(subject='Aktualizacja seansu',
                                           from_email=EMAIL_HOST_USER,
-                                          bcc=emails)
+                                          to=emails,
+                                          connection=conn)
             mail.attach_alternative(html_mail, 'text/html')
-            mail.send(fail_silently=True)
-
+            mail_send = mail.send(fail_silently=True)
+            if not mail_send:
+                messages.add_message(self.request, messages.ERROR,
+                                     'Błąd, nie można wysłać wiadomości ')
+            else:
+                messages.add_message(self.request, messages.SUCCESS, 'Seans został pomyślnie zaktualizowany.\n'
+                                                                     'Wysłano wiadomiści z informacją do klientów.')
         return super().form_valid(form)
 
 
@@ -731,13 +755,30 @@ class ShowtimeDeleteView(LoginRequiredMixin, DeleteView):
     template_name = 'worker/seanse/usun_seans.html'
     success_url = reverse_lazy('showtime-list-worker')
 
+    @transaction.atomic
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        success_url = self.get_success_url()
+
+        reservations = models.Reservation.objects.filter(showtime_id=self.object.showtime_id)
+        if reservations:
+            for reservation in reservations:
+                tickets = models.Ticket.objects.filter(reservation__reservation_id=reservation.reservation_id)
+                for ticket in tickets:
+                    ticket.delete()
+                reservation.delete()
+                models.Client.objects.get(client_id=reservation.client_id.client_id).delete()
+        self.object.delete()
+
+        return HttpResponseRedirect(success_url)
+
 
 # filmy
 class MovieListView(LoginRequiredMixin, ListView):
     queryset = models.Movie.objects.filter(deleted=False)
     model = models.Movie
     template_name = 'worker/filmy/lista_filmow.html'
-    paginate_by = 10
+    paginate_by = 20
     # sortowanie asc po id, czyli wg kolejnosci dodania
     ordering = ['-movie_id']
 
@@ -746,7 +787,7 @@ class MovieDeletedListView(LoginRequiredMixin, ListView):
     queryset = models.Movie.objects.filter(deleted=True)
     model = models.Movie
     template_name = 'worker/filmy/lista_filmow.html'
-    paginate_by = 10
+    paginate_by = 20
     # sortowanie asc po id, czyli wg kolejnosci dodania
     ordering = ['-movie_id']
 
@@ -826,12 +867,13 @@ def delete_unconfirmed_reservation(request):
             reservation_counter += 1
 
             client.delete()  # usuwa dane klienta
+    clients = set(clients)
     if clients:
         html_mail = loader.render_to_string(template_name='worker/maile/auto_usuwanie_rezerwacji.html')
 
         mail = EmailMultiAlternatives(subject='Usunięta rezerwacja',
                                       from_email=EMAIL_HOST_USER,
-                                      bcc=clients)
+                                      to=clients, )
         mail.attach_alternative(html_mail, 'text/html')
         mail_send = mail.send(fail_silently=True)
 

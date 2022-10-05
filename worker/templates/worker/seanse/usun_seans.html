@@ -2,11 +2,11 @@
 {% block content %}
     {% if 'Administratorzy' in  request.user.groups.values.0.name %}
         <form action="." method="post">{% csrf_token %}
-            <h1>Czy chcesz usunąć seans {{ showtime.movie_id.title }} {{ showtime.start_date }}?</h1>
+            <h1>Czy chcesz usunąć seans {{ showtime.movie_id.title }} {{ showtime.start_date| date:"d.m.Y H:i" }}?</h1>
+            <p>Wszystkie rezerwacje powiązane z seansem zostaną usunięte.</p>
             <button class="btn btn-danger" type="submit" value="Yes"/>
-            Yes</button>
+            Tak</button>
             <a href="{% url 'showtime-details-worker' showtime.showtime_id %}">Nie</a>
-            </p>
         </form>
     {% else %}
         <h2>Musisz być administratorem, aby usuwać seanse.</h2>

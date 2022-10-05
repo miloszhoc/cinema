@@ -3,7 +3,7 @@
     {% if 'Administratorzy' in  request.user.groups.values.0.name %}
         <form action="." method="post">{% csrf_token %}
             <h1>Czy chcesz usunąć typ biletu {{ tickettype.type }}?</h1>
-            <p><input type="submit" value="Yes"/> <a
+            <p><input type="submit" value="Tak"/> <a
                     href="{% url 'tickettype-details-worker'  tickettype.ticket_id %}">Nie</a></p>
         </form>
     {% else %}

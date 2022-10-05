@@ -9,6 +9,11 @@
 {% endblock %}
 
 {% block content %}
+    {% if messages %}
+        {% for message in messages %}
+            {{ message }}
+        {% endfor %}
+    {% endif %}
     <form action="" method="post" id="ticket_no">
         {% csrf_token %}
         <table class="table-striped">

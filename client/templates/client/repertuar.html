@@ -13,8 +13,8 @@
 
 {#https://stackoverflow.com/questions/8678336/django-grouping-querysets-by-a-certain-field-in-template#}
 {% block content %}
-    {% if showtime_list|length > 0 %}
-        {% regroup showtime_list by start_date|date:"d.m.Y" as showtime_by_date %}
+    {% if showtimes|length > 0 %}
+        {% regroup showtimes by start_date|date:"d.m.Y" as showtime_by_date %}
         <table class="table table-striped table-dark">
             <thead>
             <tr>
@@ -31,8 +31,8 @@
                 {% for i in showtime.list %}
                     <tr>
                         <td>{{ i.movie_id.title|title }} </td>
-                        <td>{{ i.start_date|date:"H:i" }} </td>
-                        <td>{{ i.end_date|date:"H:i" }} </td>
+                        <td class="start_time">{{ i.start_date|date:"H:i" }} </td>
+                        <td class="end_time">{{ i.end_date|date:"H:i" }} </td>
                         <td><a class="btn btn-info" href="{% url 'reservation-form-client' i.showtime_id %}"
                                role="button">Zarezerwuj miejsce</a></td>
                     </tr>

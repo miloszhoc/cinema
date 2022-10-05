@@ -15,7 +15,7 @@
             font-size: 25px;
             border-top: 1px solid #ddd;
             padding: 5px 12px;
-            text-align: left;
+            text-align: center;
             vertical-align: top;
         }
 
@@ -46,23 +46,32 @@
         </tr>
         </thead>
         <tbody>
-        {% for ticket in ticket_types %}
+        {% if ticket_types|length %}
+            {% for ticket in ticket_types %}
+                <tr>
+                    <td><strong>{{ ticket.type }}</strong></td>
+                    <td><strong>{{ ticket.price }}</strong></td>
+                </tr>
+            {% endfor %}
+        {% else %}
             <tr>
-                <td><strong>{{ ticket.type }}</strong></td>
-                <td><strong>{{ ticket.price }}</strong></td>
+                <td colspan="2"><strong>Brak dostępnych typów biletów.</strong></td>
             </tr>
-        {% endfor %}
+        {% endif %}
+
         </tbody>
     </table>
     <br><br><br>
 
-
-    <div class="card text-center"
-         style="15 padding: 10px; border:20px;margin-left: 100px; margin-top:30px; background: darkgray; opacity: 90%; margin-bottom: 200px; width:50rem;">
-        <div class="card-body" style="font-size:18px">
-            {% for ticket in ticket_types %}
-                {{ ticket.type }} - {{ ticket.conditions }}<br>
-            {% endfor %}
+    {% if ticket_types|length %}
+        <div class="card text-center"
+             style="padding: 10px; border:20px;margin-left: 100px; margin-top:30px; background: darkgray; opacity: 90%; margin-bottom: 200px; width:50rem;">
+            <div class="card-body" style="font-size:18px">
+                {% for ticket in ticket_types %}
+                    <div class="ticket">{{ ticket.type }} - {{ ticket.conditions }}</div>
+                    <br>
+                {% endfor %}
+            </div>
         </div>
-    </div>
+    {% endif %}
 {% endblock %}r

@@ -113,6 +113,8 @@ def reservation_form(request, **kwargs):  # kwargs przekazywanie z urls
                 messages.add_message(request, messages.ERROR, 'Możesz zarezerwować maksymalnie 10 miejsc! '
                                                               'W celu rezerwacji większej ilości miejsc skontaktuj się '
                                                               'z pracownikiem kina.')
+            elif len(taken) == 0:
+                messages.add_message(request, messages.ERROR, 'Nie wybrano żadnych miejsc!')
             else:
                 return redirect('reservation-tickets-client')
 
@@ -174,9 +176,12 @@ def ticket_types_client(request, **kwargs):
 
         ticket_form = ticket_formset(queryset=Ticket.objects.none(), initial=[{'seat_id': z} for z in taken])
 
+        seats = []
+
         # pokazuje tylko typy biletów, które nie są usunięte
         for form in ticket_form:
             form.fields['tickettype_id'].queryset = TicketType.objects.filter(deleted=False)
+            seats.append(Seat.objects.get(seat_id=form.initial['seat_id']))
 
         if request.POST:
             r_form = forms.ReservationModelForm(request.POST)
@@ -204,7 +209,8 @@ def ticket_types_client(request, **kwargs):
                                                                             'client_form': client_form,
                                                                             'client_initial': client_initial,
                                                                             'reservation_initial': reservation_initial,
-                                                                            'showtime': showtime})
+                                                                            'showtime': showtime,
+                                                                            'seats': seats})
     else:
         taken = ''
         ticket_form = ''
@@ -213,13 +219,15 @@ def ticket_types_client(request, **kwargs):
         reservation_initial = ''
         client_initial = ''
         showtime = ''
+        seats = ''
         return render(request, 'client/wybierz_typy_biletow.html', context={'taken': taken,
                                                                             'ticket_form': ticket_form,
                                                                             'reservation_form': r_form,
                                                                             'client_form': client_form,
                                                                             'client_initial': client_initial,
                                                                             'reservation_initial': reservation_initial,
-                                                                            'showtime': showtime})
+                                                                            'showtime': showtime,
+                                                                            'seats': seats})
 
 
 @transaction.atomic
@@ -273,6 +281,10 @@ def summary_client(request, **kwargs):
         ticket_form = ticket_formset(queryset=Ticket.objects.none(), data=formset_data)
 
         db_ticket_types = TicketType.objects.all()
+
+        seats = []
+        for form in ticket_form:
+            seats.append(Seat.objects.get(seat_id=form['seat_id'].value()))
 
         if request.POST:
             r_form = forms.ReservationModelForm(request.POST)
@@ -338,7 +350,7 @@ def summary_client(request, **kwargs):
                                                                  'reservation': reservation,
                                                                  'domain': request.META['HTTP_HOST']})
 
-                    mail = send_mail(subject='Potwierdzenie rezerwacji',
+                    mail = send_mail(subject='Potwierdzenie rezerwacji na seans ' + showtime.movie_id.title,
                                      message='',
                                      from_email=EMAIL_HOST_USER,
                                      recipient_list=[client.email, ],
@@ -349,7 +361,9 @@ def summary_client(request, **kwargs):
                                              'Rezerwacja została pomyślnie utworzona, na twój adres '
                                              'mailowy została wysłana wiadomość z potwierdzeniem. '
                                              'Jeśli nie potwierdzisz rezerwacji w ciągu 30 minut, '
-                                             'to zostanie ona automatycznie usunięta z systemu.')
+                                             'to zostanie ona automatycznie usunięta z systemu. '
+                                             'W przypadku braku otrzymania wiadomości email '
+                                             'prosimy o pilny kontakt telefoniczny.')
                     else:
                         confirm_url = request.META['HTTP_HOST'] + reverse('reservation-accept-client',
                                                                           kwargs={'id': str(
@@ -373,7 +387,8 @@ def summary_client(request, **kwargs):
                                                                     'reservation_initial': reservation_initial,
                                                                     'showtime': showtime,
                                                                     'total': total_price,
-                                                                    'db_ticket_types': db_ticket_types})
+                                                                    'db_ticket_types': db_ticket_types,
+                                                                    'seats': seats})
     else:
         taken = ''
         ticket_form = ''
@@ -407,17 +422,15 @@ def okinie(request):
     return render(request, 'client/okinie.html', context={'media': media_url})
 
 
-# w zakładce seanse na 14 dni od dnia dzisiejszego
-# lista dat od dnia dzisiejszego, które w templatce sa porownywane z datami seansow, jesli data seansu jest rowna dacie
-# na liscie dat, to seans jest wypisywany na ekranie
 class RepertuarShowtimeListView(ListView):
     template_name = 'client/repertuar.html'
 
-    queryset = Showtime.objects.filter(start_date__gte=timezone.now()).order_by('start_date')
+    # queryset = Showtime.objects.filter(start_date__gte=timezone.now()).order_by('start_date')
     model = Showtime
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(object_list=object_list, **kwargs)
+        context['showtimes'] = Showtime.objects.filter(start_date__gte=timezone.now()).order_by('start_date')
         return context
 
 
@@ -425,7 +438,8 @@ class RepertuarShowtimeListView(ListView):
 @transaction.atomic
 def rezerwacja_potwierdz(request, **kwargs):
     reservation_uuid = kwargs['id']
-    reservation = Reservation.objects.get(reservation_confirmation_code=reservation_uuid)
+    reservation = get_object_or_404(Reservation,
+                                    reservation_confirmation_code=reservation_uuid)
     form = forms.ConfirmReservationForm(initial={'text_field': reservation_uuid})
     if request.POST:
         form = forms.ConfirmReservationForm(request.POST, initial={'text_field': reservation_uuid})
@@ -447,7 +461,8 @@ def rezerwacja_potwierdz(request, **kwargs):
 @transaction.atomic
 def rezerwacja_anuluj(request, **kwargs):
     reservation_uuid = kwargs['id']
-    reservation = Reservation.objects.get(reservation_confirmation_code=reservation_uuid)
+    reservation = get_object_or_404(Reservation,
+                                    reservation_confirmation_code=reservation_uuid)
     form = forms.ConfirmReservationForm(initial={'text_field': reservation_uuid})
 
     if request.POST:

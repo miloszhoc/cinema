@@ -6,7 +6,8 @@
     {% elif taken|length > 10 %}
         <h2>Możesz zarezerwowoać maksymalnie 10 miejesc!</h2>
     {% else %}
-        <div class="jumbotron jumbotron-fluid" style="opacity: 85%">
+        <div class="card"
+             style="width: 50rem; margin-left:400px; padding-right:70px; box-shadow:0 8px 6px -6px black; margin-bottom: 10px; padding-left: 30px;padding-top: 15px; padding-bottom: 30px; background-color: #d8d8d8; opacity: 90%;opacity: 85%">
             <div class="container"
                  style="font-family: 'Lucida Grande', 'Lucida Sans Unicode', 'Geneva', 'Verdana', sans-serif">
                 <h3 class="display-4">Podsumowanie</h3>
@@ -39,16 +40,20 @@
                         <tbody>
                         {{ ticket_form.management_form }}
                         {% for form in ticket_form %}
-                            Miejsce: {{ form.seat_id.data }}<br>
+                            {% for i in seats %}
+                                {% if i.seat_id|title == form.seat_id.data|title %}
+                                    <div class="seat_name">Miejsce: {{ i }}</div>
+                                {% endif %}
+                            {% endfor %}
                             {% for i in db_ticket_types %}
                                 {% if i.ticket_id|lower == form.tickettype_id.data|lower %}
-                                    Typ biletu: {{ i.type }}{{ form.as_p }}
+                                    <div class="ticket_type">Typ biletu: {{ i.type }}{{ form.as_p }}</div>
                                 {% endif %}
                             {% endfor %}
                         {% endfor %}
                         </tbody>
                     </table>
-                    <b>Do zapłaty: {{ total }} PLN</b>
+                    <b id="total_price">Do zapłaty: {{ total }} PLN</b>
                     {{ client_form }}
                     {{ reservation_form }}<br><br>
                     <input class="btn-lg btn-info" type="submit" value="Zarezerwuj"/>

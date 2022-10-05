@@ -1,17 +1,16 @@
 {% extends 'worker/base_pagination.html' %}
 {% block content_pagination %}
-    {% if 'Administratorzy' in  request.user.groups.values.0.name %}
-        {% if not deleted_list %}
+    {% if not deleted_list %}
+        {% if 'Administratorzy' in  request.user.groups.values.0.name %}
             <a href="{% url 'tickettype-create-worker' %}">Dodaj typ biletu</a><br><br>
             <p></p>
-            <a href="{% url 'tickettype-deleted-list-worker' %}">Usunięte typy biletów</a>
-            <p></p>
-            <h3>Lista typów biletów:</h3>
-            <p></p>
-        {% else %}
-            <h3>Lista usuniętych typów biletów:</h3>
-            <p></p>
         {% endif %}
+        <a href="{% url 'tickettype-deleted-list-worker' %}">Usunięte typy biletów</a>
+        <p></p>
+        <h3>Lista typów biletów:</h3>
+        <p></p>
+    {% else %}
+        <h3>Lista usuniętych typów biletów:</h3>
     {% endif %}
     <table class="table-striped">
         <th></th>

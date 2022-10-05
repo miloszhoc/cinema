@@ -23,10 +23,14 @@
         {% for movie in movie_list %}
             <tr>
                 <td>{{ forloop.counter }}.</td>
-                <td>{{ movie.title|title }} &nbsp
+                <td>{{ movie.title }} &nbsp
 
                 </td>
-                <td>{{ movie.deleted }}</td>
+                {% if not movie.deleted %}
+                    <td>Nie</td>
+                {% else %}
+                    <td>Tak</td>
+                {% endif %}
                 <td><a href="{% url 'movie-details-worker' movie.movie_id %}">Przejdź do szczegółów</a></td>
             </tr>
         {% endfor %}

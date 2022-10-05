@@ -149,3 +149,6 @@ STATICFILES_STORAGE = 'storages.backends.azure_storage.AzureStorage'
 # STATIC_URL = '/static/'
 STATIC_URL = 'https://{}/static/'.format(AZURE_CUSTOM_DOMAIN)
 # STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+# sendgrid backend
+EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"

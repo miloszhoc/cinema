@@ -7,38 +7,68 @@
 {% block content %}
     <div class="card"
          style="width: 50rem; padding:25px;margin-left:400px;box-shadow:0 10px 6px -20px black; margin-bottom: 10px; background-color: #d8d8d8; opacity: 90%">
-        {% if messages %}
-            {% for message in messages %}
-                {{ message }}
-            {% endfor %}
-        {% endif %}
-        <img src="{{ object.thumbnail.url }}" width="200" height="285" style="margin-left: 250px"/><br>
-        <b>tytuł:</b> {{ object.title|title }}<br><br>
-        <b>reżyser:</b> {{ object.director }}<br>
-        <b>data premiery:</b> {{ object.release_date }}<br>
-        <b>czas trwania:</b> {{ object.duration }}<br><br>
-        {{ object.description }}<br><br>
-        {% if object.trailer_youtube_id %}
-            <iframe width="560" height="315" src="https://www.youtube.com/embed/{{ object.trailer_youtube_id }}"
-                    frameborder="0"
-                    allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-                    allowfullscreen></iframe>
-        {% endif %}
-        <div class="card-text">
-            <br><br>
-            Recenzje, oraz opinie o filmie znajdują się <a class="btn btn-default" href="{{ object.link }}"><b
-                class="btn btn-primary">tutaj</b></a>
-            <br><br>
+        <div class="message">
+            {% if messages %}
+                {% for message in messages %}
+                    {{ message }}
+                {% endfor %}
+            {% endif %}
         </div>
-        Najbliższe seanse:<br>
-        {% if showtime %}
-            {% for x in showtime %}
-                {{ x.start_date| date:"d.m.Y H:i" }}
-                <a class="btn btn-info" style="width:10rem;margin-left: 300px "
-                   href="{% url 'reservation-form-client' x.showtime_id %}">Zarezerwuj miejsce</a><br>
-            {% endfor %}
-        {% else %}
-            <b>Przepraszamy, wybrany film nie jest obecnie wyświetlany.</b>
-        {% endif %}
+        <img src="{{ object.thumbnail.url }}" alt="{{ object.title }}" width="200" height="285"
+             style="margin-left: 250px"/>
+        <br>
+        <div class="section">
+            <div class="name"><b>Tytuł:</b></div>
+            <div class="value">{{ object.title }}</div>
+        </div>
+        <div class="section">
+            <div class="name"><b>Reżyser:</b></div>
+            <div class="value">{{ object.director }}</div>
+        </div>
+        <div class="section">
+            <div class="name"><b>Data premiery:</b></div>
+            <div class="value">{{ object.release_date }}</div>
+        </div>
+        <div class="section">
+            <div class="name"><b>Czas trwania:</b></div>
+            <div class="value">{{ object.duration }}</div>
+        </div>
+        <div class="section">
+            <div class="name"><b>Opis:</b></div>
+            <div class="value">{{ object.description }}</div>
+        </div>
+        <br>
+        <div class="section">
+            {% if object.trailer_youtube_id %}
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/{{ object.trailer_youtube_id }}"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen></iframe>
+            {% endif %}
+        </div>
+
+        <div class="section">
+            <div class="card-text">
+                <b>Recenzje, oraz opinie o filmie znajdują się</b>
+                <a class="btn btn-default" href="{{ object.link }}"> <b class="btn btn-primary">tutaj</b></a>
+                <br>
+            </div>
+        </div>
+        <div class="section">
+            <b>Najbliższe seanse:</b><br>
+            {% if showtime %}
+                <table>
+                    {% for x in showtime %}
+                        <tr>
+                            <td>{{ x.start_date| date:"d.m.Y H:i" }}</td>
+                            <td><a class="btn btn-info"
+                                   href="{% url 'reservation-form-client' x.showtime_id %}">Zarezerwuj miejsce</a></td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            {% else %}
+                Przepraszamy, wybrany film nie jest obecnie wyświetlany.
+            {% endif %}
+        </div>
     </div>
 {% endblock %}

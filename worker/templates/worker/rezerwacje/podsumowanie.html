@@ -32,15 +32,19 @@
             <table>
                 {{ ticket_form.management_form }}
                 {% for form in ticket_form %}
-                    Miejsce: {{ form.seat_id.data }}<br>
+                    {% for i in seats %}
+                        {% if i.seat_id|title == form.seat_id.data|title %}
+                            <div class="seat_name">Miejsce: {{ i }}</div>
+                        {% endif %}
+                    {% endfor %}
                     {% for i in db_ticket_types %}
                         {% if i.ticket_id|lower == form.tickettype_id.data|lower %}
-                            Typ biletu: {{ i.type }}{{ form|crispy }}
+                            <div class="ticket_type">Typ biletu: {{ i.type }}{{ form|crispy }}</div><br>
                         {% endif %}
                     {% endfor %}
                 {% endfor %}
             </table>
-            <b>Do zapłaty: {{ total }} PLN</b>
+            <b id="total_price">Do zapłaty: {{ total }} PLN</b>
             {{ client_form }}
             {{ reservation_form|crispy }}<br><br>
             <button class="btn btn-primary" type="submit" value="Zarezerwuj">Rezerwuj</button>
